@@ -60,7 +60,9 @@ class NavigatorAgent(BaseAgent):
                 node = kg.get_node(nid)
                 if node:
                     sample_names.append(node.name)
-            communities_preview.append({"community": i, "size": len(community), "sample": sample_names})
+            communities_preview.append({
+                "community": i, "size": len(community), "sample": sample_names
+            })
         summary["communities_preview"] = communities_preview
 
         prompt = (

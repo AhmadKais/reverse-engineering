@@ -122,7 +122,7 @@ class _FileVisitor(ast.NodeVisitor):
             ))
         self.generic_visit(node)
 
-    visit_AsyncFunctionDef = visit_FunctionDef
+    visit_AsyncFunctionDef = visit_FunctionDef  # noqa: N815
 
     def _collect_calls(self, fn_node: ast.AST) -> list[str]:
         """Return list of called names (Name or Attribute.attr) inside fn_node."""
@@ -164,7 +164,7 @@ def parse_file(file_path: str) -> tuple[list[GraphNode], list[GraphEdge]]:
     visitor.visit(tree)
 
     # Module imports edges (Extracted)
-    for alias_name, fq_name in visitor._imports.items():
+    for _alias_name, fq_name in visitor._imports.items():
         visitor.edges.append(GraphEdge(
             source=_module_id(file_path),
             target=fq_name,

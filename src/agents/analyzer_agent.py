@@ -84,7 +84,8 @@ class AnalyzerAgent(BaseAgent):
                 start = max(0, node.line_start - 1)
                 end = min(len(lines), node.line_end)
                 code = "\n".join(lines[start:end])[:800]   # cap at 800 chars per snippet
-                snippets.append(f"### {node.label} ({node.file_path}:{node.line_start})\n```python\n{code}\n```")
+                header = f"### {node.label} ({node.file_path}:{node.line_start})"
+                snippets.append(f"{header}\n```python\n{code}\n```")
             except OSError:
                 pass
         return "\n\n".join(snippets)

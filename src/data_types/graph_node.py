@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from enum import Enum
-from typing import Literal
+from enum import StrEnum as Enum
 
 from pydantic import BaseModel, Field
 
 
-class NodeKind(str, Enum):
+class NodeKind(Enum):
     MODULE = "module"
     CLASS = "class"
     FUNCTION = "function"

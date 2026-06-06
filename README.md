@@ -307,13 +307,15 @@ artifacts/
     └── 06_langgraph_diagram.png
 ```
 
-Then add them inline here:
+Once added, embed them inline by replacing this block with:
 
 ```markdown
 ![Obsidian graph view](artifacts/screenshots/01_obsidian_graph_view.png)
 ![hot.md](artifacts/screenshots/02_hot_md.png)
 ![Pipeline terminal output](artifacts/screenshots/04_pipeline_run_terminal.png)
 ```
+
+*(Remove the code fence above and use the raw image syntax once the files exist)*
 
 ---
 

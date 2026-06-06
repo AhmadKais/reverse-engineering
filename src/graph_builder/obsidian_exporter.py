@@ -12,7 +12,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.data_types.graph_edge import EdgeKind
 from src.data_types.graph_node import GraphNode
 from src.graph_builder.graph_generator import KnowledgeGraph
 

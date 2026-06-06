@@ -31,7 +31,7 @@ For each bug, output EXACTLY this JSON structure:
       "file_path": "relative/path/to/file.py",
       "target_symbol": "ClassName or function_name to modify",
       "description": "what this fix does in one clear sentence",
-      "architectural_pattern": "design pattern that solves this (e.g. Factory, Strategy, CircuitBreaker)",
+      "architectural_pattern": "design pattern (e.g. Factory, Strategy, CircuitBreaker)",
       "new_class_or_method": "name of new class/method to introduce (if any)",
       "explanation": "why this fixes the root cause — the architectural insight"
     }

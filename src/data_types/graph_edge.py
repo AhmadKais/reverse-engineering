@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum as Enum
 
 from pydantic import BaseModel
 
 
-class EdgeKind(str, Enum):
+class EdgeKind(Enum):
     """Three relationship types from Grphify's taxonomy."""
     EXTRACTED = "Extracted"    # Hard-coded relationship: import, call, inheritance
     INFERRED = "Inferred"      # LLM-inferred semantic relationship
     AMBIGUOUS = "Ambiguous"    # Relationship needing human verification
 
 
-class EdgeLabel(str, Enum):
+class EdgeLabel(Enum):
     IMPORTS = "imports"
     INHERITS = "inherits"
     CALLS = "calls"

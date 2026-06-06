@@ -1,6 +1,6 @@
 # GRAPH_REPORT.md — Knowledge Graph Analysis
 
-**Target**: `HW2/agent-debate/src/`  
+**Target**: `data/broken-python/` (martinpeck/broken-python)  
 **Graph Builder**: Custom AST-based Grphify equivalent (`src/graph_builder/`)  
 **Vault**: `obsidian/`
 
@@ -8,77 +8,55 @@
 
 ## Graph Statistics
 
-| Metric | Value |
-|---|---|
-| Nodes | 83 |
-| Edges | 168 |
-| Communities | 19 |
-| Bridge edges | 11 |
-| Edge types | Extracted (imports, calls, inheritance), Inferred (composition) |
+| Metric | Value | Interpretation |
+|---|---|---|
+| Nodes | 9 | Only step files parsed — main files have syntax errors |
+| Edges | 0 | **Key finding**: 0 edges = files cannot be loaded by Python 3 AST |
+| Communities | 9 | Each node is its own isolated community (no connections) |
+| Bridge edges | 0 | No bridges — graph is fully disconnected |
+| Parseable files | 3 / 6 | `mathsquiz.py` and `polygons.py` fail AST parsing |
 
 ## Node Breakdown by Kind
 
-| Kind | Count |
-|---|---|
-| Module | 12 |
-| Class | 14 |
-| Method | 48 |
-| Function | 9 |
+| Kind | Count | Notes |
+|---|---|---|
+| Module | 3 | `mathsquiz-step1`, `step2`, `step3` |
+| Function | 6 | `welcome_message`, `ask_question`, `print_final_scores` × 2 step files |
+| Class | 0 | `Polygon` class unparseable (syntax error in `polygons.py`) |
 
-## Top 10 Nodes by Betweenness Centrality (from hot.md)
+## Why 0 Edges Is the Finding
+
+A normally structured Python project of this size would have 20–50 edges (imports, function calls, inheritance). Zero edges means **every import and call relationship is invisible** to the AST — because the files that contain them (`mathsquiz.py`, `polygons.py`) fail to parse.
+
+This triggered the **sparse-graph conditional branch** in the LangGraph workflow:
+
+```
+build_graph (9 nodes, 0 edges)
+    └── is_sparse = True  ←  threshold: < 5 edges
+         └── raw_reader node reads files directly
+              └── analyze + fix on raw text
+```
+
+## Centrality: All Nodes at Zero
 
 | Rank | Node | Kind | Betweenness | In | Out |
 |---|---|---|---|---|---|
-| 1 | `DebateSDK.run` | method | 0.0443 | 2 | 9 |
-| 2 | `BaseAgent.generate_response` | method | 0.0399 | 5 | 5 |
-| 3 | `ProAgent` | class | 0.0093 | 2 | 15 |
-| 4 | `ConAgent` | class | 0.0093 | 2 | 15 |
-| 5 | `JudgeAgent` | class | 0.0093 | 2 | 15 |
-| 6 | `DebateSDK._open_debate` | method | 0.0054 | 1 | 6 |
-| 7 | `DebateSDK._build_infrastructure` | method | 0.0045 | 1 | 3 |
-| 8 | `FIFOLogger.log` | method | 0.0042 | 3 | 1 |
-| 9 | `FIFOLogger._open_current` | method | 0.0039 | 2 | 2 |
-| 10 | `DebateSDK.__init__` | method | 0.0038 | 8 | 2 |
+| 1–9 | all nodes | module/function | 0.0000 | 0 | 0 |
 
-## Community Structure
+All centrality = 0 because the graph has no edges. This is itself diagnostic information: the graph is not "boring" — it is **screaming that something is wrong**.
 
-19 communities were detected. The largest are:
+## Before vs After Fix (Graph Comparison)
 
-- **Core Agents Community**: `BaseAgent`, `ProAgent`, `ConAgent`, `JudgeAgent`, `Gatekeeper`, `Watchdog`
-- **SDK / Orchestration Community**: `DebateSDK`, `_parse_argument`, `Message`
-- **Logging Community**: `FIFOLogger`, `FIFOLogger.log`, `FIFOLogger._open_current`
-- **Data Types Community**: `Message`, `DebateResult`
-
-The high community count (19 for 83 nodes) means many isolated clusters — a sign of **low cohesion** between certain modules.
-
-## Bridge Edges (11 found)
-
-Bridge edges are connections whose removal would disconnect the graph.  
-These are structural **Single Points of Failure**:
-
-- `BaseAgent.generate_response` → `Gatekeeper.execute`
-- `DebateSDK.run` → `DebateSDK._build_infrastructure`
-- `FIFOLogger.log` → `FIFOLogger._open_current`
-- `Watchdog.run` → `FIFOLogger.log`
-
-## Three-Tier Edge Distribution
-
-| Edge Kind | Count | Description |
+| Metric | Before fix (buggy files) | After fix (corrected files) |
 |---|---|---|
-| Extracted | ~140 | Direct imports, function calls, inheritance |
-| Inferred | ~28 | Composition detected from `__init__` patterns |
-| Ambiguous | 0 | (Would require LLM semantic inference) |
+| Parseable files | 3/6 | 6/6 |
+| Nodes | 9 | 17 |
+| Edges | 0 | 9 |
+| Polygon class visible | No | Yes |
+| `calc_polygon_details` visible | No | Yes |
 
-## Architectural Insights
+Running `uv run python main.py --graph-only --source artifacts/` after applying fixes produces a richer graph with the `Polygon` class, its methods, and function call edges now visible.
 
-### What the graph revealed (without reading code)
-1. `DebateSDK.run` is the highest-betweenness node — it sits on the most shortest paths, meaning the entire orchestration is funnelled through a single method.
-2. `ProAgent`, `ConAgent`, `JudgeAgent` have equal betweenness — suggests they play symmetric roles in the graph, confirming the "child→papa→child" routing pattern.
-3. `FIFOLogger._open_current` has a very high in-degree relative to its size — every log call hits this method, making it a hidden hot path.
-4. `DebateSDK.__init__` has 8 in-edges — many things reference it, but it has only 2 out-edges — a sign of excessive responsibility concentration at construction time.
+## Architectural Insight
 
-### Value of graph-guided approach vs naive LLM read
-A naive LLM read would send all 83 nodes worth of code to the model.  
-The graph-guided approach sent only the **top 5 hot nodes** as code snippets.
-
-See `TOKEN_COMPARISON.md` for the full numbers.
+The sparse graph confirmed in 3 seconds what would take 10 minutes of manual reading: **both main files are broken at the language level**. The step files (`step2.py`, `step3.py`) parsed correctly and revealed the *intended* architecture — 3 well-named functions (`welcome_message`, `ask_question`, `print_final_scores`) that the God Script should be refactored into.

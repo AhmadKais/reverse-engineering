@@ -68,13 +68,12 @@ def build_graph_node(state: WorkflowState) -> WorkflowState:
         is_sparse = kg.metrics.edge_count < SPARSE_EDGE_THRESHOLD
         raw_files: dict = {}
         if is_sparse:
+            import contextlib
             # Pre-read all Python files so downstream nodes can work without AST
             for py_file in Path(state["source_root"]).rglob("*.py"):
-                try:
+                with contextlib.suppress(OSError):
                     raw_files[str(py_file.relative_to(state["source_root"]))] = \
                         py_file.read_text(encoding="utf-8", errors="replace")
-                except OSError:
-                    pass
 
         return {
             **state,
@@ -111,7 +110,6 @@ def raw_reader_node(state: WorkflowState, budget: AgentBudget) -> WorkflowState:
         return state
     try:
         from src.agents.base_agent import BaseAgent
-        import json
 
         system = (
             "You are a Python code reader. Given raw source files that contain "

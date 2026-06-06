@@ -139,5 +139,5 @@ class ReverseEngineerSDK:
         if isinstance(obj, set):
             return sorted(self._make_serializable(v) for v in obj)
         if isinstance(obj, tuple):
-            return list(self._make_serializable(v) for v in obj)
+            return [self._make_serializable(v) for v in obj]
         return obj
