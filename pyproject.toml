@@ -1,0 +1,43 @@
+[project]
+name = "reverse-engineer-agent"
+version = "1.00"
+description = "EX04 — Reverse Engineering with AI Agents using graph-based knowledge architecture"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.104.1",
+    "langgraph>=1.2.4",
+    "networkx>=3.0",
+    "pydantic>=2.0",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+analyze = "main:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "src/**/__init__.py"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
