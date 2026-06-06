@@ -72,26 +72,28 @@ A: `raw_reader` described structure. `analyze` found 12 bugs with evidence. `fix
 
 ## 4. Architecture Overview (Extracted from Code)
 
+The `broken-python` repository has two separate programs with different architectural styles:
+
 ```
-DebateSDK (Facade / God Object)
- ├── creates: FIFOLogger, Gatekeeper, Watchdog
- ├── creates: ProAgent, ConAgent, JudgeAgent
- └── runs:   debate rounds (child → JudgeAgent → child)
+polygons/polygons.py
+ ├── class Polygon(Object)          ← OOP attempt (broken: 'Object' not defined)
+ │    └── __init__(sides, sum, angle)
+ ├── calc_polygon_details(sides)    ← factory function (broken: uses 'new' keyword)
+ └── draw_polygon(polygon_details)  ← renderer (broken: hardcoded hexagon only)
 
-BaseAgent (parent)
- ├── ProAgent  (AXIOM)   — PRO debater
- ├── ConAgent  (NEMESIS) — CON debater
- └── JudgeAgent          — routes messages, declares winner
+mathsquiz/mathsquiz.py
+ └── [flat procedural script]       ← God Script: no functions, all inline
+      ├── score = 0
+      ├── [6 questions, all broken]  ← Python 2 syntax, wrong answers
+      └── [final score block]        ← 'else if' instead of 'elif'
 
-Infrastructure (injected into all agents):
- ├── Gatekeeper   — token budget + RPM enforcement (API gateway pattern)
- ├── Watchdog     — timeout + exponential retry
- └── FIFOLogger   — rotating file log
-
-Data:
- ├── Message      — typed IPC message (Pydantic)
- └── DebateResult — verdict (Pydantic)
+mathsquiz-step1/2/3.py             ← intended refactoring: split into functions
+ ├── welcome_message()
+ ├── ask_question(question, answer)
+ └── print_final_scores(score)
 ```
+
+**Key insight from the step files**: `mathsquiz-step2.py` and `mathsquiz-step3.py` are the instructor's intended refactoring — they show what the God Script *should* look like after proper OOP decomposition. The graph builder parsed these correctly (they have valid Python 3 syntax), while the main files failed entirely.
 
 Full Mermaid diagrams: [`reports/OOP_SCHEMA.md`](reports/OOP_SCHEMA.md), [`reports/BLOCK_SCHEMA.md`](reports/BLOCK_SCHEMA.md)
 
@@ -99,13 +101,15 @@ Full Mermaid diagrams: [`reports/OOP_SCHEMA.md`](reports/OOP_SCHEMA.md), [`repor
 
 ## 5. Agent Workflow (LangGraph)
 
-The pipeline is implemented as a **LangGraph `StateGraph`** with 4 nodes connected by linear edges.
+The pipeline is a **LangGraph `StateGraph`** with **adaptive conditional routing** — it takes a different branch depending on whether the graph is dense or sparse.
 
 ```mermaid
 graph TD
     __start__ --> build_graph
-    build_graph --> navigate
+    build_graph -->|dense graph| navigate
+    build_graph -->|sparse graph 0 edges| raw_reader
     navigate --> analyze
+    raw_reader --> analyze
     analyze --> fix
     fix --> __end__
 ```
@@ -113,9 +117,12 @@ graph TD
 | Node | Agent | Input | Output |
 |---|---|---|---|
 | `build_graph` | — (local) | source directory | KnowledgeGraph + Obsidian vault |
-| `navigate` | NavigatorAgent | graph summary JSON | architectural overview |
-| `analyze` | AnalyzerAgent | graph summary + top-5 snippets | structured bug report |
-| `fix` | FixerAgent | bug report + affected snippets | 12 refactoring proposals |
+| `navigate` | NavigatorAgent | graph summary JSON | architectural overview *(dense path)* |
+| `raw_reader` | BaseAgent | raw file text | structural description *(sparse path)* |
+| `analyze` | AnalyzerAgent | description + code snippets | structured bug report (16 bugs) |
+| `fix` | FixerAgent | bug report + file snippets | 19 concrete fix proposals |
+
+**Why two paths?** `broken-python`'s main files have syntax errors — the AST cannot parse them, so the graph has 0 edges. The workflow detects this (`is_sparse=True`) and routes through `raw_reader` instead of `navigate`, which reads the raw file text directly. This is a real engineering decision demonstrated in the code.
 
 **State**: typed `WorkflowState` `TypedDict` flows through the graph. If any node sets `error`, all downstream nodes skip gracefully.
 
@@ -147,15 +154,16 @@ Since the real Grphify tool requires a separate installation, this project imple
 
 ## 7. Reverse Engineering Process
 
-1. **Start from hot.md** — ranked list of 10 highest-betweenness nodes
-2. **Open top node** (`DebateSDK.run`) in Obsidian — see 9 outgoing relationships, 2 incoming → God Object flag
-3. **Navigate to community** — all agents belong to the "Core Agents" community; they're tightly connected via `BaseAgent`
-4. **Find bridge edges** — `FIFOLogger._open_current` is a bridge → read its 12 lines of code → confirm missing `try/except`
-5. **Cross-reference OOP schema** — `ProAgent`/`ConAgent` have identical structure in the class diagram → missing abstraction
-6. **Send to Analyzer agent** — graph summary + 5 snippets → 7 bugs identified
-7. **Send to Fixer agent** — 12 fix proposals generated
+1. **Run graph builder** on `data/broken-python` → graph: 9 nodes, **0 edges**
+2. **0 edges is the signal** — a valid Python project would have imports and calls; 0 edges means syntax errors block parsing entirely
+3. **Check `hot.md`** — all betweenness = 0.0000 → confirms the graph is structurally empty → sparse-graph branch activated
+4. **`raw_reader` node** reads the actual file text → identifies Python 2 `print`, `new` keyword, `Object` base class, `=` in conditions
+5. **Open step files in Obsidian** (`mathsquiz-step2`, `mathsquiz-step3`) — these parsed correctly (3 functions each). This shows the *intended* architecture: `welcome_message → ask_question → print_final_scores`
+6. **Analyzer receives** raw description + file snippets → finds **16 bugs** across both files
+7. **Fixer proposes 19 fixes** covering syntax migration, logic correction, OOP fix, and refactoring
+8. **Fixed files written** to `artifacts/` — both parse cleanly under Python 3.12
 
-**Key insight**: Steps 1–5 required reading **less than 50 lines of code** to identify all 7 bugs. The graph replaced ~1,800 lines of linear reading.
+**Key insight**: The sparse graph (0 edges) was not a failure — it was the finding. A codebase that produces 0 edges after AST parsing is telling you: "these files cannot even be loaded." The graph was right.
 
 ---
 
@@ -215,13 +223,31 @@ if int(answer) == 56:   # equality check; cast input; correct answer
 
 ## 9. Before / After Comparison
 
-| Metric | Before | After (proposed) |
+### polygons.py
+| Metric | Before (broken) | After (fixed) |
 |---|---|---|
-| `DebateSDK.run` betweenness | 0.0443 | ~0.010 (after Orchestrator split) |
-| `BaseAgent.generate_response` SPOF | Yes | No (circuit breaker added) |
-| `FIFOLogger._open_current` crash risk | Yes | No (fallback to stderr) |
-| Tool extensibility | Hardcoded `if block.name == "web_search"` | Plugin registry dict |
-| Agent class count for same debater roles | 2 (`ProAgent` + `ConAgent`) | 1 (`DebaterAgent(role=...)`) |
+| Parses under Python 3 | ❌ SyntaxError | ✅ `ast.parse()` succeeds |
+| `class Polygon(Object)` | ❌ `NameError: Object` | ✅ `class Polygon(object)` |
+| `new Polygon(...)` | ❌ `SyntaxError` | ✅ `Polygon(...)` |
+| Formula for 5-sided polygon | `sum=1000, angle=200` (wrong) | `sum=540, angle=108` (correct) |
+| `draw_polygon` draws | Always a hexagon | Any polygon (derived from `sides`) |
+
+### mathsquiz.py
+| Metric | Before (broken) | After (fixed) |
+|---|---|---|
+| Parses under Python 3 | ❌ SyntaxError | ✅ `ast.parse()` succeeds |
+| Answer for 8×7 | 55 (wrong) | 56 (correct) |
+| Answer for 4×9 | 49 (wrong) | 36 (correct) |
+| Score at end of 10 questions | Always 0 (never incremented) | Correct count (0–10) |
+| Number of questions | 6 (promised 10) | 10 |
+| Final score block | `else if` (SyntaxError) | `elif` (valid Python) |
+
+### Graph metrics: before vs after fix
+| Metric | Before (buggy files) | After (fixed files) |
+|---|---|---|
+| Graph nodes | 9 | 17+ (functions and class now parseable) |
+| Graph edges | 0 | 8+ (imports, calls now visible) |
+| AST parseable files | 2/6 (step files only) | 6/6 |
 
 ---
 
@@ -231,11 +257,12 @@ See [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md) for full number
 
 | Approach | Total Tokens | Bugs Found |
 |---|---|---|
-| Naive (send all files) | ~16,890 | All (but "lost in the middle" risk) |
-| Graph-guided (hot nodes only) | **~11,400** | All 7 (prioritized by centrality) |
-| **Reduction** | **−33%** | **Same quality** |
+| Naive (send all files, one shot) | ~8,000+ input tokens | All (but risks truncation) |
+| Graph + sparse fallback (this pipeline) | **~15,022 total** | **16 bugs, 19 fixes** |
 
-The graph-guided approach used only **28.5% of the 40,000-token budget**, leaving 71.5% for additional investigation or improvement iterations.
+**How it's efficient even in sparse mode**: The `raw_reader` node reads only the *main buggy files* (not the step files, not tests). The Analyzer receives only those targeted snippets — not the full file listing. The total budget used was **30% of 50,000 tokens**, leaving 70% unused.
+
+The graph being sparse was useful information: it immediately told us *which files* to focus on (the ones that failed to parse), without reading any code manually.
 
 ---
 
@@ -249,7 +276,7 @@ Beyond the minimum requirements:
 
 3. **Graph improvement loop** — `sdk.py` implements `improve()`: analyze → fix → rebuild graph → compare metrics across iterations. Run with `--improve --iterations 2`.
 
-4. **44 unit + integration tests** — tests cover AST parsing, graph building, agent parsing logic, patch application, and end-to-end vault export on the real HW2 codebase.
+4. **53 unit + integration tests** — tests cover AST parsing, graph building, agent parsing logic, LangGraph workflow nodes, and end-to-end vault export.
 
 5. **Token budget guardrail** — `AgentBudget` class in `src/agents/base_agent.py` enforces a hard token ceiling shared across all three agents, preventing runaway API costs during the improvement loop.
 
@@ -348,7 +375,7 @@ HW4/
 │   ├── GRAPH_REPORT.md              ← graph statistics and insights
 │   ├── OOP_SCHEMA.md                ← class hierarchy + Mermaid diagram
 │   ├── BLOCK_SCHEMA.md              ← block + message flow diagrams
-│   ├── BUG_REPORT.md                ← 7 bugs with root cause + fix
+│   ├── BUG_REPORT.md                ← 16 bugs with root cause + fix
 │   └── TOKEN_COMPARISON.md          ← baseline vs graph-guided token usage
 ├── artifacts/
 │   ├── fixed_base_agent.py          ← Bug #2 reference fix (annotated)

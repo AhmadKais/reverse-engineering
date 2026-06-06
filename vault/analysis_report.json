@@ -1,0 +1,290 @@
+{
+  "source_root": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src",
+  "graph_metrics": {
+    "node_count": 83,
+    "edge_count": 168,
+    "top_hubs": [
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/sdk.py::DebateSDK.run",
+        "name": "run",
+        "kind": "method",
+        "betweenness": 0.0443,
+        "in_degree": 2,
+        "out_degree": 9
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/agents/base_agent.py::BaseAgent.generate_response",
+        "name": "generate_response",
+        "kind": "method",
+        "betweenness": 0.0399,
+        "in_degree": 5,
+        "out_degree": 5
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/agents/debater_agent.py::ProAgent",
+        "name": "ProAgent",
+        "kind": "class",
+        "betweenness": 0.0093,
+        "in_degree": 2,
+        "out_degree": 15
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/agents/debater_agent.py::ConAgent",
+        "name": "ConAgent",
+        "kind": "class",
+        "betweenness": 0.0093,
+        "in_degree": 2,
+        "out_degree": 15
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/agents/judge_agent.py::JudgeAgent",
+        "name": "JudgeAgent",
+        "kind": "class",
+        "betweenness": 0.0093,
+        "in_degree": 2,
+        "out_degree": 15
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/sdk.py::DebateSDK._open_debate",
+        "name": "_open_debate",
+        "kind": "method",
+        "betweenness": 0.0054,
+        "in_degree": 1,
+        "out_degree": 6
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/sdk.py::DebateSDK._build_infrastructure",
+        "name": "_build_infrastructure",
+        "kind": "method",
+        "betweenness": 0.0045,
+        "in_degree": 1,
+        "out_degree": 3
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/core/logger.py::FIFOLogger.log",
+        "name": "log",
+        "kind": "method",
+        "betweenness": 0.0042,
+        "in_degree": 3,
+        "out_degree": 1
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/core/logger.py::FIFOLogger._open_current",
+        "name": "_open_current",
+        "kind": "method",
+        "betweenness": 0.0039,
+        "in_degree": 2,
+        "out_degree": 2
+      },
+      {
+        "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/src/sdk.py::DebateSDK.__init__",
+        "name": "__init__",
+        "kind": "method",
+        "betweenness": 0.0038,
+        "in_degree": 8,
+        "out_degree": 2
+      }
+    ],
+    "community_count": 19,
+    "bridge_count": 11
+  },
+  "navigation": "## Architectural Overview\n\nThis codebase implements an **AI agent debate system** where two opposing agents (Pro and Con) argue a topic before a Judge agent, all orchestrated through a central SDK. The architecture follows a classic layered design: a thin SDK orchestration layer sits atop a domain agent layer, which in turn relies on shared core infrastructure (logging, rate limiting, API communication). With 83 nodes, 168 edges, and 19 communities, the graph is moderately complex with clear separation of concerns, though 11 bridges indicate some fragile inter-layer connections.\n\n---\n\n## Hubs (High Centrality Nodes)\n\n- **`DebateSDK.run`** \u2014 The top-level entry point and primary orchestrator; fans out to 9 dependents, making it the single thread that pulls the entire debate lifecycle together.\n- **`BaseAgent.generate_response`** \u2014 The critical abstraction point for all agent behavior; 5 in-edges (called by multiple agents) and 5 out-edges (delegates to API, logging, rate limiting) make it the backbone of agent operation.\n- **`ProAgent` / `ConAgent`** \u2014 Symmetric debater classes with identical centrality profiles (15 out-edges each); both are high-fanout consumers of the base agent infrastructure.\n- **`JudgeAgent`** \u2014 Mirrors the debater structure but serves the verdict role; same topology as ProAgent/ConAgent suggests a shared inheritance pattern from `BaseAgent`.\n- **`DebateSDK._open_debate`** \u2014 A setup method that wires together 6 downstream components; acts as the debate session initializer.\n- **`DebateSDK._build_infrastructure`** \u2014 Bootstraps 3 core services (likely logger, rate limiter, API client) before the debate begins.\n- **`FIFOLogger.log`** \u2014 Cross-cutting logging hub called from 3 different sites; the system's primary audit trail mechanism.\n- **`DebateSDK.__init__`** \u2014 Unusually high in-degree (8) for a constructor, suggesting many components hold a reference back to the SDK or its config object.\n\n---\n\n## Communities\n\n- **Community 1 (size 19)** \u2014 *Core debate flow*: Contains `Message`, `_open_debate`, `generate_response`, and `_strip_markdown` \u2014 the runtime messaging and response-processing pipeline.\n- **Community 2 (size 17)** \u2014 *Agent infrastructure*: Groups `BaseAgent`, `FIFOLogger`, `base_agent` module, and `load_rate_limits` \u2014 the shared services all agents depend on.\n- **Community 3 (size 16)** \u2014 *Initialization cluster*: Dominated by `__init__` methods across multiple classes, suggesting a construction/dependency-injection phase that is topologically distinct from runtime behavior.\n- **Community 4 (size 11)** \u2014 *SDK orchestration & error handling*: Contains `run`, `_parse_verdict`, `error`, and `_log_files` \u2014 the control flow, judgment parsing, and error surface of the SDK layer.\n- **Community 5 (size 6)** \u2014 *API & rate-limiting execution*: Contains `_call_api`, `_enforce_rate_limit`, `record`, and `execute` \u2014 a tightly scoped, low-level execution cluster handling external API interactions.\n\n---\n\n## Data Flow Summary\n\n1. **Entry**: `DebateSDK.__init__` \u2192 `_build_infrastructure` bootstraps logger, rate limiter, and API client.\n2. **Setup**: `DebateSDK.run` \u2192 `_open_debate` initializes the debate session and wires agent instances (`ProAgent`, `ConAgent`, `JudgeAgent`).\n3. **Debate loop**: `run` drives alternating calls to `ProAgent`/`ConAgent` \u2192 each delegates to `BaseAgent.generate_response` \u2192 which calls `_call_api` (rate-limited via `_enforce_rate_limit`) and returns a `Message`.\n4. **Logging**: Every `generate_response` cycle emits to `FIFOLogger.log` \u2192 `_open_current` manages file handles.\n5. **Verdict**: After N rounds, `JudgeAgent.generate_response` produces output parsed by `_parse_verdict` \u2192 result surfaced through `run`'s return path.\n\n---\n\n## Initial Risk Signals\n\n- **11 bridges with 19 communities**: A high bridge-to-community ratio means several inter-layer connections are single points of failure \u2014 breaking one bridge could disconnect entire communities from the rest of the graph.\n- **`DebateSDK.__init__` with 8 in-edges**: Unusually high for a constructor; may indicate circular references, tight coupling, or the SDK object being passed around as a god-object/service locator.\n- **Symmetric ProAgent/ConAgent topology**: Identical out-degree (15) strongly suggests code duplication rather than clean polymorphism \u2014 functionality likely belongs in `BaseAgent`.\n- **Community 3 (16 init methods)**: A large initialization-only cluster can hide deferred wiring bugs that only manifest at runtime, not during static analysis.\n- **Small API execution cluster (Community 5, size 6)**: The entire external API surface is very small and tightly coupled; any API contract change will have outsized impact given how many agents depend on it through `generate_response`.\n- **`FIFOLogger` as a shared mutable sink**: Called from 3+ sites with no visible concurrency guard in the topology \u2014 potential race condition if agents are ever parallelized.",
+  "bugs": {
+    "bugs": [
+      {
+        "type": "GodObject",
+        "severity": "critical",
+        "affected_nodes": [
+          "DebateSDK.run",
+          "DebateSDK._open_debate",
+          "DebateSDK._build_infrastructure"
+        ],
+        "evidence": "DebateSDK.run has out_degree=9 and orchestrates agent construction, infrastructure wiring, transcript management, debate sequencing, and result aggregation all in one method. _build_infrastructure and _open_debate are further helpers that still leave run as the sole coordinator touching every subsystem.",
+        "fix_hint": "Extract a dedicated DebateOrchestrator class that owns the debate lifecycle, separating agent factory, round management, and result collection into distinct collaborators."
+      },
+      {
+        "type": "SPOF",
+        "severity": "critical",
+        "affected_nodes": [
+          "BaseAgent.generate_response"
+        ],
+        "evidence": "generate_response has in_degree=5 (called by ProAgent, ConAgent, JudgeAgent and multiple round methods) and is the sole path through which all LLM calls, tool dispatch, token recording, and watchdog execution flow; any failure or regression here halts the entire debate.",
+        "fix_hint": "Decompose generate_response into separate, independently testable units: a ToolDispatcher, a ResponseExtractor, and a TokenRecorder, so a fault in one does not block the others."
+      },
+      {
+        "type": "HardcodedDispatch",
+        "severity": "major",
+        "affected_nodes": [
+          "DebateSDK.run",
+          "ProAgent",
+          "ConAgent",
+          "JudgeAgent"
+        ],
+        "evidence": "DebateSDK.run directly instantiates ProAgent, ConAgent, and JudgeAgent by class name with no registry, factory, or injection point, making it impossible to swap agent implementations without editing run().",
+        "fix_hint": "Introduce an AgentFactory or accept agent constructor callables/classes via configuration so agent implementations can be substituted without modifying DebateSDK."
+      },
+      {
+        "type": "MissingAbstraction",
+        "severity": "major",
+        "affected_nodes": [
+          "ProAgent",
+          "ConAgent",
+          "JudgeAgent"
+        ],
+        "evidence": "ProAgent and ConAgent are structurally identical thin wrappers (same __init__ signature, same tool list, only name and system_prompt differ) with betweenness=0.0093 each, yet there is no shared DebaterAgent abstraction; JudgeAgent also duplicates the same constructor pattern with only a role-specific override.",
+        "fix_hint": "Introduce a DebaterAgent base class parameterised by name and system_prompt, and resolve JudgeAgent's unique behaviour through a role-strategy or mixin rather than a fully separate class."
+      },
+      {
+        "type": "SPOF",
+        "severity": "major",
+        "affected_nodes": [
+          "FIFOLogger.log",
+          "FIFOLogger._open_current"
+        ],
+        "evidence": "FIFOLogger.log has in_degree=3 (all agents funnel logging through it) and delegates to _open_current which manages file handles; a file-system error or lock contention in _open_current silently blocks logging across all agents simultaneously.",
+        "fix_hint": "Decouple agents from the concrete FIFOLogger via a Logger protocol/interface and add an async or buffered handler so file I/O errors are isolated and retried without interrupting agent execution."
+      },
+      {
+        "type": "Bottleneck",
+        "severity": "major",
+        "affected_nodes": [
+          "BaseAgent.generate_response",
+          "DebateSDK.run"
+        ],
+        "evidence": "All LLM round-trips (ProAgent, ConAgent, JudgeAgent) are serialised through BaseAgent.generate_response called sequentially inside DebateSDK.run; the graph shows no concurrent execution path (no async/await or thread-pool nodes), so each round incurs cumulative latency equal to the sum of all three agents' API call times.",
+        "fix_hint": "Make generate_response async and use asyncio.gather for independent agent calls within a round to parallelize LLM requests where debate ordering permits."
+      },
+      {
+        "type": "MissingAbstraction",
+        "severity": "minor",
+        "affected_nodes": [
+          "DebateSDK.__init__",
+          "DebateSDK._build_infrastructure"
+        ],
+        "evidence": "DebateSDK.__init__ has in_degree=8 (many callers pass raw config keys) and _build_infrastructure re-creates logger, gatekeeper, and watchdog on every run() call rather than once at construction, suggesting infrastructure lifetime is not modelled as a first-class concept.",
+        "fix_hint": "Define an InfrastructureBundle value-object built once in __init__ and reused across runs, separating configuration validation from object construction."
+      }
+    ],
+    "summary": "The codebase concentrates control flow in DebateSDK.run and BaseAgent.generate_response, creating two critical single points of failure that touch every agent and every LLM call. Agent roles lack a proper abstraction hierarchy and are hardcoded at construction sites, making the system rigid to extension and difficult to test in isolation."
+  },
+  "fixes": {
+    "fixes": [
+      {
+        "bug_type": "GodObject",
+        "file_path": "src/core/debate_orchestrator.py",
+        "target_symbol": "DebateOrchestrator",
+        "description": "Extract a new DebateOrchestrator class that owns the full debate lifecycle, delegating to an AgentFactory for construction, a RoundManager for sequencing, and a ResultCollector for aggregation, so DebateSDK.run becomes a thin coordinator.",
+        "architectural_pattern": "Facade with dedicated collaborators",
+        "new_class_or_method": "DebateOrchestrator",
+        "explanation": "Concentrating lifecycle responsibility in DebateOrchestrator removes the God Object anti-pattern from DebateSDK.run by giving each concern a single owner; DebateSDK becomes a configuration entry-point that delegates execution entirely to the orchestrator."
+      },
+      {
+        "bug_type": "GodObject",
+        "file_path": "src/sdk/debate_sdk.py",
+        "target_symbol": "DebateSDK.run",
+        "description": "Slim DebateSDK.run down to constructing an InfrastructureBundle and a DebateOrchestrator, then invoking orchestrator.run(), removing all inline agent construction, round sequencing, and result aggregation logic.",
+        "architectural_pattern": "Facade",
+        "new_class_or_method": null,
+        "explanation": "By delegating all sub-responsibilities to purpose-built collaborators, run loses its excessive out-degree and becomes a stable, shallow entry-point whose changes can no longer ripple across every subsystem simultaneously."
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "src/agents/base_agent.py",
+        "target_symbol": "BaseAgent.generate_response",
+        "description": "Decompose generate_response into three independently callable collaborators: ToolDispatcher handles tool selection and invocation, ResponseExtractor parses and validates the raw LLM output, and TokenRecorder persists token usage, so a failure in one does not prevent the others from executing.",
+        "architectural_pattern": "Chain of Responsibility",
+        "new_class_or_method": "ToolDispatcher, ResponseExtractor, TokenRecorder",
+        "explanation": "Isolating each concern into its own class with its own error boundary means a filesystem error in TokenRecorder or a parsing failure in ResponseExtractor raises a scoped exception rather than aborting the entire generate_response path that all agents depend on."
+      },
+      {
+        "bug_type": "HardcodedDispatch",
+        "file_path": "src/agents/agent_factory.py",
+        "target_symbol": "AgentFactory",
+        "description": "Introduce an AgentFactory class that maintains a registry mapping role names to agent constructor callables, and exposes a create method that instantiates the correct agent given a role key and an InfrastructureBundle.",
+        "architectural_pattern": "Factory with Registry",
+        "new_class_or_method": "AgentFactory",
+        "explanation": "Routing all agent construction through a registry-backed factory means DebateSDK never references ProAgent, ConAgent, or JudgeAgent by class name; new or substitute implementations are registered at startup without touching orchestration code."
+      },
+      {
+        "bug_type": "HardcodedDispatch",
+        "file_path": "src/sdk/debate_sdk.py",
+        "target_symbol": "DebateSDK.__init__",
+        "description": "Accept an optional AgentFactory instance in DebateSDK.__init__ and store it for use by DebateOrchestrator, removing all direct imports and instantiation of concrete agent classes from the SDK module.",
+        "architectural_pattern": "Dependency Injection",
+        "new_class_or_method": null,
+        "explanation": "Injecting the factory at construction time makes the SDK open for extension and closed for modification; callers swap implementations by supplying a differently configured factory rather than subclassing or editing SDK internals."
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "src/agents/debater_agent.py",
+        "target_symbol": "DebaterAgent",
+        "description": "Introduce a DebaterAgent base class that accepts name and system_prompt as constructor parameters and wires the shared tool list and infrastructure bundle, then redefine ProAgent and ConAgent as one-line subclasses that supply only their role-specific name and prompt constant.",
+        "architectural_pattern": "Template Method",
+        "new_class_or_method": "DebaterAgent",
+        "explanation": "A parameterised base class eliminates the duplicated constructor and tool-wiring code that currently exists identically in ProAgent and ConAgent, making the shared structure explicit and ensuring future changes to debater setup propagate automatically."
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "src/agents/judge_agent.py",
+        "target_symbol": "JudgeAgent",
+        "description": "Refactor JudgeAgent to extend DebaterAgent and encapsulate its rule-enforcement behaviour in a JudgeStrategy mixin or collaborator rather than duplicating the base constructor pattern, keeping only the verdict and routing logic in the class body.",
+        "architectural_pattern": "Strategy with Mixin",
+        "new_class_or_method": "JudgeStrategy",
+        "explanation": "Extracting the rule-checking and verdict logic into a strategy object makes JudgeAgent a role-specific configuration of DebaterAgent rather than a structurally redundant parallel class, reducing duplication and making both debater and judge behaviour independently testable."
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "src/core/logger.py",
+        "target_symbol": "LoggerProtocol",
+        "description": "Define a LoggerProtocol interface with a single async log method, make FIFOLogger implement it with an internal async queue and background writer coroutine so file I/O errors are caught, retried with backoff, and never propagate to the calling agent.",
+        "architectural_pattern": "Async Buffer with Protocol abstraction",
+        "new_class_or_method": "LoggerProtocol",
+        "explanation": "Decoupling agents from the concrete FIFOLogger via a protocol means agents depend only on the abstract interface; the buffered async implementation isolates file-system faults to the logger's own retry loop so all agents continue executing even when disk I/O degrades."
+      },
+      {
+        "bug_type": "Bottleneck",
+        "file_path": "src/agents/base_agent.py",
+        "target_symbol": "BaseAgent.generate_response",
+        "description": "Convert generate_response to an async method using asyncio-compatible LLM client calls so that DebateOrchestrator can invoke independent agent calls within a round concurrently via asyncio.gather.",
+        "architectural_pattern": "Async Concurrency with gather",
+        "new_class_or_method": null,
+        "explanation": "Making generate_response a coroutine removes the serialisation bottleneck; the orchestrator can then gather all independent agent responses in a single event-loop tick, reducing round latency from the sum of all API call times to approximately the maximum of the slowest call."
+      },
+      {
+        "bug_type": "Bottleneck",
+        "file_path": "src/core/debate_orchestrator.py",
+        "target_symbol": "RoundManager",
+        "description": "Introduce a RoundManager class with an async execute_round method that uses asyncio.gather to fan out to ProAgent and ConAgent concurrently for rounds where ordering permits, awaiting both before passing results to JudgeAgent.",
+        "architectural_pattern": "Async Fan-Out",
+        "new_class_or_method": "RoundManager",
+        "explanation": "Centralising round scheduling in RoundManager makes the concurrency policy explicit and testable independently of agent logic; debate ordering constraints are encoded in RoundManager rather than scattered through DebateSDK.run, and independent calls are automatically parallelised."
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "src/core/infrastructure_bundle.py",
+        "target_symbol": "InfrastructureBundle",
+        "description": "Define an InfrastructureBundle dataclass that holds the validated logger, gatekeeper, and watchdog instances, constructed once in DebateSDK.__init__ from the provided configuration and passed by reference to every collaborator that needs infrastructure.",
+        "architectural_pattern": "Value Object",
+        "new_class_or_method": "InfrastructureBundle",
+        "explanation": "Treating infrastructure as an immutable value object built once at construction time eliminates the repeated recreation inside _build_infrastructure on every run call, makes object lifetimes explicit, and decouples configuration validation from per-run execution logic."
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "src/sdk/debate_sdk.py",
+        "target_symbol": "DebateSDK.__init__",
+        "description": "Refactor DebateSDK.__init__ to validate configuration, construct a single InfrastructureBundle, and store it as an instance attribute, removing _build_infrastructure as a separate method called inside run.",
+        "architectural_pattern": "Value Object construction at init",
+        "new_class_or_method": null,
+        "explanation": "Building infrastructure once at construction rather than on every run call ensures callers get immediate feedback on invalid configuration, prevents resource leaks from repeated handle creation, and gives the SDK a stable, fully initialised state before any debate begins."
+      }
+    ],
+    "overall_impact": "Decomposing DebateSDK.run into DebateOrchestrator, RoundManager, AgentFactory, and InfrastructureBundle eliminates the God Object and SPOF risks by giving each concern a bounded, independently testable owner with explicit error boundaries. Introducing async concurrency in generate_response and RoundManager simultaneously removes the serialisation bottleneck, reducing per-round latency from cumulative to maximum API call time."
+  },
+  "token_usage": {
+    "used_input": 6013,
+    "used_output": 5045,
+    "total_used": 11058,
+    "remaining": 28942,
+    "budget": 40000
+  }
+}
