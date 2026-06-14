@@ -144,6 +144,7 @@ This project implements a **full Grphify equivalent** in `src/graph_builder/`:
 | Community detection | `networkx.community.greedy_modularity_communities()` |
 | Bridge detection | `networkx.bridges()` |
 | `graph.json` | `obsidian_exporter.py` → `obsidian/graph.json` |
+| `graph.html` | `graph_html_writer.py` → `obsidian/graph.html` (interactive vis-network) |
 | `hot.md` | `obsidian_exporter.py` → `obsidian/hot.md` |
 | `index.md` | `obsidian_exporter.py` → `obsidian/index.md` |
 | Node notes | `obsidian/nodes/*.md` (9 files, wiki-link ready) |
@@ -274,7 +275,7 @@ Full breakdown: [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)
 
 3. **Graph improvement loop** — `sdk.py` implements `improve()`: analyze → fix → rebuild graph → compare metrics across iterations. Run with `--improve --iterations 2`.
 
-4. **92 unit tests** — covering AST parsing, graph building, agent parsing logic, LangGraph workflow nodes, routing logic, ObsidianExporter, and data types.
+4. **100 unit tests** — covering AST parsing, graph building, agent parsing logic, LangGraph workflow nodes, routing logic, ObsidianExporter, data types, and graph.html generation.
 
 5. **Token budget guardrail** — `AgentBudget` class in `src/agents/base_agent.py` enforces a hard token ceiling shared across all three agents.
 
@@ -330,6 +331,10 @@ Full breakdown: [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)
 
 ### Before / After Graph Comparison (Task 4)
 
+| # | File | What it shows |
+|---|---|---|
+| 12 | `artifacts/screenshots/graph_after.png` | Obsidian graph view after fixes — `Polygon`, `calc_polygon_details`, `draw_polygon` connected |
+
 | Before (broken files — 0 edges) | After (fixed files — connected graph) |
 |---|---|
 | 9 isolated nodes, `Polygon` class invisible | `Polygon`, `calc_polygon_details`, `draw_polygon` all visible with edges |
@@ -368,46 +373,63 @@ uv run pytest tests/ -v
 ```
 HW4/
 ├── README.md                        ← this file
-├── PLAN.md                          ← architecture + design decisions
-├── ERD.md                           ← 7 Mermaid diagrams
 ├── PRD.md                           ← requirements + user stories
+├── ERD.md                           ← 7 Mermaid diagrams
+├── PLAN.md → docs/PLAN.md           ← architecture + design decisions
+├── .env-example                     ← API key template (copy to .env)
 ├── pyproject.toml
-├── main.py                          ← entry point
+├── main.py                          ← CLI entry point (argparse)
 ├── src/
-│   ├── langgraph_workflow.py        ← LangGraph StateGraph (5 nodes)
+│   ├── langgraph_workflow.py        ← thin re-export: build_workflow, run_workflow
+│   ├── workflow_state.py            ← WorkflowState TypedDict + routing helpers
+│   ├── workflow_nodes.py            ← all 5 LangGraph node functions
+│   ├── sdk.py                       ← improvement loop (wraps run_workflow)
 │   ├── graph_builder/
-│   │   ├── ast_parser.py            ← Grphify equivalent: AST → nodes + edges
-│   │   ├── graph_generator.py       ← networkx DiGraph + centrality metrics
-│   │   └── obsidian_exporter.py     ← graph.json, hot.md, index.md, node notes
+│   │   ├── ast_parser.py            ← parse_file / parse_directory (public API)
+│   │   ├── ast_visitors.py          ← _FileVisitor + node-ID helpers
+│   │   ├── graph_generator.py       ← KnowledgeGraph (networkx DiGraph + metrics)
+│   │   ├── graph_metrics.py         ← GraphMetrics dataclass
+│   │   ├── obsidian_exporter.py     ← coordinates all vault exports
+│   │   ├── graph_html_writer.py     ← interactive vis-network graph.html
+│   │   └── note_renderer.py         ← render_node_note (one .md per entity)
 │   ├── agents/
 │   │   ├── base_agent.py            ← AgentBudget + BaseAgent
-│   │   ├── navigator_agent.py       ← architectural overview from graph
-│   │   ├── analyzer_agent.py        ← bug identification
-│   │   └── fixer_agent.py           ← fix proposals
-│   ├── data_types/
-│   │   ├── graph_node.py
-│   │   └── graph_edge.py
-│   └── sdk.py                       ← improvement loop (wraps LangGraph)
-├── tests/
-│   ├── test_graph_builder.py        ← AST parser + KnowledgeGraph tests
-│   ├── test_agents.py               ← AgentBudget + agent tests (mocked API)
-│   ├── test_langgraph_workflow.py   ← LangGraph workflow tests
-│   └── test_routing.py              ← routing, sparse mode, ObsidianExporter
-├── obsidian/                        ← Obsidian vault (open as vault in Obsidian)
-│   ├── graph.json
-│   ├── hot.md
-│   ├── index.md
-│   └── nodes/                       ← 9 node notes with wiki-links
+│   │   ├── navigator_agent.py       ← graph topology → architectural overview
+│   │   ├── analyzer_agent.py        ← bug detection from graph summary + snippets
+│   │   └── fixer_agent.py           ← fix proposals from bug report + code
+│   └── data_types/
+│       ├── graph_node.py            ← GraphNode + NodeKind enum
+│       └── graph_edge.py            ← GraphEdge + EdgeKind/EdgeLabel enums
+├── tests/                           ← 100 tests, all mocked API
+│   ├── test_graph_builder.py        ← KnowledgeGraph (17 tests)
+│   ├── test_ast_parser.py           ← parse_file / parse_directory (10 tests)
+│   ├── test_agents.py               ← AgentBudget + BaseAgent (9 tests)
+│   ├── test_analyzer_fixer.py       ← AnalyzerAgent + FixerAgent (9 tests)
+│   ├── test_agent_extras.py         ← sparse mode + affected-code (5 tests)
+│   ├── test_langgraph_workflow.py   ← build_workflow + node wiring (9 tests)
+│   ├── test_routing.py              ← routing, raw_reader, sparse detection (13 tests)
+│   ├── test_obsidian.py             ← ObsidianExporter + graph.html (12 tests)
+│   └── test_data_types.py           ← GraphNode + GraphEdge (26 tests)
+├── obsidian/                        ← live vault (regenerated by pipeline)
+│   ├── graph.json                   ← nodes/edges with confidence + source_file
+│   ├── graph.html                   ← interactive vis-network visualization
+│   ├── hot.md                       ← top hubs ranked by betweenness centrality
+│   ├── index.md                     ← full entity index with wiki-links
+│   └── nodes/                       ← 9 node notes (one per code entity)
+├── docs/
+│   ├── PRD.md                       ← product requirements
+│   ├── PLAN.md                      ← design decisions + data-flow table
+│   └── TODO.md                      ← task tracking
 ├── reports/
-│   ├── GRAPH_REPORT.md              ← graph statistics and insights
-│   ├── OOP_SCHEMA.md                ← class hierarchy + Mermaid diagram
+│   ├── GRAPH_REPORT.md              ← graph statistics + architectural insight
+│   ├── OOP_SCHEMA.md                ← Polygon class hierarchy + Mermaid diagram
 │   ├── BLOCK_SCHEMA.md              ← block + data flow diagrams
 │   ├── BUG_REPORT.md                ← 12 bugs with root cause + fix
 │   └── TOKEN_COMPARISON.md          ← baseline vs graph-guided token usage
 ├── artifacts/
-│   ├── fixed_polygons.py            ← corrected polygons.py
-│   ├── fixed_mathsquiz.py           ← corrected mathsquiz.py
-│   └── screenshots/                 ← Obsidian + terminal screenshots
+│   ├── fixed_polygons.py            ← corrected polygons.py (parses under Python 3)
+│   ├── fixed_mathsquiz.py           ← corrected mathsquiz.py (10 questions, correct answers)
+│   └── screenshots/                 ← 12 screenshots (Obsidian + terminal + graph + before/after)
 └── data/
     ├── broken-python/               ← target codebase (martinpeck/broken-python)
     └── langgraph_workflow.mmd       ← Mermaid source of the LangGraph diagram
