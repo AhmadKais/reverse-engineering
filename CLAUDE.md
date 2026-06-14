@@ -142,7 +142,7 @@ All agent tests mock the Anthropic API — no real calls needed.
 - [x] 12 documented bugs (`reports/BUG_REPORT.md`)
 - [x] Fixed files (`artifacts/fixed_polygons.py`, `fixed_mathsquiz.py`)
 - [x] Reports (OOP_SCHEMA, BLOCK_SCHEMA, GRAPH_REPORT, TOKEN_COMPARISON)
-- [x] 92 tests (test_integration.py removed — was HW2-specific)
+- [x] 92 tests
 - [x] Screenshots — `artifacts/screenshots/` (11 screenshots)
 
 ---
