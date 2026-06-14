@@ -257,10 +257,10 @@ See [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md) for full number
 
 | Approach | Total Tokens | Bugs Found |
 |---|---|---|
-| Naive (send all files, one shot) | ~9,630 | All (but no graph insight) |
-| Graph + sparse fallback (this pipeline) | **~5,950** | **12 bugs, all fixed** |
+| Naive (send all files, one shot) | ~9,630 (estimated) | All (but no graph insight) |
+| Graph + sparse fallback (actual run) | **14,575** | **16 bugs, 18 fixes proposed** |
 
-The graph being sparse immediately told us *which files* to focus on — without reading any code manually. The step files never entered the context window.
+The graph being sparse (0 edges) immediately identified *which files* to focus on without reading any code manually. The step files never entered the context window. The pipeline used only **36% of the 40,000 token budget**.
 
 ---
 
@@ -280,17 +280,49 @@ The graph being sparse immediately told us *which files* to focus on — without
 
 ## 12. Screenshots
 
+### Obsidian Graph View (Task 1)
+
 | # | File | What it shows |
 |---|---|---|
-| 1 | `artifacts/screenshots/graph.png` | Obsidian graph view — 9 isolated nodes (0 edges = broken code) |
-| 2 | `artifacts/screenshots/hot.png` | `hot.md` — ranked node table with betweenness scores |
-| 3 | `artifacts/screenshots/node note.png` | A node note with relationships |
-| 4 | `artifacts/screenshots/terminal.png` | Terminal output of graph-only pipeline run |
+| 1 | `artifacts/screenshots/graph.png` | Obsidian graph view — 9 isolated nodes (0 edges = broken code signals syntax errors) |
+| 2 | `artifacts/screenshots/hot.png` | `hot.md` — ranked node table with betweenness centrality scores |
+| 3 | `artifacts/screenshots/node note.png` | A node note with wiki-link relationships |
+| 4 | `artifacts/screenshots/terminal.png` | Terminal output: graph-only pipeline run (`--graph-only`) |
 
 ![Obsidian graph view](artifacts/screenshots/graph.png)
 ![hot.md](artifacts/screenshots/hot.png)
 ![Node note](artifacts/screenshots/node%20note.png)
 ![Terminal output](artifacts/screenshots/terminal.png)
+
+---
+
+### OOP and Block Schema (Task 2)
+
+| # | File | What it shows |
+|---|---|---|
+| 5 | `artifacts/screenshots/OOP_Schema.png` | `OOP_SCHEMA.md` rendered in Obsidian — Polygon class hierarchy Mermaid diagram |
+| 6 | `artifacts/screenshots/block_schema1.png` | `BLOCK_SCHEMA.md` rendered in Obsidian — block architecture diagram |
+| 7 | `artifacts/screenshots/block_schema2.png` | `BLOCK_SCHEMA.md` rendered in Obsidian — data flow Mermaid flowchart |
+
+![OOP Schema](artifacts/screenshots/OOP_Schema.png)
+![Block Schema 1](artifacts/screenshots/block_schema1.png)
+![Block Schema 2](artifacts/screenshots/block_schema2.png)
+
+---
+
+### AI Pipeline Run (Task 3)
+
+| # | File | What it shows |
+|---|---|---|
+| 8 | `artifacts/screenshots/pipeline_output1.png` | Terminal: workflow start, sparse graph detection, routing to raw_reader |
+| 9 | `artifacts/screenshots/pipeline_output2.png` | Terminal: bug list — 16 bugs found across polygons.py and mathsquiz.py |
+| 10 | `artifacts/screenshots/pipeline_output3.png` | Terminal: fix proposals — 18 targeted fixes proposed by FixerAgent |
+| 11 | `artifacts/screenshots/pipeline_output4.png` | Terminal: token usage summary — 14,575 / 40,000 tokens (36% of budget) |
+
+![Pipeline output 1](artifacts/screenshots/pipeline_output1.png)
+![Pipeline output 2](artifacts/screenshots/pipeline_output2.png)
+![Pipeline output 3](artifacts/screenshots/pipeline_output3.png)
+![Pipeline output 4](artifacts/screenshots/pipeline_output4.png)
 
 ---
 
