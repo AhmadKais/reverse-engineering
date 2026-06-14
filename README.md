@@ -255,12 +255,14 @@ if int(answer) == 56:   # equality check; cast input; correct answer
 
 See [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md) for full numbers.
 
-| Approach | Total Tokens | Bugs Found |
-|---|---|---|
-| Naive (send all files, one shot) | ~9,630 (estimated) | All (but no graph insight) |
-| Graph + sparse fallback (actual run) | **14,575** | **16 bugs, 18 fixes proposed** |
+| Approach | Files Sent to LLM | Total Tokens | Bugs Found |
+|---|---|---|---|
+| Naive (send all 5 files, no graph) | 5 (incl. 3 irrelevant step files) | ~14,909 (estimated) | Unknown — no graph insight |
+| Graph-guided sparse fallback (actual) | **2** (only broken files) | **14,575 (measured)** | **16 bugs, 18 fixes** |
 
-The graph being sparse (0 edges) immediately identified *which files* to focus on without reading any code manually. The step files never entered the context window. The pipeline used only **36% of the 40,000 token budget**.
+The graph (0 edges) immediately told us which 2 files to focus on — the step files never entered the LLM context, saving ~1,600 tokens of irrelevant context per agent. The pipeline used only **36% of the 40,000 token budget** and found 16 bugs in a single pass.
+
+Full breakdown: [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)
 
 ---
 
