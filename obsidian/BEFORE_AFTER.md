@@ -4,6 +4,19 @@ This note documents what we understood **before** running the pipeline, what the
 
 ---
 
+## Graph: Before vs After
+
+| Before (broken files) | After (fixed files) |
+|---|---|
+| 9 nodes, **0 edges** | 8 nodes, **connected graph** |
+| `Polygon` class invisible | `Polygon`, `__init__`, `calc_polygon_details`, `draw_polygon` all visible |
+| All betweenness = 0.0 | Actual relationships traceable |
+
+![Graph Before](../artifacts/screenshots/graph.png)
+![Graph After](../artifacts/screenshots/graph_after.png)
+
+---
+
 ## Before Investigation
 
 ### What we could see (without running the pipeline)

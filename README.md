@@ -328,6 +328,17 @@ Full breakdown: [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)
 
 ---
 
+### Before / After Graph Comparison (Task 4)
+
+| Before (broken files — 0 edges) | After (fixed files — connected graph) |
+|---|---|
+| 9 isolated nodes, `Polygon` class invisible | `Polygon`, `calc_polygon_details`, `draw_polygon` all visible with edges |
+
+![Graph Before](artifacts/screenshots/graph.png)
+![Graph After](artifacts/screenshots/graph_after.png)
+
+---
+
 ## 13. How to Run
 
 ```bash
