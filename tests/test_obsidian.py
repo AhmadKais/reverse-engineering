@@ -94,6 +94,32 @@ class TestObsidianExporter:
         assert (tmp_path / "hot.md").exists()
         assert (tmp_path / "index.md").exists()
 
+    def test_graph_html_is_generated(self, simple_kg, tmp_path):
+        ObsidianExporter(str(tmp_path)).export(simple_kg)
+        html_file = tmp_path / "graph.html"
+        assert html_file.exists()
+        content = html_file.read_text(encoding="utf-8")
+        assert "vis.Network" in content
+        assert "Knowledge Graph" in content
+
+    def test_graph_html_embeds_node_data(self, simple_kg, tmp_path):
+        ObsidianExporter(str(tmp_path)).export(simple_kg)
+        content = (tmp_path / "graph.html").read_text(encoding="utf-8")
+        assert "Alpha" in content or "Beta" in content
+
+    def test_graph_json_edges_have_confidence_and_source_file(self, tmp_path):
+        kg = _make_simple_kg("""
+            class A:
+                pass
+            class B(A):
+                pass
+        """)
+        ObsidianExporter(str(tmp_path)).export(kg)
+        data = json.loads((tmp_path / "graph.json").read_text(encoding="utf-8"))
+        for edge in data["edges"]:
+            assert "confidence" in edge
+            assert "source_file" in edge
+
     def test_node_notes_with_inheritance_show_inherits_from(self, tmp_path):
         kg = _make_simple_kg("""
             class Parent:

@@ -2,11 +2,13 @@
 
 Produces:
   vault/graph.json   — full node/edge data for programmatic consumption
+  vault/graph.html   — interactive vis-network visualization (third Grphify export)
   vault/index.md     — Obsidian index with links to every node note
   vault/hot.md       — Top-N central nodes (hotspots to investigate first)
   vault/nodes/*.md   — One note per code entity with wiki-link relationships
 
 Note rendering logic lives in note_renderer.py.
+HTML generation lives in graph_html_writer.py.
 """
 
 from __future__ import annotations
@@ -16,6 +18,7 @@ from pathlib import Path
 
 from src.data_types.graph_node import GraphNode, NodeKind
 from src.graph_builder.graph_generator import KnowledgeGraph
+from src.graph_builder.graph_html_writer import write_graph_html
 from src.graph_builder.note_renderer import render_node_note
 
 
@@ -28,13 +31,14 @@ class ObsidianExporter:
         self.nodes_dir.mkdir(parents=True, exist_ok=True)
 
     def export(self, kg: KnowledgeGraph, top_n: int = 15) -> None:
-        """Run all export steps: graph.json, index.md, hot.md, node notes."""
-        self._write_graph_json(kg)
+        """Run all export steps: graph.json, graph.html, index.md, hot.md, node notes."""
+        payload = self._write_graph_json(kg)
+        write_graph_html(self.vault, payload)
         self._write_hot(kg, top_n)
         self._write_index(kg)
         self._write_node_notes(kg)
 
-    def _write_graph_json(self, kg: KnowledgeGraph) -> None:
+    def _write_graph_json(self, kg: KnowledgeGraph) -> dict:
         nodes_data = []
         for node_id, data in kg.graph.nodes(data=True):
             node_obj = kg.get_node(node_id)
@@ -57,7 +61,8 @@ class ObsidianExporter:
             {"source": src, "target": tgt,
              "kind": data.get("kind", "Extracted"),
              "label": data.get("label", ""),
-             "weight": data.get("weight", 1.0)}
+             "confidence": data.get("confidence", data.get("weight", 1.0)),
+             "source_file": data.get("source_file", "")}
             for src, tgt, data in kg.graph.edges(data=True)
         ]
         m = kg.metrics
@@ -68,6 +73,7 @@ class ObsidianExporter:
             "edges": edges_data,
         }
         (self.vault / "graph.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        return payload
 
     def _write_hot(self, kg: KnowledgeGraph, top_n: int) -> None:
         lines = [

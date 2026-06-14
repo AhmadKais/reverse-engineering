@@ -49,7 +49,9 @@ class KnowledgeGraph:
                     target_id,
                     kind=edge.kind.value,
                     label=edge.label.value,
-                    weight=edge.weight,
+                    weight=edge.confidence,
+                    confidence=edge.confidence,
+                    source_file=edge.source_file,
                 )
 
         self._add_inferred_edges(name_index)
@@ -93,6 +95,8 @@ class KnowledgeGraph:
                                 kind=EdgeKind.INFERRED.value,
                                 label=EdgeLabel.COMPOSES.value,
                                 weight=0.7,
+                                confidence=0.7,
+                                source_file="",
                             )
 
     def compute_metrics(self) -> GraphMetrics:

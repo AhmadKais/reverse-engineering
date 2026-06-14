@@ -30,7 +30,9 @@ class GraphEdge(BaseModel):
     target: str
     kind: EdgeKind
     label: EdgeLabel
-    weight: float = 1.0   # higher = stronger relationship
+    weight: float = 1.0        # legacy alias kept for backward compat
+    confidence: float = 1.0    # evidence strength: 1.0=Extracted, ~0.8=Inferred, ~0.6=Ambiguous
+    source_file: str = ""      # file containing this relationship (for source validation)
 
     def to_dict(self) -> dict:
         return self.model_dump()

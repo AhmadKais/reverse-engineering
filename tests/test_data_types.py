@@ -75,6 +75,31 @@ class TestGraphEdge:
         assert EdgeLabel.INHERITS == "inherits"
         assert EdgeLabel.CALLS == "calls"
 
+    def test_edge_default_confidence(self):
+        e = GraphEdge(source="A", target="B", kind=EdgeKind.EXTRACTED, label=EdgeLabel.CALLS)
+        assert e.confidence == 1.0
+
+    def test_edge_custom_confidence(self):
+        e = GraphEdge(source="A", target="B", kind=EdgeKind.INFERRED,
+                      label=EdgeLabel.COMPOSES, confidence=0.8)
+        assert e.confidence == 0.8
+
+    def test_edge_source_file_default_empty(self):
+        e = GraphEdge(source="A", target="B", kind=EdgeKind.EXTRACTED, label=EdgeLabel.IMPORTS)
+        assert e.source_file == ""
+
+    def test_edge_source_file_stored(self):
+        e = GraphEdge(source="A", target="B", kind=EdgeKind.EXTRACTED,
+                      label=EdgeLabel.CALLS, source_file="src/mod.py")
+        assert e.source_file == "src/mod.py"
+
+    def test_edge_to_dict_includes_confidence_and_source_file(self):
+        e = GraphEdge(source="A", target="B", kind=EdgeKind.EXTRACTED,
+                      label=EdgeLabel.CALLS, confidence=0.9, source_file="x.py")
+        d = e.to_dict()
+        assert d["confidence"] == 0.9
+        assert d["source_file"] == "x.py"
+
 
 class TestKnowledgeGraphExtras:
     def test_get_neighbors_returns_both_directions(self):

@@ -71,6 +71,8 @@ class _FileVisitor(ast.NodeVisitor):
                 target=base,
                 kind=EdgeKind.EXTRACTED,
                 label=EdgeLabel.INHERITS,
+                confidence=1.0,
+                source_file=self.file_path,
             ))
         self._current_class = node.name
         self.generic_visit(node)
@@ -105,6 +107,8 @@ class _FileVisitor(ast.NodeVisitor):
                 target=callee,
                 kind=EdgeKind.EXTRACTED,
                 label=EdgeLabel.CALLS,
+                confidence=1.0,
+                source_file=self.file_path,
             ))
         self.generic_visit(node)
 
