@@ -1,19 +1,17 @@
+flowchart TD
+    __start__((__start__))
+    build_graph["build_graph\nAST parse → KnowledgeGraph → Obsidian vault"]
+    navigate["navigate\nNavigatorAgent\ndense path edge_count ≥ 5"]
+    raw_reader["raw_reader\nBaseAgent\nsparse path edge_count < 5"]
+    analyze["analyze\nAnalyzerAgent\nbug report JSON"]
+    fix["fix\nFixerAgent\nfix proposals JSON"]
+    __end__((__end__))
 
-╔══════════════════════════════════════════════════════════════╗
-║              AI AGENT DEBATE SYSTEM  v1.0                    ║
-║        Pro vs Con  |  Judged by THE ARBITER                  ║
-╚══════════════════════════════════════════════════════════════╝
-
-
-  1. Start Debate
-  2. View Latest Logs
-  3. Show Token Budget Status
-  4. Exit
-
-  Enter choice: Traceback (most recent call last):
-  File "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/main.py", line 108, in <module>
-    main()
-  File "/home/ahmadk/Desktop/AI_Orchestration_Course/HW2/agent-debate/main.py", line 89, in main
-    choice = input(MENU).strip()
-             ^^^^^^^^^^^
-EOFError: EOF when reading a line
+    __start__ --> build_graph
+    build_graph -->|dense| navigate
+    build_graph -->|sparse| raw_reader
+    build_graph -->|error| analyze
+    navigate --> analyze
+    raw_reader --> analyze
+    analyze --> fix
+    fix --> __end__

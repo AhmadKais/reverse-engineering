@@ -112,7 +112,7 @@ class TestAnalyzerAgent:
         agent = self._make_agent()
         raw = json.dumps({
             "bugs": [
-                {"type": "SPOF", "severity": "critical", "affected_nodes": ["Gatekeeper"],
+                {"type": "SPOF", "severity": "critical", "affected_nodes": ["calc_polygon_details"],
                  "evidence": "high betweenness", "fix_hint": "add fallback"}
             ],
             "summary": "One SPOF found."
@@ -154,11 +154,11 @@ class TestFixerAgent:
             "fixes": [
                 {
                     "bug_type": "SPOF",
-                    "file_path": "src/core/gatekeeper.py",
-                    "description": "Add per-agent budget",
-                    "original_code": "class Gatekeeper:",
-                    "fixed_code": "class Gatekeeper:  # refactored",
-                    "explanation": "SPOF removed by isolation"
+                    "file_path": "polygons/polygons.py",
+                    "description": "Fix formula for polygon angles",
+                    "original_code": "class Polygon(Object):",
+                    "fixed_code": "class Polygon(object):",
+                    "explanation": "Wrong base class removed"
                 }
             ],
             "overall_impact": "Reduced coupling"
@@ -171,30 +171,30 @@ class TestFixerAgent:
         fix_report = {
             "fixes": [{
                 "bug_type": "GodObject",
-                "file_path": "src/sdk.py",
-                "target_symbol": "DebateSDK",
-                "description": "Extract orchestrator",
+                "file_path": "mathsquiz/mathsquiz.py",
+                "target_symbol": "mathsquiz",
+                "description": "Extract questions into functions",
                 "architectural_pattern": "Facade",
-                "new_class_or_method": "DebateOrchestrator",
-                "explanation": "Reduces responsibilities",
+                "new_class_or_method": "ask_question",
+                "explanation": "Reduces God Script responsibilities",
             }]
         }
         results = agent.apply_fixes(fix_report, str(tmp_path), dry_run=True)
         assert len(results) == 1
         assert "DRY-RUN" in results[0]
-        assert "DebateSDK" in results[0]
+        assert "mathsquiz" in results[0]
 
     def test_apply_fixes_plan_mode_produces_plan_lines(self, tmp_path):
         agent = self._make_agent()
         fix_report = {
             "fixes": [{
-                "bug_type": "SPOF",
-                "file_path": "src/core/logger.py",
-                "target_symbol": "FIFOLogger",
-                "description": "Add fallback sink",
-                "architectural_pattern": "CircuitBreaker",
-                "new_class_or_method": "LoggerProtocol",
-                "explanation": "Isolates failures",
+                "bug_type": "LogicBug",
+                "file_path": "polygons/polygons.py",
+                "target_symbol": "draw_polygon",
+                "description": "Fix hardcoded hexagon loop",
+                "architectural_pattern": "Strategy",
+                "new_class_or_method": "",
+                "explanation": "Use sides from polygon_details",
             }]
         }
         results = agent.apply_fixes(fix_report, str(tmp_path), dry_run=False)

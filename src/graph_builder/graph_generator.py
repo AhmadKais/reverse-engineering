@@ -86,7 +86,7 @@ class KnowledgeGraph:
         """Try to resolve an unresolved edge target to an actual node id."""
         if target in known_ids:
             return target
-        # Try the last component of a dotted name (e.g. "src.core.gatekeeper.Gatekeeper" → "Gatekeeper")
+        # Try the last component of a dotted name (e.g. "polygons.polygons.Polygon" → "Polygon")
         short = target.split(".")[-1]
         candidates = name_index.get(short, [])
         if len(candidates) == 1:

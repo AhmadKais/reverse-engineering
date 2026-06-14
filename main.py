@@ -1,6 +1,6 @@
 """EX04 — Reverse Engineering, Debugging, and Token-Efficient Agentic AI.
 
-Entry point: parses the HW2 agent-debate codebase, builds a knowledge graph,
+Entry point: parses the broken-python codebase, builds a knowledge graph,
 exports an Obsidian vault, then runs Navigator → Analyzer → Fixer agents
 via a LangGraph StateGraph.
 
@@ -22,7 +22,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
-TARGET_DEFAULT = str(Path(__file__).parent.parent / "HW2" / "agent-debate" / "src")
+TARGET_DEFAULT = str(Path(__file__).parent / "data" / "broken-python")
 OBSIDIAN_DEFAULT = str(Path(__file__).parent / "obsidian")
 
 

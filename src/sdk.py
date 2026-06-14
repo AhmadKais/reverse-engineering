@@ -8,8 +8,7 @@ Pipeline:
   5. FixerAgent — propose (and optionally apply) patches
   6. Improvement Loop — rebuild graph after each patch round, validate improvement
 
-This mirrors the CrewAI 'sequential process' pattern but is implemented directly
-with the Anthropic SDK, following the same Gatekeeper/Budget pattern from HW2.
+Implemented directly with the Anthropic SDK and a shared token budget.
 """
 
 from __future__ import annotations

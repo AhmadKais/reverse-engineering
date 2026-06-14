@@ -1,8 +1,7 @@
 """Base agent — shared LLM call logic using the Anthropic SDK.
 
 All three specialized agents (Navigator, Analyzer, Fixer) extend this class.
-The Gatekeeper pattern from HW2 is applied here: every API call is routed
-through a single budget-aware gateway method.
+Every API call is routed through a single budget-aware gateway method.
 """
 
 from __future__ import annotations

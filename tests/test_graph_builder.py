@@ -199,14 +199,13 @@ class TestKnowledgeGraph:
         kg = self._make_kg_from_source("x = 1\n")
         assert kg.get_node("nonexistent::id") is None
 
-    def test_build_with_real_hw2_codebase(self):
-        """Integration smoke test: parse actual HW2 source (no API calls)."""
-        hw2_src = Path(__file__).parent.parent.parent / "HW2" / "agent-debate" / "src"
-        if not hw2_src.exists():
-            pytest.skip("HW2 source not found")
-        nodes, edges = parse_directory(str(hw2_src))
+    def test_build_with_real_broken_python(self):
+        """Integration smoke test: parse broken-python source (no API calls)."""
+        broken_src = Path(__file__).parent.parent / "data" / "broken-python"
+        if not broken_src.exists():
+            pytest.skip("broken-python source not found")
+        nodes, edges = parse_directory(str(broken_src))
         kg = KnowledgeGraph()
         kg.build(nodes, edges)
         m = kg.compute_metrics()
-        assert m.node_count >= 10, "HW2 should have at least 10 nodes"
-        assert m.edge_count >= 5, "HW2 should have at least 5 edges"
+        assert m.node_count >= 5, "broken-python should have at least 5 nodes"
