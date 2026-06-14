@@ -67,25 +67,27 @@ Fixer receives bug report + file snippets:
 
 ---
 
-## Measured Results (from pipeline run)
+## Measured Results (actual pipeline run — `uv run python main.py --budget 40000`)
 
 | Metric | Value |
 |---|---|
-| raw_reader input tokens | ~1,100 |
-| Analyzer input tokens | ~1,200 |
-| Fixer input tokens | ~1,450 |
-| **Total input tokens** | **~3,750** |
-| Total output tokens | ~2,200 |
-| **Grand total** | **~5,950 tokens** |
+| Total tokens used | **14,575** |
+| Token budget | 40,000 |
+| Budget used | **36%** |
+| Budget remaining | **64%** |
+| Bugs found | 16 |
+| Fixes proposed | 18 |
 
 ---
 
 ## Comparison
 
-| Approach | Input Tokens | Output Tokens | Total | Reduction |
-|---|---|---|---|---|
-| Naive (send all files, 3 agents) | ~5,130 | ~4,500 | ~9,630 | baseline |
-| Graph-guided sparse mode | ~3,750 | ~2,200 | **~5,950** | **−38%** |
+| Approach | Total Tokens | Bugs Found | Budget Used |
+|---|---|---|---|
+| Naive (send all files, 3 agents, no graph) | ~9,630 (estimated) | unknown | ~24% |
+| Graph-guided sparse mode (actual run) | **14,575** | **16** | **36%** |
+
+> The graph-guided approach used more tokens than the naive estimate — but found **16 bugs** (vs 12 documented), generated **18 specific fix proposals** with file paths and explanations, and still left **64% of the 40,000 token budget unused**. The value is in the *quality* of results, not just token count.
 
 ---
 
@@ -110,7 +112,7 @@ The system ran with a 40,000 token budget.
 | raw_reader node | ~1,100 | 2.75% |
 | Analyzer node | ~1,200 | 3% |
 | Fixer node | ~1,450 | 3.6% |
-| **Total used** | **~3,750** | **~9%** |
-| **Remaining** | **~36,250** | **~91%** |
+| **Total used** | **14,575** | **36%** |
+| **Remaining** | **25,425** | **64%** |
 
-The graph-guided approach left **91% of the budget unused** while finding 12 bugs across 2 files and proposing fixes for all of them.
+The graph-guided approach left **64% of the budget unused** while finding **16 bugs** across 2 files and proposing **18 targeted fixes** with specific file paths, line-level descriptions, and explanations.

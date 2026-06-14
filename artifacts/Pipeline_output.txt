@@ -1,0 +1,69 @@
+ahmadk@ahmadk-Ins5599:~/Desktop/AI_Orchestration_Course/HW4$ cd ~/Desktop/AI_Orchestration_Course/HW4 && uv run python main.py --budget 40000
+[LangGraph] Starting workflow on: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python
+[LangGraph] Vault: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian  |  Budget: 40,000 tokens
+[LangGraph] Nodes: build_graph → navigate → analyze → fix
+
+[LangGraph] Report saved: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian/analysis_report.json
+
+============================================================
+LANGGRAPH WORKFLOW — FINAL REPORT
+============================================================
+Graph  : 9 nodes, 0 edges
+Bridges: 0  |  Communities: 9
+
+Bugs Found: 16
+  [CRITICAL] SyntaxError  →  mathsquiz/mathsquiz.py
+         Fix: Change to `print("Hello!...")` using parentheses for Python 3 compatibility
+  [CRITICAL] SyntaxError  →  mathsquiz/mathsquiz.py
+         Fix: Replace all `=` with `==` in every if-condition
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Change 55 to 56
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Change 49 to 36
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Change 126 to 72
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Change 668 to 48
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Change 77 to 49
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Update each question's print statement to reflect the correct question number (e.g., Question 2:, Question 3:, etc.)
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Add `score += 1` inside each `if` block when the answer is correct, and print the final score at the end
+  [MAJOR] LogicError  →  mathsquiz/mathsquiz.py
+         Fix: Wrap input with `int()`: `answer = int(input("Answer: "))`
+  [CRITICAL] SyntaxError  →  mathsquiz/mathsquiz.py
+         Fix: Complete the truncated line; it should likely be `answer = input("Answer: ")`
+  [CRITICAL] SyntaxError  →  polygons/polygons.py
+         Fix: Change `Object` to `object` or simply use `class Polygon:` in Python 3
+  [CRITICAL] SyntaxError  →  polygons/polygons.py
+         Fix: Remove `new`; use `poly = Polygon(sides, internal_angles_sum, internal_angles)`
+  [MAJOR] LogicError  →  polygons/polygons.py
+         Fix: Use the general formula: `internal_angles_sum = (sides - 2) * 180` and `internal_angles = internal_angles_sum / sides`
+  [CRITICAL] SyntaxError  →  polygons/polygons.py
+         Fix: Complete the return dictionary with the full variable name `internal_angles_sum` and close the dictionary and function properly
+  [MINOR] LogicError  →  polygons/polygons.py
+         Fix: Add a `__repr__` or `__str__` method to the `Polygon` class to produce a meaningful string representation
+
+Fixes Proposed: 18
+  mathsquiz/mathsquiz.py | top-level script | Python 3 compatibility | Replace Python 2 bare print statements on lines 3-4 with Python 3 print() function calls using parentheses
+  mathsquiz/mathsquiz.py | top-level script | Correct conditional logic | Replace all single-equals assignment operators inside if-conditions with double-equals comparison operators across all six question blocks and the final scoring block
+  mathsquiz/mathsquiz.py | top-level script | Correct conditional syntax | Replace else if keywords in the final scoring block with the correct Python keyword elif
+  mathsquiz/mathsquiz.py | top-level script | Complete code structure | Complete the truncated line near the end of question 6 block which cuts off mid-variable-name as answ, replacing it with a full answer = int(input("Answer: ")) statement
+  mathsquiz/mathsquiz.py | top-level script | Domain correctness | Correct the wrong expected answer for question 1 from 55 to 56 because 8 multiplied by 7 equals 56
+  mathsquiz/mathsquiz.py | top-level script | Domain correctness | Correct the wrong expected answer for question 2 from 49 to 36 because 4 multiplied by 9 equals 36
+  mathsquiz/mathsquiz.py | top-level script | Domain correctness | Correct the wrong expected answer for question 3 from 126 to 72 because 12 multiplied by 6 equals 72
+  mathsquiz/mathsquiz.py | top-level script | Domain correctness | Correct the wrong expected answer for question 4 from 668 to 48 because 6 multiplied by 8 equals 48
+  mathsquiz/mathsquiz.py | top-level script | Domain correctness | Correct the wrong expected answer for question 5 from 77 to 49 because 7 multiplied by 7 equals 49
+  mathsquiz/mathsquiz.py | top-level script | Domain correctness | Correct the wrong expected answer for question 6 from 60 to 66 because 11 multiplied by 6 equals 66
+  mathsquiz/mathsquiz.py | top-level script | Correct sequencing | Fix all question header print statements so that each prints its own correct question number instead of all printing Question 1
+  mathsquiz/mathsquiz.py | top-level script | Correct state mutation | Add score += 1 inside each correct-answer if-block so the score variable is actually incremented when the player answers correctly
+  mathsquiz/mathsquiz.py | top-level script | Type coercion | Wrap each input() call with int() conversion so that the string returned by input is cast to an integer before being compared to an integer literal
+  polygons/polygons.py | Polygon | Python 3 class hierarchy | Change the class declaration from class Polygon(Object) to class Polygon(object) using the lowercase built-in base class name
+  polygons/polygons.py | calc_polygon_details | Python object instantiation | Remove the new keyword from the Polygon instantiation line so it reads poly = Polygon(sides, internal_angles_sum, internal_angles)
+  polygons/polygons.py | calc_polygon_details | Formula-based computation | Replace the arbitrary placeholder values of 1000 and 200 in the else branch with the general polygon formulas: internal_angles_sum equals sides minus 2 multiplied by 180, and internal_angles equals internal_angles_sum divided by sides
+  polygons/polygons.py | calc_polygon_details | Complete code structure | Complete the truncated return dictionary by replacing the partial key value internal_a with the full variable name internal_angles_sum and adding the closing brace to finish the dictionary and function
+  polygons/polygons.py | Polygon | Template Method | Add a __repr__ method to the Polygon class that returns a human-readable string showing the sides, internal angles sum, and internal angle values
+
+Token Usage: 14,575 / 40,000 (36% of budget)
+============================================================
