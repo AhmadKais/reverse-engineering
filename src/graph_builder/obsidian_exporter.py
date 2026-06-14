@@ -5,6 +5,8 @@ Produces:
   vault/index.md     — Obsidian index with links to every node note
   vault/hot.md       — Top-N central nodes (hotspots to investigate first)
   vault/nodes/*.md   — One note per code entity with wiki-link relationships
+
+Note rendering logic lives in note_renderer.py.
 """
 
 from __future__ import annotations
@@ -12,8 +14,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.data_types.graph_node import GraphNode
+from src.data_types.graph_node import GraphNode, NodeKind
 from src.graph_builder.graph_generator import KnowledgeGraph
+from src.graph_builder.note_renderer import render_node_note
 
 
 class ObsidianExporter:
@@ -24,8 +27,6 @@ class ObsidianExporter:
         self.nodes_dir = self.vault / "nodes"
         self.nodes_dir.mkdir(parents=True, exist_ok=True)
 
-    # ------------------------------------------------------------------
-
     def export(self, kg: KnowledgeGraph, top_n: int = 15) -> None:
         """Run all export steps: graph.json, index.md, hot.md, node notes."""
         self._write_graph_json(kg)
@@ -33,10 +34,7 @@ class ObsidianExporter:
         self._write_index(kg)
         self._write_node_notes(kg)
 
-    # ------------------------------------------------------------------
-
     def _write_graph_json(self, kg: KnowledgeGraph) -> None:
-        """Write the full graph as a structured JSON file."""
         nodes_data = []
         for node_id, data in kg.graph.nodes(data=True):
             node_obj = kg.get_node(node_id)
@@ -55,31 +53,23 @@ class ObsidianExporter:
                 entry["docstring"] = node_obj.docstring
             nodes_data.append(entry)
 
-        edges_data = []
-        for src, tgt, data in kg.graph.edges(data=True):
-            edges_data.append({
-                "source": src,
-                "target": tgt,
-                "kind": data.get("kind", "Extracted"),
-                "label": data.get("label", ""),
-                "weight": data.get("weight", 1.0),
-            })
-
+        edges_data = [
+            {"source": src, "target": tgt,
+             "kind": data.get("kind", "Extracted"),
+             "label": data.get("label", ""),
+             "weight": data.get("weight", 1.0)}
+            for src, tgt, data in kg.graph.edges(data=True)
+        ]
         m = kg.metrics
         payload = {
-            "meta": {
-                "node_count": m.node_count,
-                "edge_count": m.edge_count,
-                "community_count": len(m.communities),
-                "bridge_count": len(m.bridges),
-            },
+            "meta": {"node_count": m.node_count, "edge_count": m.edge_count,
+                     "community_count": len(m.communities), "bridge_count": len(m.bridges)},
             "nodes": nodes_data,
             "edges": edges_data,
         }
         (self.vault / "graph.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     def _write_hot(self, kg: KnowledgeGraph, top_n: int) -> None:
-        """Write hot.md — the top-N most central nodes (architectural hotspots)."""
         lines = [
             "# hot.md — Architectural Hotspots\n",
             "Nodes ranked by betweenness centrality (higher = more central = higher risk).\n",
@@ -99,9 +89,6 @@ class ObsidianExporter:
         (self.vault / "hot.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     def _write_index(self, kg: KnowledgeGraph) -> None:
-        """Write index.md — complete list of all nodes organized by kind."""
-        from src.data_types.graph_node import NodeKind
-
         by_kind: dict[str, list[GraphNode]] = {}
         for node in kg._nodes.values():
             by_kind.setdefault(node.kind.value, []).append(node)
@@ -114,67 +101,9 @@ class ObsidianExporter:
             lines.append(f"\n## {kind.value.title()}s ({len(bucket)})\n")
             for node in sorted(bucket, key=lambda n: n.name):
                 lines.append(f"- [[{node.obsidian_slug}|{node.label}]] — `{node.file_path}`")
-
         (self.vault / "index.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
     def _write_node_notes(self, kg: KnowledgeGraph) -> None:
-        """Write one Obsidian note per node with relationship wiki-links."""
         for node_id, node in kg._nodes.items():
-            note = self._render_note(node_id, node, kg)
+            note = render_node_note(node_id, node, kg)
             (self.nodes_dir / f"{node.obsidian_slug}.md").write_text(note, encoding="utf-8")
-
-    def _render_note(self, node_id: str, node: GraphNode, kg: KnowledgeGraph) -> str:
-        """Render a single node as an Obsidian markdown note."""
-        m = kg.metrics
-        lines = [
-            f"# {node.label}",
-            "",
-            f"**Kind**: `{node.kind.value}`  ",
-            f"**File**: `{node.file_path}`  ",
-            f"**Lines**: {node.line_start}–{node.line_end}  ",
-            f"**Betweenness Centrality**: {m.betweenness.get(node_id, 0):.4f}  ",
-            f"**In-degree**: {m.in_degree.get(node_id, 0)} | **Out-degree**: {m.out_degree.get(node_id, 0)}",
-            "",
-        ]
-        if node.docstring:
-            lines += [f"> {node.docstring[:180]}", ""]
-
-        if node.base_classes:
-            lines += ["## Inherits From", ""]
-            for base in node.base_classes:
-                lines.append(f"- [[{base}]]")
-            lines.append("")
-
-        if node.methods:
-            lines += ["## Methods", ""]
-            for method in node.methods:
-                lines.append(f"- `{method}`")
-            lines.append("")
-
-        # Outgoing edges
-        out_edges = [(tgt, data) for _, tgt, data in kg.graph.out_edges(node_id, data=True)]
-        if out_edges:
-            lines += ["## Outgoing Relationships", ""]
-            for tgt, data in out_edges:
-                tgt_node = kg.get_node(tgt)
-                tgt_label = tgt_node.label if tgt_node else tgt.split("::")[-1]
-                tgt_slug = tgt_node.obsidian_slug if tgt_node else tgt
-                edge_kind = data.get("kind", "?")
-                edge_lbl = data.get("label", "?")
-                lines.append(f"- [[{tgt_slug}|{tgt_label}]] `{edge_kind}:{edge_lbl}`")
-            lines.append("")
-
-        # Incoming edges
-        in_edges = [(src, data) for src, _, data in kg.graph.in_edges(node_id, data=True)]
-        if in_edges:
-            lines += ["## Incoming Relationships", ""]
-            for src, data in in_edges:
-                src_node = kg.get_node(src)
-                src_label = src_node.label if src_node else src.split("::")[-1]
-                src_slug = src_node.obsidian_slug if src_node else src
-                edge_kind = data.get("kind", "?")
-                edge_lbl = data.get("label", "?")
-                lines.append(f"- [[{src_slug}|{src_label}]] `{edge_kind}:{edge_lbl}`")
-            lines.append("")
-
-        return "\n".join(lines)

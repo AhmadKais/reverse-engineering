@@ -5,36 +5,17 @@ The graph captures three layers:
   Inferred  — pattern-based inferences (composition, shared base classes)
   Ambiguous — loose heuristic matches that need human review
 
-This module also computes centrality metrics and community structure used
+Centrality metrics and community structure are computed here and used
 by the Navigator and Analyzer agents.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
 import networkx as nx
 
 from src.data_types.graph_edge import EdgeKind, EdgeLabel, GraphEdge
 from src.data_types.graph_node import GraphNode, NodeKind
-
-
-@dataclass
-class GraphMetrics:
-    """Pre-computed graph metrics for quick agent consumption."""
-
-    node_count: int
-    edge_count: int
-    # Top nodes by betweenness centrality — these are potential bottlenecks
-    top_hubs: list[tuple[str, float]] = field(default_factory=list)
-    # Bridges whose removal disconnects the graph — SPOF candidates
-    bridges: list[tuple[str, str]] = field(default_factory=list)
-    # Communities (densely connected subgraphs)
-    communities: list[set[str]] = field(default_factory=list)
-    # Centrality dict: node_id → score
-    betweenness: dict[str, float] = field(default_factory=dict)
-    in_degree: dict[str, int] = field(default_factory=dict)
-    out_degree: dict[str, int] = field(default_factory=dict)
+from src.graph_builder.graph_metrics import GraphMetrics
 
 
 class KnowledgeGraph:
@@ -44,8 +25,6 @@ class KnowledgeGraph:
         self.graph: nx.DiGraph = nx.DiGraph()
         self._nodes: dict[str, GraphNode] = {}
         self._metrics: GraphMetrics | None = None
-
-    # ------------------------------------------------------------------
 
     def build(self, nodes: list[GraphNode], edges: list[GraphEdge]) -> None:
         """Populate the graph from parsed nodes and edges, then add inferred edges."""
@@ -76,32 +55,24 @@ class KnowledgeGraph:
         self._add_inferred_edges(name_index)
 
     def _build_name_index(self) -> dict[str, list[str]]:
-        """Map short names → list of full node ids (multiple classes can share a name)."""
         index: dict[str, list[str]] = {}
         for node_id, node in self._nodes.items():
             index.setdefault(node.name, []).append(node_id)
         return index
 
-    def _resolve_target(self, target: str, known_ids: set[str], name_index: dict[str, list[str]]) -> str | None:
-        """Try to resolve an unresolved edge target to an actual node id."""
+    def _resolve_target(
+        self, target: str, known_ids: set[str], name_index: dict[str, list[str]]
+    ) -> str | None:
         if target in known_ids:
             return target
-        # Try the last component of a dotted name (e.g. "polygons.polygons.Polygon" → "Polygon")
         short = target.split(".")[-1]
         candidates = name_index.get(short, [])
-        if len(candidates) == 1:
-            return candidates[0]
         if candidates:
-            return candidates[0]   # ambiguous, take first
+            return candidates[0]
         return None
 
     def _add_inferred_edges(self, name_index: dict[str, list[str]]) -> None:
-        """Heuristically infer composition relationships not visible in the AST.
-
-        When a class holds another class as a constructor argument (detected by
-        checking __init__ parameter type annotations or default values), we add
-        an Inferred COMPOSES edge.  This is a best-effort approximation.
-        """
+        """Infer composition edges from __init__ constructor calls."""
         for node_id, node in self._nodes.items():
             if node.kind != NodeKind.CLASS:
                 continue
@@ -124,28 +95,21 @@ class KnowledgeGraph:
                                 weight=0.7,
                             )
 
-    # ------------------------------------------------------------------
-
     def compute_metrics(self) -> GraphMetrics:
         """Compute and cache betweenness centrality, in/out-degree, and communities."""
         undirected = self.graph.to_undirected()
-
         betweenness = nx.betweenness_centrality(self.graph, normalized=True)
         in_deg = dict(self.graph.in_degree())
         out_deg = dict(self.graph.out_degree())
-
         top_hubs = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)[:10]
 
-        # Bridges: edges whose removal disconnects a component
         try:
             bridge_edges = list(nx.bridges(undirected))
         except nx.NetworkXError:
             bridge_edges = []
 
-        # Communities via greedy modularity (works on undirected)
         try:
-            communities = list(nx.community.greedy_modularity_communities(undirected))
-            communities_sets = [set(c) for c in communities]
+            communities_sets = [set(c) for c in nx.community.greedy_modularity_communities(undirected)]
         except Exception:
             communities_sets = []
 
