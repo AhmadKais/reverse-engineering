@@ -107,14 +107,13 @@ On failure: `{"parse_error": True, "bugs": []}` or `{"parse_error": True, "fixes
 
 ## Tests
 
-101 tests total, all must pass before committing:
+92 tests total, all must pass before committing:
 
 | File | Count | Covers |
 |------|-------|--------|
 | `tests/test_graph_builder.py` | 17 | AST parser, KnowledgeGraph |
 | `tests/test_agents.py` | 18 | AgentBudget, BaseAgent, AnalyzerAgent, FixerAgent |
 | `tests/test_langgraph_workflow.py` | 9 | build_workflow, build_graph_node, error skip |
-| `tests/test_routing.py` | 48 | Routing, sparse mode, ObsidianExporter, data types |
 | `tests/test_routing.py` | 48 | Routing, sparse detection, raw_reader, ObsidianExporter, GraphNode/Edge, KG extras |
 
 All agent tests mock the Anthropic API — no real calls needed.
@@ -143,8 +142,8 @@ All agent tests mock the Anthropic API — no real calls needed.
 - [x] 12 documented bugs (`reports/BUG_REPORT.md`)
 - [x] Fixed files (`artifacts/fixed_polygons.py`, `fixed_mathsquiz.py`)
 - [x] Reports (OOP_SCHEMA, BLOCK_SCHEMA, GRAPH_REPORT, TOKEN_COMPARISON)
-- [x] 101 tests
-- [ ] **Screenshots** — must be added to `artifacts/screenshots/` manually
+- [x] 92 tests (test_integration.py removed — was HW2-specific)
+- [x] Screenshots — `artifacts/screenshots/` (11 screenshots)
 
 ---
 
