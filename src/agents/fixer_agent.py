@@ -71,6 +71,25 @@ class FixerAgent(BaseAgent):
         raw = self.generate_response(prompt)
         return self._parse_fixes(raw)
 
+    def propose_fixes_raw(self, bug_report: dict, file_contents: str) -> dict:
+        """Naive mode: propose fixes with all files in context — no targeted snippet selection.
+
+        Used for the token-efficiency baseline comparison. Every file is included regardless
+        of relevance; there is no graph-guided targeting.
+        """
+        bugs = bug_report.get("bugs", [])
+        if not bugs:
+            return {"fixes": [], "overall_impact": "No bugs to fix."}
+        prompt = (
+            "Generate surgical code patches for these architectural bugs.\n\n"
+            f"Bug Report:\n```json\n{json.dumps(bugs, indent=2)}\n```\n\n"
+            f"All Source Files:\n{file_contents}\n\n"
+            "Produce minimal patches that fix each bug. Output ONLY valid JSON."
+        )
+        self.reset_history()
+        raw = self.generate_response(prompt)
+        return self._parse_fixes(raw)
+
     def apply_fixes(self, fix_report: dict, source_root: str, dry_run: bool = True) -> list[str]:
         """Report what changes would be made (dry_run=True) or log them (dry_run=False).
 

@@ -1,0 +1,35 @@
+[naive] Starting naive baseline on: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python
+[naive] Budget: 60,000 tokens
+[naive] Mode: ALL files → Analyzer → Fixer (no graph, no Obsidian)
+
+[naive] Reading 5 Python files:
+  mathsquiz/mathsquiz-step1.py  (3,005 bytes)
+  mathsquiz/mathsquiz-step2.py  (1,660 bytes)
+  mathsquiz/mathsquiz-step3.py  (1,822 bytes)
+  mathsquiz/mathsquiz.py  (1,445 bytes)
+  polygons/polygons.py  (1,882 bytes)
+
+[naive] Total context: 9,814 bytes across 5 files
+
+[naive] Step 1 — AnalyzerAgent (all files in context, no graph summary)
+[naive]   Bugs found: 6
+[naive]   Tokens after Analyzer: 4,432
+
+[naive] Step 2 — FixerAgent (all files in context)
+[naive]   Fixes proposed: 9
+[naive]   Tokens after Fixer:    10,709
+
+============================================================
+NAIVE BASELINE — FINAL REPORT
+============================================================
+Files sent to agents : 5 (all .py files, unfiltered)
+Total bytes in context: 9,814
+Bugs found           : 6
+Fixes proposed       : 9
+Token usage          : 10,709 / 60,000 (17% of budget)
+  Input tokens       : 7,820
+  Output tokens      : 2,889
+============================================================
+
+Run the graph-guided pipeline for comparison:
+  uv run python main.py --budget 60000

@@ -42,6 +42,8 @@ def main() -> None:
                         help="Number of improvement iterations (default: 2)")
     parser.add_argument("--diagram", action="store_true",
                         help="Print the LangGraph Mermaid diagram and exit")
+    parser.add_argument("--naive", action="store_true",
+                        help="Run naive baseline: send ALL files to agents (no graph, no Obsidian)")
     args = parser.parse_args()
 
     source = args.source
@@ -52,6 +54,10 @@ def main() -> None:
     if args.diagram:
         from src.langgraph_workflow import print_workflow_diagram
         print_workflow_diagram()
+        return
+
+    if args.naive:
+        _run_naive(source, args.budget)
         return
 
     if args.graph_only:
@@ -110,6 +116,77 @@ def _run_improvement_loop(source: str, vault_dir: str, budget: int, iterations: 
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(history, indent=2), encoding="utf-8")
     print(f"\n[LangGraph] History saved: {out}")
+
+
+def _run_naive(source: str, budget: int) -> None:
+    """Naive baseline: send ALL .py files to every agent with no graph routing.
+
+    Contrast with the graph-guided pipeline:
+    - No KnowledgeGraph built
+    - No Obsidian vault consulted
+    - No sparse/dense detection
+    - No targeted file selection
+    Every file is concatenated and sent in full to Analyzer then Fixer.
+    Token counts from this run feed TOKEN_COMPARISON.md.
+    """
+    from src.agents.base_agent import AgentBudget
+    from src.agents.analyzer_agent import AnalyzerAgent
+    from src.agents.fixer_agent import FixerAgent
+
+    print(f"[naive] Starting naive baseline on: {source}")
+    print(f"[naive] Budget: {budget:,} tokens")
+    print("[naive] Mode: ALL files → Analyzer → Fixer (no graph, no Obsidian)\n")
+
+    # Read every .py file without any filtering
+    py_files = sorted(Path(source).rglob("*.py"))
+    print(f"[naive] Reading {len(py_files)} Python files:")
+    all_blocks: list[str] = []
+    total_bytes = 0
+    for py_file in py_files:
+        try:
+            content = py_file.read_text(encoding="utf-8")
+            total_bytes += len(content.encode("utf-8"))
+            rel = py_file.relative_to(source)
+            print(f"  {rel}  ({len(content):,} bytes)")
+            all_blocks.append(f"### {rel}\n```python\n{content}\n```")
+        except OSError:
+            pass
+    file_contents = "\n\n".join(all_blocks)
+    print(f"\n[naive] Total context: {total_bytes:,} bytes across {len(py_files)} files\n")
+
+    budget_obj = AgentBudget(budget)
+
+    print("[naive] Step 1 — AnalyzerAgent (all files in context, no graph summary)")
+    analyzer = AnalyzerAgent(budget_obj)
+    bug_report = analyzer.analyze_raw(file_contents)
+    bugs = bug_report.get("bugs", [])
+    print(f"[naive]   Bugs found: {len(bugs)}")
+    after_analyze = budget_obj.total_used
+    print(f"[naive]   Tokens after Analyzer: {after_analyze:,}\n")
+
+    print("[naive] Step 2 — FixerAgent (all files in context)")
+    fixer = FixerAgent(budget_obj)
+    fix_report = fixer.propose_fixes_raw(bug_report, file_contents)
+    fixes = fix_report.get("fixes", [])
+    print(f"[naive]   Fixes proposed: {len(fixes)}")
+    total_used = budget_obj.total_used
+    print(f"[naive]   Tokens after Fixer:    {total_used:,}\n")
+
+    print("=" * 60)
+    print("NAIVE BASELINE — FINAL REPORT")
+    print("=" * 60)
+    print(f"Files sent to agents : {len(py_files)} (all .py files, unfiltered)")
+    print(f"Total bytes in context: {total_bytes:,}")
+    print(f"Bugs found           : {len(bugs)}")
+    print(f"Fixes proposed       : {len(fixes)}")
+    usage = budget_obj.status()
+    print(f"Token usage          : {usage['total_used']:,} / {budget:,} "
+          f"({100 * usage['total_used'] // max(budget, 1)}% of budget)")
+    print(f"  Input tokens       : {usage['used_input']:,}")
+    print(f"  Output tokens      : {usage['used_output']:,}")
+    print("=" * 60)
+    print("\nRun the graph-guided pipeline for comparison:")
+    print(f"  uv run python main.py --budget {budget}")
 
 
 def _run_graph_only(source: str, vault_dir: str) -> None:

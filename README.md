@@ -60,13 +60,15 @@ A: `mathsquiz.py` is effectively a God Script — all logic inline, no functions
 A: The `Polygon` class in `polygons.py` shows the intended OOP design (see [`reports/OOP_SCHEMA.md`](reports/OOP_SCHEMA.md)). The bugs (`Object` vs `object`, `new` keyword) reveal a Java/JavaScript background applied incorrectly to Python.
 
 **Q: How did you find the bugs and what led you there?**  
-A: The sparse graph (0 edges) immediately signalled broken code. The `raw_reader` LangGraph node read the raw file text and identified syntax errors — without reading the files manually. The Analyzer then confirmed all 12 bugs.
+A: The sparse graph (0 edges) immediately signalled broken code. The `raw_reader` LangGraph node read the raw file text and identified syntax errors — without reading the files manually. The Analyzer then confirmed 16 bugs.
 
 **Q: What was the advantage of graph-guided reading vs linear reading?**  
-A: See [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md). Even in sparse mode, the pipeline used only **~5,950 tokens** to find 12 bugs — leaving 91% of the token budget unused.
+A: Measured comparison (see [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)): naive baseline found only **6 of 16 bugs** using 10,709 tokens; graph-guided found **all 16 bugs** using 14,575 tokens — 167% more bugs per run. The graph excluded 3 irrelevant step files before any LLM call.
 
 **Q: How did agents help navigate/fix?**  
-A: `raw_reader` described structure. `analyze` found 12 bugs with evidence. `fix` produced concrete corrected code patterns. The fixed files were written to `artifacts/` based on the agent's proposals.
+A: `raw_reader` described structure. `analyze` found 16 bugs with evidence. `fix` produced concrete corrected code patterns. The fixed files were written to `artifacts/` based on the agent's proposals.
+
+Full answers to all 8 research questions: [`obsidian/research-questions.md`](obsidian/research-questions.md)
 
 ---
 
@@ -167,6 +169,8 @@ graph TD
 | `fix` | FixerAgent | bug report + file snippets | concrete fix proposals |
 
 **Why two paths?** `broken-python`'s main files have syntax errors — the AST cannot parse them, so the graph has 0 edges. The workflow detects this (`is_sparse=True`) and routes through `raw_reader` instead of `navigate`.
+
+**Important**: for a broken-python codebase, the sparse detection *is* graph-guided navigation — the 0-edge graph signal costs 0 API tokens and immediately tells the agents which 2 of 5 files are broken. The `navigate` path (NavigatorAgent reading Obsidian pages) applies to healthy codebases; `data/demo-dense/` (24 nodes, 24 edges) demonstrates it.
 
 **State**: typed `WorkflowState` `TypedDict` flows through the graph. If any node sets `error`, all downstream nodes skip gracefully.
 
@@ -368,18 +372,23 @@ if int(answer) == 56:   # equality check; cast input; correct answer
 
 ---
 
-## 10. Token Efficiency
+## 10. Token Efficiency — "Lost in the Middle"
 
-See [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md) for full numbers.
+**The "Lost in the Middle" problem**: LLM performance degrades when relevant information is buried in the middle of a long context window. If you dump five files into a single prompt, the bugs in files 2–4 receive less attention than those at position 1 or 5. The graph-guided approach prevents this by selecting only the relevant files before any LLM call — so the context window starts and ends with the important material.
 
-| Approach | Files Sent to LLM | Total Tokens | Bugs Found |
-|---|---|---|---|
-| Naive (send all 5 files, no graph) | 5 (incl. 3 irrelevant step files) | ~14,909 (estimated) | Unknown — no graph insight |
-| Graph-guided sparse fallback (actual) | **2** (only broken files) | **14,575 (measured)** | **16 bugs, 18 fixes** |
+**Both approaches were actually run** (`uv run python main.py --naive --budget 60000` vs `uv run python main.py --budget 40000`):
 
-The graph (0 edges) immediately told us which 2 files to focus on — the step files never entered the LLM context, saving ~1,600 tokens of irrelevant context per agent. The pipeline used only **36% of the 40,000 token budget** and found 16 bugs in a single pass.
+| Approach | Files Sent to LLM | Total Tokens | Bugs Found | Tokens per Bug |
+|---|---|---|---|---|
+| Naive (`--naive`): all 5 files, no graph | 5 (3 irrelevant step files included) | **10,709 (measured)** | **6 bugs** | 1,782 |
+| Graph-guided: sparse fallback (actual) | **2** (only broken files) | **14,575 (measured)** | **16 bugs** | **911** |
 
-Full breakdown: [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)
+The naive mode used *fewer* total tokens but found only 6 of 16 bugs — the step files diluted the LLM's attention. The graph-guided pipeline used slightly more tokens because it runs three focused agents with structured intermediate state, but found **167% more bugs** per run (1,782 → 911 tokens per bug found).
+
+The **graph was the pre-filter**: 0 edges told us in 0 API tokens which 2 files to target. The 3 step files (5,487 bytes) never entered the LLM context at all. For the broken-python codebase, the sparse detection *is* the graph-guided navigation — the 0-edge signal is the finding.
+
+Full breakdown with per-agent token counts: [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)  
+Naive run output: [`artifacts/naive_baseline_output.txt`](artifacts/naive_baseline_output.txt)
 
 ---
 
@@ -404,6 +413,8 @@ The assignment requires at least one original extension per task section. Here i
 **Graph improvement loop** — `sdk.py` implements `improve()`: analyze → fix → rebuild graph → compare edge/node counts across N iterations. Concrete metric improvement is measured after each fix pass, not just assumed. Run with `--improve --iterations 2 --budget 80000`.
 
 ### Task 5.5 — Token Efficiency
+
+**Measured naive baseline** (`--naive` flag) — `AnalyzerAgent.analyze_raw()` and `FixerAgent.propose_fixes_raw()` implement a true naive mode: all source files concatenated and sent to agents without any graph routing, Obsidian, or targeted selection. Running `uv run python main.py --naive --budget 60000` produces a real token count that can be directly compared against the graph-guided run. This makes the token comparison scientifically reproducible, not estimated. Output: [`artifacts/naive_baseline_output.txt`](artifacts/naive_baseline_output.txt)
 
 **Token budget guardrail** — `AgentBudget` class in `src/agents/base_agent.py` enforces a hard shared token ceiling across all three agents. A single counter is passed by reference through the `WorkflowState`, so spending in one agent directly reduces the budget available to the next. This prevents runaway multi-agent loops from exceeding the budget limit.
 

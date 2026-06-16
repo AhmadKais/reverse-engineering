@@ -71,6 +71,22 @@ class AnalyzerAgent(BaseAgent):
         raw = self.generate_response(prompt)
         return self._parse_report(raw)
 
+    def analyze_raw(self, file_contents: str) -> dict:
+        """Naive mode: analyze from raw file content only — no graph, no Obsidian.
+
+        Used for the token-efficiency baseline comparison. Every file is sent in full;
+        there is no pre-filtering or graph-guided targeting.
+        """
+        prompt = (
+            "Analyze this Python codebase for architectural bugs. "
+            "All source files are provided below — no knowledge graph is available.\n\n"
+            f"Source Files:\n{file_contents}\n\n"
+            "Identify all architectural bugs. Output ONLY valid JSON."
+        )
+        self.reset_history()
+        raw = self.generate_response(prompt)
+        return self._parse_report(raw)
+
     def _collect_snippets(self, kg: KnowledgeGraph, source_root: str) -> str:
         """Extract code snippets for the top-5 most central nodes (token-efficient)."""
         snippets: list[str] = []
