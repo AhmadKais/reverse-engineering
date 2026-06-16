@@ -126,9 +126,46 @@ graph TD
 
 **State**: typed `WorkflowState` `TypedDict` flows through the graph. If any node sets `error`, all downstream nodes skip gracefully.
 
-**Token efficiency**: `raw_reader` reads only the 2 main buggy files. `analyze` receives only those targeted snippets. The step files never enter the context window.
+**Context compression mechanisms**:
+- `SPARSE_EDGE_THRESHOLD = 5`: if `edge_count < 5`, skip NavigatorAgent entirely (graph topology meaningless with no edges)
+- `raw_reader` sends only files that failed AST parsing to the LLM — step files excluded automatically
+- Each node receives only what the previous node produced, not the full source tree
+- `AgentBudget` enforces a hard token ceiling shared across all agents
 
 See `data/langgraph_workflow.mmd` for the full Mermaid source, and `src/langgraph_workflow.py` for the implementation.
+
+### Actual Pipeline Execution Trace
+
+```
+[LangGraph] Starting workflow on: data/broken-python
+[LangGraph] Vault: obsidian/  |  Budget: 40,000 tokens
+[LangGraph] Nodes: build_graph → navigate → analyze → fix
+
+Step 1 — build_graph
+  AST parse: 9 nodes, 0 edges
+  is_sparse = True  (threshold < 5 edges)
+  Obsidian vault exported: index.md, hot.md, 9 node notes
+
+Step 2 — routing decision
+  is_sparse=True → raw_reader  (navigate node SKIPPED)
+
+Step 3 — raw_reader (BaseAgent)
+  Read polygons/polygons.py   (1,882 bytes)
+  Read mathsquiz/mathsquiz.py (1,445 bytes)
+  Step files excluded by graph signal — never read
+
+Step 4 — analyze (AnalyzerAgent)
+  Input: raw_reader description + 2 file snippets
+  Output: 16 bugs found (5 in polygons.py, 11 in mathsquiz.py)
+
+Step 5 — fix (FixerAgent)
+  Input: bug report JSON + 2 file snippets
+  Output: 18 targeted fix proposals
+
+Token Usage: 14,575 / 40,000 (36% of budget used)
+```
+
+Full output: [`artifacts/Pipeline_output.txt`](artifacts/Pipeline_output.txt)
 
 ---
 
