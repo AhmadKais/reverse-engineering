@@ -48,8 +48,13 @@ class NavigatorAgent(BaseAgent):
             max_tokens=1500,
         )
 
-    def navigate(self, kg: KnowledgeGraph) -> str:
-        """Produce an architectural overview from the graph summary."""
+    def navigate(self, kg: KnowledgeGraph, vault_context: str = "") -> str:
+        """Produce an architectural overview, starting from Obsidian vault pages.
+
+        The graph-guided approach reads hot.md and index.md first (vault_context),
+        then enriches with the structured JSON summary — following the macro-to-micro
+        strategy: Obsidian navigation pages → graph summary → code snippets (in analyze).
+        """
         summary = kg.summary_dict()
 
         # Enrich with community info
@@ -65,7 +70,13 @@ class NavigatorAgent(BaseAgent):
             })
         summary["communities_preview"] = communities_preview
 
+        obsidian_section = (
+            f"## Step 1 — Obsidian Vault Entry Point\n\n{vault_context}\n\n"
+            if vault_context else ""
+        )
         prompt = (
+            f"{obsidian_section}"
+            "## Step 2 — Knowledge Graph JSON Summary\n\n"
             "Analyze this knowledge graph summary of a Python codebase and produce "
             "the architectural overview:\n\n"
             f"```json\n{json.dumps(summary, indent=2)}\n```"

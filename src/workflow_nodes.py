@@ -16,6 +16,23 @@ from src.graph_builder.obsidian_exporter import ObsidianExporter
 from src.workflow_state import SPARSE_EDGE_THRESHOLD, WorkflowState, _fallback_bug_report
 
 
+def _read_vault_pages(vault_dir: str) -> str:
+    """Read hot.md and index.md from the Obsidian vault as the graph-guided entry point.
+
+    Returns empty string if the vault doesn't exist yet (e.g. in unit tests).
+    The agent always reads Obsidian pages BEFORE touching source code — this is
+    the core graph-guided approach required by the assignment.
+    """
+    vault = Path(vault_dir)
+    parts = []
+    for fname in ("hot.md", "index.md"):
+        path = vault / fname
+        with contextlib.suppress(Exception):
+            if path.exists():
+                parts.append(f"### {fname} (from Obsidian vault)\n{path.read_text(encoding='utf-8')}")
+    return "\n\n".join(parts)
+
+
 def build_graph_node(state: WorkflowState) -> WorkflowState:
     """Node 1: parse codebase → build KnowledgeGraph → export Obsidian vault."""
     try:
@@ -46,22 +63,27 @@ def build_graph_node(state: WorkflowState) -> WorkflowState:
 
 
 def navigate_node(state: WorkflowState, budget: AgentBudget) -> WorkflowState:
-    """Node 2 (dense path): Navigator reads graph summary → architectural overview."""
+    """Node 2 (dense path): Navigator reads Obsidian vault pages first, then graph summary."""
     if state.get("error"):
         return state
     try:
+        # Graph-guided approach: read Obsidian pages as the entry point before touching code
+        vault_context = _read_vault_pages(state["vault_dir"])
         agent = NavigatorAgent(budget)
-        navigation = agent.navigate(state["knowledge_graph"])
+        navigation = agent.navigate(state["knowledge_graph"], vault_context=vault_context)
         return {**state, "navigation": navigation, "token_usage": budget.status()}
     except Exception as exc:
         return {**state, "error": f"navigate_node failed: {exc}"}
 
 
 def raw_reader_node(state: WorkflowState, budget: AgentBudget) -> WorkflowState:
-    """Node 2 (sparse path): read raw file content and describe structure."""
+    """Node 2 (sparse path): use hot.md as graph signal, then read raw file content."""
     if state.get("error"):
         return state
     try:
+        # Graph-guided approach: read Obsidian hot.md first to understand WHY we are
+        # in the sparse branch, then read only the files that failed AST parsing.
+        vault_context = _read_vault_pages(state["vault_dir"])
         system = (
             "You are a Python code reader. Given raw source files that contain "
             "bugs (possibly Python 2 syntax, logic errors, or undefined names), "
@@ -75,8 +97,15 @@ def raw_reader_node(state: WorkflowState, budget: AgentBudget) -> WorkflowState:
             f"### {fname}\n```python\n{content[:1500]}\n```"
             for fname, content in state["raw_files"].items()
         )
+        graph_preamble = (
+            f"{vault_context}\n\n"
+            "The graph above shows a SPARSE graph (all betweenness = 0, 0 edges). "
+            "This means the main source files failed AST parsing — syntax errors prevent "
+            "the graph builder from reading them. The files below are the ones that failed.\n\n"
+            if vault_context else ""
+        )
         navigation = agent.generate_response(
-            f"Describe the structure and bugs in these Python files:\n\n{files_text}"
+            f"{graph_preamble}Describe the structure and bugs in these Python files:\n\n{files_text}"
         )
         return {**state, "navigation": navigation, "token_usage": budget.status()}
     except Exception as exc:
