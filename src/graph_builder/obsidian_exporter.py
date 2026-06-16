@@ -91,7 +91,9 @@ class ObsidianExporter:
                 failed.append(str(py.relative_to(src)))
         return failed
 
-    def _write_hot(self, kg: KnowledgeGraph, top_n: int, failed_files: list[str] = []) -> None:
+    def _write_hot(self, kg: KnowledgeGraph, top_n: int, failed_files: list[str] | None = None) -> None:
+        if failed_files is None:
+            failed_files = []
         lines = ["# hot.md — Architectural Hotspots\n"]
         m = kg.metrics
 
@@ -134,7 +136,9 @@ class ObsidianExporter:
 
         (self.vault / "hot.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    def _write_index(self, kg: KnowledgeGraph, failed_files: list[str] = []) -> None:
+    def _write_index(self, kg: KnowledgeGraph, failed_files: list[str] | None = None) -> None:
+        if failed_files is None:
+            failed_files = []
         by_kind: dict[str, list[GraphNode]] = {}
         for node in kg._nodes.values():
             by_kind.setdefault(node.kind.value, []).append(node)

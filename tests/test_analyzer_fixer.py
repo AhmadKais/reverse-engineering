@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from unittest.mock import patch
 
-import pytest
-
 from src.agents.analyzer_agent import AnalyzerAgent
 from src.agents.base_agent import AgentBudget
 from src.agents.fixer_agent import FixerAgent

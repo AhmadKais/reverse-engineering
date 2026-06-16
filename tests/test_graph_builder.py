@@ -13,8 +13,6 @@ from pathlib import Path
 
 import pytest
 
-from src.data_types.graph_edge import EdgeKind, EdgeLabel
-from src.data_types.graph_node import NodeKind
 from src.graph_builder.ast_parser import parse_directory, parse_file
 from src.graph_builder.graph_generator import KnowledgeGraph
 

@@ -22,8 +22,8 @@ def _write_py(content: str, tmpdir: str, filename: str = "mod.py") -> str:
 
 class TestGraphNode:
     def _node(self, **kwargs) -> GraphNode:
-        defaults = dict(id="mod.py::Foo", kind=NodeKind.CLASS, name="Foo",
-                        file_path="mod.py", line_start=1, line_end=5)
+        defaults = {"id": "mod.py::Foo", "kind": NodeKind.CLASS, "name": "Foo",
+                    "file_path": "mod.py", "line_start": 1, "line_end": 5}
         return GraphNode(**{**defaults, **kwargs})
 
     def test_label_for_top_level_node(self):

@@ -67,7 +67,7 @@ class TestObsidianExporter:
     def test_hot_md_is_markdown_table(self, simple_kg, tmp_path):
         ObsidianExporter(str(tmp_path)).export(simple_kg)
         hot = (tmp_path / "hot.md").read_text(encoding="utf-8")
-        lines_with_pipe = [l for l in hot.splitlines() if "|" in l]
+        lines_with_pipe = [line for line in hot.splitlines() if "|" in line]
         assert len(lines_with_pipe) >= 2
 
     def test_index_md_has_classes_section(self, simple_kg, tmp_path):

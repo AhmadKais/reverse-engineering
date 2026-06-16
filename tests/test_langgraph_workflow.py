@@ -2,17 +2,14 @@
 
 from __future__ import annotations
 
-import textwrap
-import tempfile
 import os
+import tempfile
+import textwrap
 from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 from src.agents.base_agent import AgentBudget
-from src.langgraph_workflow import build_workflow, WorkflowState
-
+from src.langgraph_workflow import WorkflowState, build_workflow
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -54,7 +51,7 @@ class TestBuildWorkflow:
     def test_graph_has_expected_nodes(self):
         wf, _ = build_workflow()
         graph = wf.get_graph()
-        node_names = {n for n in graph.nodes}
+        node_names = set(graph.nodes)
         assert "build_graph" in node_names
         assert "navigate"    in node_names
         assert "analyze"     in node_names

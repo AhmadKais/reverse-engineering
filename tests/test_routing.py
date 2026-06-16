@@ -110,6 +110,7 @@ class TestBuildGraphNodeSparse:
 
     def test_dense_graph_is_not_sparse(self):
         import tempfile
+
         from src.langgraph_workflow import SPARSE_EDGE_THRESHOLD
         with tempfile.TemporaryDirectory() as src, tempfile.TemporaryDirectory() as vault:
             Path(os.path.join(src, "models.py")).write_text(
@@ -156,9 +157,9 @@ class TestRawReaderNode:
         mock_response.content = [MagicMock(text="## File: broken.py\n**Intent**: a quiz\n")]
         mock_response.usage.input_tokens = 50
         mock_response.usage.output_tokens = 20
-        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}):
-            with patch("anthropic.Anthropic") as MockClient:
-                MockClient.return_value.messages.create.return_value = mock_response
-                result = raw_reader_node(state, budget)
+        with patch.dict("os.environ", {"ANTHROPIC_API_KEY": "test-key"}), \
+             patch("anthropic.Anthropic") as mock_client:
+            mock_client.return_value.messages.create.return_value = mock_response
+            result = raw_reader_node(state, budget)
         assert result["navigation"] != ""
         assert result["error"] is None
