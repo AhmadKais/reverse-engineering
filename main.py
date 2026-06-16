@@ -194,6 +194,7 @@ def _run_graph_only(source: str, vault_dir: str) -> None:
     from src.graph_builder.graph_generator import KnowledgeGraph
     from src.graph_builder.obsidian_exporter import ObsidianExporter
 
+    source = str(Path(source).resolve())
     print(f"[graph-only] Parsing: {source}")
     nodes, edges = parse_directory(source)
     kg = KnowledgeGraph()

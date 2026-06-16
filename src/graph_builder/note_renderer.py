@@ -2,11 +2,36 @@
 
 from __future__ import annotations
 
+import contextlib
+from pathlib import Path
+
 from src.data_types.graph_node import GraphNode
 from src.graph_builder.graph_generator import KnowledgeGraph
 
 
-def render_node_note(node_id: str, node: GraphNode, kg: KnowledgeGraph) -> str:
+def _read_snippet(node: GraphNode, source_dir: str) -> str:
+    """Read the node's source lines from disk; return empty string on any error."""
+    if not source_dir:
+        return ""
+    with contextlib.suppress(Exception):
+        fp = Path(node.file_path)
+        full = (Path(source_dir) / fp).resolve() if not fp.is_absolute() else fp
+        lines = full.read_text(encoding="utf-8", errors="replace").splitlines()
+        start = max(0, node.line_start - 1)
+        end = min(len(lines), node.line_end)
+        snippet_lines = lines[start:end]
+        if len(snippet_lines) > 30:
+            snippet_lines = snippet_lines[:30] + ["    # … (truncated)"]
+        return "\n".join(snippet_lines)
+    return ""
+
+
+def render_node_note(
+    node_id: str,
+    node: GraphNode,
+    kg: KnowledgeGraph,
+    source_dir: str = "",
+) -> str:
     """Render a single node as an Obsidian markdown note with wiki-link relationships."""
     m = kg.metrics
     lines = [
@@ -19,8 +44,13 @@ def render_node_note(node_id: str, node: GraphNode, kg: KnowledgeGraph) -> str:
         f"**In-degree**: {m.in_degree.get(node_id, 0)} | **Out-degree**: {m.out_degree.get(node_id, 0)}",
         "",
     ]
+
     if node.docstring:
-        lines += [f"> {node.docstring[:180]}", ""]
+        lines += [f"> {node.docstring[:200]}", ""]
+
+    snippet = _read_snippet(node, source_dir)
+    if snippet:
+        lines += ["## Source", "", f"```python\n{snippet}\n```", ""]
 
     if node.base_classes:
         lines += ["## Inherits From", ""]
@@ -45,6 +75,8 @@ def render_node_note(node_id: str, node: GraphNode, kg: KnowledgeGraph) -> str:
                 f"- [[{tgt_slug}|{tgt_label}]] `{data.get('kind', '?')}:{data.get('label', '?')}`"
             )
         lines.append("")
+    else:
+        lines += ["## Outgoing Relationships", "", "_None — this node has no outgoing edges._", ""]
 
     in_edges = [(src, data) for src, _, data in kg.graph.in_edges(node_id, data=True)]
     if in_edges:
@@ -57,5 +89,7 @@ def render_node_note(node_id: str, node: GraphNode, kg: KnowledgeGraph) -> str:
                 f"- [[{src_slug}|{src_label}]] `{data.get('kind', '?')}:{data.get('label', '?')}`"
             )
         lines.append("")
+    else:
+        lines += ["## Incoming Relationships", "", "_None — this node has no incoming edges._", ""]
 
     return "\n".join(lines)

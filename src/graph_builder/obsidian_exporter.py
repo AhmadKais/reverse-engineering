@@ -37,7 +37,7 @@ class ObsidianExporter:
         failed_files = self._detect_failed_files(kg, source_dir) if source_dir else []
         self._write_hot(kg, top_n, failed_files)
         self._write_index(kg, failed_files)
-        self._write_node_notes(kg)
+        self._write_node_notes(kg, source_dir=source_dir)
 
     def _write_graph_json(self, kg: KnowledgeGraph) -> dict:
         nodes_data = []
@@ -167,7 +167,7 @@ class ObsidianExporter:
                 lines.append(f"- [[{node.obsidian_slug}|{node.label}]] — `{node.file_path}`")
         (self.vault / "index.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    def _write_node_notes(self, kg: KnowledgeGraph) -> None:
+    def _write_node_notes(self, kg: KnowledgeGraph, source_dir: str = "") -> None:
         for node_id, node in kg._nodes.items():
-            note = render_node_note(node_id, node, kg)
+            note = render_node_note(node_id, node, kg, source_dir=source_dir)
             (self.nodes_dir / f"{node.obsidian_slug}.md").write_text(note, encoding="utf-8")

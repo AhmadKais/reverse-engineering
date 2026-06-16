@@ -4,6 +4,21 @@ This note documents what we understood **before** running the pipeline, what the
 
 ---
 
+## Investigation Timeline
+
+| Phase | Tool / Node | Obsidian Page | Signal | Decision |
+|-------|-------------|---------------|--------|----------|
+| 1 — Open vault | `build_graph` (local) | [[index.md]] | 9 nodes, **0 edges**; `polygons.py` + `mathsquiz.py` absent | Sparse graph detected |
+| 2 — Read hotspots | `build_graph` (local) | [[hot.md]] | All betweenness = 0.0; failed-parse files listed as ⚠️ Primary Hotspots | Skip NavigatorAgent |
+| 3 — Read raw files | `raw_reader` (BaseAgent) | Reads hot.md as preamble | Python 2 `print`, `new`, `Object`, `=` in conditions visible | Pass to Analyzer |
+| 4 — Analyze bugs | `analyze` (AnalyzerAgent) | — | 16 bugs identified: 5 in polygons.py, 11 in mathsquiz.py | Pass bug report to Fixer |
+| 5 — Propose fixes | `fix` (FixerAgent) | — | 18 fix proposals; corrected code for each bug | Write artifacts/ |
+| 6 — Rebuild graph | `build_graph` on fixed files | [[obsidian_after/index.md]] | 6 nodes, 1 edge; `Polygon` class visible; `calc_polygon_details → Polygon` | Architecture revealed |
+
+**Key finding at Phase 1**: 0 edges is not absence of information — it is the finding. A real 2-file Python project would have 10–20 edges.
+
+---
+
 ## Graph: Before vs After
 
 | Before (broken files) | After (fixed files) |
@@ -101,7 +116,7 @@ build_graph (9 nodes, 0 edges)
 
 | Aspect | Before | After |
 |--------|--------|-------|
-| Files visible in graph | 3/6 (step files only) | Would be 6/6 with fixed files |
+| Files visible in graph | 3/5 (step files only) | Would be 5/5 with fixed files |
 | Polygon class | Invisible (parse error) | `class Polygon(object)` with `__init__` |
 | Nodes | 9 | 17+ (class + methods + functions now visible) |
 | Edges | 0 | 9+ (imports, calls, inheritance now traceable) |

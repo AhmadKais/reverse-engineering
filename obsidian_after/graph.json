@@ -7,10 +7,10 @@
   },
   "nodes": [
     {
-      "id": "artifacts/fixed_polygons.py::__module__",
+      "id": "fixed_polygons.py::__module__",
       "label": "fixed_polygons",
       "kind": "module",
-      "file": "artifacts/fixed_polygons.py",
+      "file": "fixed_polygons.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -19,10 +19,10 @@
       "docstring": "FIXED: polygons/polygons.py \u2014 all bugs corrected by the Fixer agent.\n\nBugs fixed:\n  1. class Polygon(Object) \u2192 class Polygon(object)   [SyntaxError: undefined name Object]\n  2. new Polygon(...)      \u2192"
     },
     {
-      "id": "artifacts/fixed_polygons.py::Polygon",
+      "id": "fixed_polygons.py::Polygon",
       "label": "Polygon",
       "kind": "class",
-      "file": "artifacts/fixed_polygons.py",
+      "file": "fixed_polygons.py",
       "betweenness": 0.0,
       "in_degree": 1,
       "out_degree": 0,
@@ -31,10 +31,10 @@
       "docstring": ""
     },
     {
-      "id": "artifacts/fixed_polygons.py::Polygon.__init__",
+      "id": "fixed_polygons.py::Polygon.__init__",
       "label": "Polygon.__init__",
       "kind": "method",
-      "file": "artifacts/fixed_polygons.py",
+      "file": "fixed_polygons.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -43,10 +43,10 @@
       "docstring": ""
     },
     {
-      "id": "artifacts/fixed_polygons.py::calc_polygon_details",
+      "id": "fixed_polygons.py::calc_polygon_details",
       "label": "calc_polygon_details",
       "kind": "function",
-      "file": "artifacts/fixed_polygons.py",
+      "file": "fixed_polygons.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 1,
@@ -55,10 +55,10 @@
       "docstring": ""
     },
     {
-      "id": "artifacts/fixed_polygons.py::draw_polygon",
+      "id": "fixed_polygons.py::draw_polygon",
       "label": "draw_polygon",
       "kind": "function",
-      "file": "artifacts/fixed_polygons.py",
+      "file": "fixed_polygons.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -67,10 +67,10 @@
       "docstring": ""
     },
     {
-      "id": "artifacts/fixed_mathsquiz.py::__module__",
+      "id": "fixed_mathsquiz.py::__module__",
       "label": "fixed_mathsquiz",
       "kind": "module",
-      "file": "artifacts/fixed_mathsquiz.py",
+      "file": "fixed_mathsquiz.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -81,11 +81,12 @@
   ],
   "edges": [
     {
-      "source": "artifacts/fixed_polygons.py::calc_polygon_details",
-      "target": "artifacts/fixed_polygons.py::Polygon",
+      "source": "fixed_polygons.py::calc_polygon_details",
+      "target": "fixed_polygons.py::Polygon",
       "kind": "Extracted",
       "label": "calls",
-      "weight": 1.0
+      "confidence": 1.0,
+      "source_file": "fixed_polygons.py"
     }
   ]
 }

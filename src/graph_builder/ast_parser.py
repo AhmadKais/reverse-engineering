@@ -86,7 +86,7 @@ def parse_directory(
             if any(fname.endswith(ext) for ext in extensions):
                 full_path = os.path.join(dirpath, fname)
                 try:
-                    rel_path = str(Path(full_path).relative_to(root))
+                    rel_path = str(Path(full_path).resolve().relative_to(root))
                 except ValueError:
                     rel_path = full_path
                 nodes, edges = parse_file(full_path, id_path=rel_path)

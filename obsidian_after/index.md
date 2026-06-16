@@ -1,20 +1,24 @@
 # index.md — Knowledge Graph Index
 
+Central navigation page for the knowledge vault.
 
-## Classs (1)
+## Parseable Entities
 
-- [[artifacts_fixed_polygons_py::Polygon|Polygon]] — `artifacts/fixed_polygons.py`
 
-## Functions (2)
+### Classs (1)
 
-- [[artifacts_fixed_polygons_py::calc_polygon_details|calc_polygon_details]] — `artifacts/fixed_polygons.py`
-- [[artifacts_fixed_polygons_py::draw_polygon|draw_polygon]] — `artifacts/fixed_polygons.py`
+- [[fixed_polygons_py::Polygon|Polygon]] — `fixed_polygons.py`
 
-## Methods (1)
+### Functions (2)
 
-- [[artifacts_fixed_polygons_py::Polygon___init__|Polygon.__init__]] — `artifacts/fixed_polygons.py`
+- [[fixed_polygons_py::calc_polygon_details|calc_polygon_details]] — `fixed_polygons.py`
+- [[fixed_polygons_py::draw_polygon|draw_polygon]] — `fixed_polygons.py`
 
-## Modules (2)
+### Methods (1)
 
-- [[artifacts_fixed_mathsquiz_py::__module__|fixed_mathsquiz]] — `artifacts/fixed_mathsquiz.py`
-- [[artifacts_fixed_polygons_py::__module__|fixed_polygons]] — `artifacts/fixed_polygons.py`
+- [[fixed_polygons_py::Polygon___init__|Polygon.__init__]] — `fixed_polygons.py`
+
+### Modules (2)
+
+- [[fixed_mathsquiz_py::__module__|fixed_mathsquiz]] — `fixed_mathsquiz.py`
+- [[fixed_polygons_py::__module__|fixed_polygons]] — `fixed_polygons.py`

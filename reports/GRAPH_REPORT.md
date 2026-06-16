@@ -14,7 +14,7 @@
 | Edges | 0 | **Key finding**: 0 edges = files cannot be loaded by Python 3 AST |
 | Communities | 9 | Each node is its own isolated community (no connections) |
 | Bridge edges | 0 | No bridges — graph is fully disconnected |
-| Parseable files | 3 / 6 | `mathsquiz.py` and `polygons.py` fail AST parsing |
+| Parseable files | 3 / 5 | `mathsquiz.py` and `polygons.py` fail AST parsing |
 
 ## Node Breakdown by Kind
 
@@ -49,7 +49,7 @@ All centrality = 0 because the graph has no edges. This is itself diagnostic inf
 
 | Metric | Before fix (buggy files) | After fix (corrected files) |
 |---|---|---|
-| Parseable files | 3/6 | 6/6 |
+| Parseable files | 3/5 | 5/5 |
 | Nodes | 9 | 17 |
 | Edges | 0 | 9 |
 | Polygon class visible | No | Yes |
