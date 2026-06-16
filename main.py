@@ -132,7 +132,7 @@ def _run_graph_only(source: str, vault_dir: str) -> None:
         kind = node.kind.value if node else "?"
         print(f"  [{score:.4f}] {name} ({kind})")
 
-    ObsidianExporter(vault_dir).export(kg)
+    ObsidianExporter(vault_dir).export(kg, source_dir=source)
     print(f"\n[graph-only] Vault exported to: {vault_dir}/")
     print(f"  graph.json, index.md, hot.md, nodes/ ({m.node_count} files)")
 

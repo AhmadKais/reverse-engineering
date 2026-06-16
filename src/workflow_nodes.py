@@ -40,7 +40,7 @@ def build_graph_node(state: WorkflowState) -> WorkflowState:
         kg = KnowledgeGraph()
         kg.build(nodes, edges)
         kg.compute_metrics()
-        ObsidianExporter(state["vault_dir"]).export(kg)
+        ObsidianExporter(state["vault_dir"]).export(kg, source_dir=state["source_root"])
 
         is_sparse = kg.metrics.edge_count < SPARSE_EDGE_THRESHOLD
         raw_files: dict = {}
