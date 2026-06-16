@@ -2,41 +2,31 @@
 
 Central navigation page for the knowledge vault.
 
+## ⚠️ Files That Failed AST Parse (Primary Investigation Targets)
+
+These files produced **0 nodes** — they are the actual buggy files.
+
+| File | Nodes | Reason |
+|---|---|---|
+| `mathsquiz/mathsquiz.py` | 0 | Syntax errors blocked AST parsing |
+| `polygons/polygons.py` | 0 | Syntax errors blocked AST parsing |
+
+---
+
 ## Parseable Entities
 
 
-### Classs (3)
+### Functions (6)
 
-- [[data_demo-dense_shapes_py::Circle|Circle]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Rectangle|Rectangle]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Shape|Shape]] — `data/demo-dense/shapes.py`
-
-### Functions (8)
-
-- [[data_demo-dense_reporter_py::collection_report|collection_report]] — `data/demo-dense/reporter.py`
-- [[data_demo-dense_calculator_py::filter_circles|filter_circles]] — `data/demo-dense/calculator.py`
-- [[data_demo-dense_calculator_py::filter_rectangles|filter_rectangles]] — `data/demo-dense/calculator.py`
-- [[data_demo-dense_calculator_py::largest_shape|largest_shape]] — `data/demo-dense/calculator.py`
-- [[data_demo-dense_reporter_py::print_report|print_report]] — `data/demo-dense/reporter.py`
-- [[data_demo-dense_reporter_py::shape_summary|shape_summary]] — `data/demo-dense/reporter.py`
-- [[data_demo-dense_calculator_py::total_area|total_area]] — `data/demo-dense/calculator.py`
-- [[data_demo-dense_calculator_py::total_perimeter|total_perimeter]] — `data/demo-dense/calculator.py`
-
-### Methods (10)
-
-- [[data_demo-dense_shapes_py::Circle___init__|Circle.__init__]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Rectangle___init__|Rectangle.__init__]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Shape_area|Shape.area]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Circle_area|Circle.area]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Rectangle_area|Rectangle.area]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Shape_describe|Shape.describe]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Rectangle_is_square|Rectangle.is_square]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Shape_perimeter|Shape.perimeter]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Circle_perimeter|Circle.perimeter]] — `data/demo-dense/shapes.py`
-- [[data_demo-dense_shapes_py::Rectangle_perimeter|Rectangle.perimeter]] — `data/demo-dense/shapes.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step3_py::ask_question|ask_question]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step2_py::ask_question|ask_question]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step3_py::print_final_scores|print_final_scores]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step2_py::print_final_scores|print_final_scores]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step3_py::welcome_message|welcome_message]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step2_py::welcome_message|welcome_message]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py`
 
 ### Modules (3)
 
-- [[data_demo-dense_calculator_py::__module__|calculator]] — `data/demo-dense/calculator.py`
-- [[data_demo-dense_reporter_py::__module__|reporter]] — `data/demo-dense/reporter.py`
-- [[data_demo-dense_shapes_py::__module__|shapes]] — `data/demo-dense/shapes.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step1_py::__module__|mathsquiz-step1]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step1.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step2_py::__module__|mathsquiz-step2]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py`
+- [[_home_ahmadk_Desktop_AI_Orchestration_Course_HW4_data_broken-python_mathsquiz_mathsquiz-step3_py::__module__|mathsquiz-step3]] — `/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py`

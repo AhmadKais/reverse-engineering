@@ -1,492 +1,119 @@
 {
   "meta": {
-    "node_count": 24,
-    "edge_count": 24,
-    "community_count": 11,
-    "bridge_count": 2
+    "node_count": 9,
+    "edge_count": 0,
+    "community_count": 9,
+    "bridge_count": 0
   },
   "nodes": [
     {
-      "id": "data/demo-dense/shapes.py::__module__",
-      "label": "shapes",
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step1.py::__module__",
+      "label": "mathsquiz-step1",
       "kind": "module",
-      "file": "data/demo-dense/shapes.py",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step1.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
       "line_start": 1,
-      "line_end": 44,
-      "docstring": "Geometry module \u2014 base class and two concrete shapes."
+      "line_end": 158,
+      "docstring": ""
     },
     {
-      "id": "data/demo-dense/shapes.py::Shape",
-      "label": "Shape",
-      "kind": "class",
-      "file": "data/demo-dense/shapes.py",
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::__module__",
+      "label": "mathsquiz-step3",
+      "kind": "module",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
       "betweenness": 0.0,
-      "in_degree": 4,
+      "in_degree": 0,
+      "out_degree": 0,
+      "line_start": 1,
+      "line_end": 62,
+      "docstring": ""
+    },
+    {
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::welcome_message",
+      "label": "welcome_message",
+      "kind": "function",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
+      "betweenness": 0.0,
+      "in_degree": 0,
       "out_degree": 0,
       "line_start": 4,
-      "line_end": 14,
-      "docstring": "Abstract base for all geometric shapes."
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Shape.area",
-      "label": "Shape.area",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 3,
-      "out_degree": 0,
-      "line_start": 7,
-      "line_end": 8,
+      "line_end": 6,
       "docstring": ""
     },
     {
-      "id": "data/demo-dense/shapes.py::Shape.perimeter",
-      "label": "Shape.perimeter",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 2,
-      "out_degree": 0,
-      "line_start": 10,
-      "line_end": 11,
-      "docstring": ""
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Shape.describe",
-      "label": "Shape.describe",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.00395,
-      "in_degree": 1,
-      "out_degree": 2,
-      "line_start": 13,
-      "line_end": 14,
-      "docstring": ""
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Circle",
-      "label": "Circle",
-      "kind": "class",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 1,
-      "out_degree": 1,
-      "line_start": 17,
-      "line_end": 27,
-      "docstring": "Circle defined by radius."
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Circle.__init__",
-      "label": "Circle.__init__",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::ask_question",
+      "label": "ask_question",
+      "kind": "function",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
-      "line_start": 20,
-      "line_end": 21,
-      "docstring": ""
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Circle.area",
-      "label": "Circle.area",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 0,
-      "out_degree": 0,
-      "line_start": 23,
+      "line_start": 9,
       "line_end": 24,
       "docstring": ""
     },
     {
-      "id": "data/demo-dense/shapes.py::Circle.perimeter",
-      "label": "Circle.perimeter",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::print_final_scores",
+      "label": "print_final_scores",
+      "kind": "function",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
-      "line_start": 26,
-      "line_end": 27,
-      "docstring": ""
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Rectangle",
-      "label": "Rectangle",
-      "kind": "class",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 1,
-      "out_degree": 1,
-      "line_start": 30,
-      "line_end": 44,
-      "docstring": "Axis-aligned rectangle defined by width and height."
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Rectangle.__init__",
-      "label": "Rectangle.__init__",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 0,
-      "out_degree": 0,
-      "line_start": 33,
-      "line_end": 35,
-      "docstring": ""
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Rectangle.area",
-      "label": "Rectangle.area",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 0,
-      "out_degree": 0,
-      "line_start": 37,
-      "line_end": 38,
-      "docstring": ""
-    },
-    {
-      "id": "data/demo-dense/shapes.py::Rectangle.perimeter",
-      "label": "Rectangle.perimeter",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
-      "betweenness": 0.0,
-      "in_degree": 0,
-      "out_degree": 0,
-      "line_start": 40,
+      "line_start": 27,
       "line_end": 41,
       "docstring": ""
     },
     {
-      "id": "data/demo-dense/shapes.py::Rectangle.is_square",
-      "label": "Rectangle.is_square",
-      "kind": "method",
-      "file": "data/demo-dense/shapes.py",
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::__module__",
+      "label": "mathsquiz-step2",
+      "kind": "module",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
-      "line_start": 43,
-      "line_end": 44,
+      "line_start": 1,
+      "line_end": 57,
       "docstring": ""
     },
     {
-      "id": "data/demo-dense/reporter.py::__module__",
-      "label": "reporter",
-      "kind": "module",
-      "file": "data/demo-dense/reporter.py",
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::welcome_message",
+      "label": "welcome_message",
+      "kind": "function",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
       "betweenness": 0.0,
       "in_degree": 0,
-      "out_degree": 6,
-      "line_start": 1,
-      "line_end": 34,
-      "docstring": "Reporter module \u2014 formats shape statistics into human-readable summaries."
-    },
-    {
-      "id": "data/demo-dense/reporter.py::shape_summary",
-      "label": "shape_summary",
-      "kind": "function",
-      "file": "data/demo-dense/reporter.py",
-      "betweenness": 0.00395,
-      "in_degree": 1,
-      "out_degree": 1,
-      "line_start": 7,
-      "line_end": 9,
-      "docstring": "Return a single-line summary for one shape."
-    },
-    {
-      "id": "data/demo-dense/reporter.py::collection_report",
-      "label": "collection_report",
-      "kind": "function",
-      "file": "data/demo-dense/reporter.py",
-      "betweenness": 0.01779,
-      "in_degree": 1,
-      "out_degree": 6,
-      "line_start": 12,
-      "line_end": 24,
-      "docstring": "Build a full statistical report for a collection of shapes."
-    },
-    {
-      "id": "data/demo-dense/reporter.py::print_report",
-      "label": "print_report",
-      "kind": "function",
-      "file": "data/demo-dense/reporter.py",
-      "betweenness": 0.0,
-      "in_degree": 0,
-      "out_degree": 1,
-      "line_start": 27,
-      "line_end": 34,
-      "docstring": "Print the collection report to stdout."
-    },
-    {
-      "id": "data/demo-dense/calculator.py::__module__",
-      "label": "calculator",
-      "kind": "module",
-      "file": "data/demo-dense/calculator.py",
-      "betweenness": 0.0,
-      "in_degree": 0,
-      "out_degree": 3,
-      "line_start": 1,
-      "line_end": 28,
-      "docstring": "Calculator module \u2014 computes aggregate statistics over collections of shapes."
-    },
-    {
-      "id": "data/demo-dense/calculator.py::total_area",
-      "label": "total_area",
-      "kind": "function",
-      "file": "data/demo-dense/calculator.py",
-      "betweenness": 0.00296,
-      "in_degree": 2,
-      "out_degree": 1,
-      "line_start": 6,
-      "line_end": 8,
-      "docstring": "Sum the area of every shape in the list."
-    },
-    {
-      "id": "data/demo-dense/calculator.py::total_perimeter",
-      "label": "total_perimeter",
-      "kind": "function",
-      "file": "data/demo-dense/calculator.py",
-      "betweenness": 0.00593,
-      "in_degree": 2,
-      "out_degree": 1,
-      "line_start": 11,
-      "line_end": 13,
-      "docstring": "Sum the perimeter of every shape in the list."
-    },
-    {
-      "id": "data/demo-dense/calculator.py::largest_shape",
-      "label": "largest_shape",
-      "kind": "function",
-      "file": "data/demo-dense/calculator.py",
-      "betweenness": 0.00296,
-      "in_degree": 2,
-      "out_degree": 1,
-      "line_start": 16,
-      "line_end": 18,
-      "docstring": "Return the shape with the greatest area."
-    },
-    {
-      "id": "data/demo-dense/calculator.py::filter_circles",
-      "label": "filter_circles",
-      "kind": "function",
-      "file": "data/demo-dense/calculator.py",
-      "betweenness": 0.0,
-      "in_degree": 2,
       "out_degree": 0,
-      "line_start": 21,
-      "line_end": 23,
-      "docstring": "Return only Circle instances from the list."
+      "line_start": 3,
+      "line_end": 5,
+      "docstring": ""
     },
     {
-      "id": "data/demo-dense/calculator.py::filter_rectangles",
-      "label": "filter_rectangles",
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::ask_question",
+      "label": "ask_question",
       "kind": "function",
-      "file": "data/demo-dense/calculator.py",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
       "betweenness": 0.0,
-      "in_degree": 2,
+      "in_degree": 0,
       "out_degree": 0,
-      "line_start": 26,
-      "line_end": 28,
-      "docstring": "Return only Rectangle instances from the list."
+      "line_start": 8,
+      "line_end": 20,
+      "docstring": ""
+    },
+    {
+      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::print_final_scores",
+      "label": "print_final_scores",
+      "kind": "function",
+      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
+      "betweenness": 0.0,
+      "in_degree": 0,
+      "out_degree": 0,
+      "line_start": 23,
+      "line_end": 33,
+      "docstring": ""
     }
   ],
-  "edges": [
-    {
-      "source": "data/demo-dense/shapes.py::Shape.describe",
-      "target": "data/demo-dense/shapes.py::Shape.area",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/shapes.py"
-    },
-    {
-      "source": "data/demo-dense/shapes.py::Shape.describe",
-      "target": "data/demo-dense/shapes.py::Shape.perimeter",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/shapes.py"
-    },
-    {
-      "source": "data/demo-dense/shapes.py::Circle",
-      "target": "data/demo-dense/shapes.py::Shape",
-      "kind": "Extracted",
-      "label": "inherits",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/shapes.py"
-    },
-    {
-      "source": "data/demo-dense/shapes.py::Rectangle",
-      "target": "data/demo-dense/shapes.py::Shape",
-      "kind": "Extracted",
-      "label": "inherits",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/shapes.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::__module__",
-      "target": "data/demo-dense/calculator.py::filter_circles",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/reporter.py::__module__",
-      "target": "data/demo-dense/calculator.py::filter_rectangles",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/reporter.py::__module__",
-      "target": "data/demo-dense/calculator.py::largest_shape",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/reporter.py::__module__",
-      "target": "data/demo-dense/calculator.py::total_area",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/reporter.py::__module__",
-      "target": "data/demo-dense/calculator.py::total_perimeter",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/reporter.py::__module__",
-      "target": "data/demo-dense/shapes.py::Shape",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/reporter.py::shape_summary",
-      "target": "data/demo-dense/shapes.py::Shape.describe",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::collection_report",
-      "target": "data/demo-dense/calculator.py::filter_circles",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::collection_report",
-      "target": "data/demo-dense/calculator.py::filter_rectangles",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::collection_report",
-      "target": "data/demo-dense/calculator.py::largest_shape",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::collection_report",
-      "target": "data/demo-dense/calculator.py::total_area",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::collection_report",
-      "target": "data/demo-dense/calculator.py::total_perimeter",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::collection_report",
-      "target": "data/demo-dense/reporter.py::shape_summary",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/reporter.py::print_report",
-      "target": "data/demo-dense/reporter.py::collection_report",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/reporter.py"
-    },
-    {
-      "source": "data/demo-dense/calculator.py::__module__",
-      "target": "data/demo-dense/shapes.py::Circle",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/calculator.py::__module__",
-      "target": "data/demo-dense/shapes.py::Rectangle",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/calculator.py::__module__",
-      "target": "data/demo-dense/shapes.py::Shape",
-      "kind": "Extracted",
-      "label": "imports",
-      "confidence": 1.0,
-      "source_file": ""
-    },
-    {
-      "source": "data/demo-dense/calculator.py::total_area",
-      "target": "data/demo-dense/shapes.py::Shape.area",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/calculator.py"
-    },
-    {
-      "source": "data/demo-dense/calculator.py::total_perimeter",
-      "target": "data/demo-dense/shapes.py::Shape.perimeter",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/calculator.py"
-    },
-    {
-      "source": "data/demo-dense/calculator.py::largest_shape",
-      "target": "data/demo-dense/shapes.py::Shape.area",
-      "kind": "Extracted",
-      "label": "calls",
-      "confidence": 1.0,
-      "source_file": "data/demo-dense/calculator.py"
-    }
-  ]
+  "edges": []
 }
