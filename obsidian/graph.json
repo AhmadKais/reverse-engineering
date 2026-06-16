@@ -7,10 +7,10 @@
   },
   "nodes": [
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step1.py::__module__",
+      "id": "mathsquiz/mathsquiz-step1.py::__module__",
       "label": "mathsquiz-step1",
       "kind": "module",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step1.py",
+      "file": "mathsquiz/mathsquiz-step1.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -19,10 +19,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::__module__",
+      "id": "mathsquiz/mathsquiz-step3.py::__module__",
       "label": "mathsquiz-step3",
       "kind": "module",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
+      "file": "mathsquiz/mathsquiz-step3.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -31,10 +31,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::welcome_message",
+      "id": "mathsquiz/mathsquiz-step3.py::welcome_message",
       "label": "welcome_message",
       "kind": "function",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
+      "file": "mathsquiz/mathsquiz-step3.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -43,10 +43,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::ask_question",
+      "id": "mathsquiz/mathsquiz-step3.py::ask_question",
       "label": "ask_question",
       "kind": "function",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
+      "file": "mathsquiz/mathsquiz-step3.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -55,10 +55,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py::print_final_scores",
+      "id": "mathsquiz/mathsquiz-step3.py::print_final_scores",
       "label": "print_final_scores",
       "kind": "function",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step3.py",
+      "file": "mathsquiz/mathsquiz-step3.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -67,10 +67,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::__module__",
+      "id": "mathsquiz/mathsquiz-step2.py::__module__",
       "label": "mathsquiz-step2",
       "kind": "module",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
+      "file": "mathsquiz/mathsquiz-step2.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -79,10 +79,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::welcome_message",
+      "id": "mathsquiz/mathsquiz-step2.py::welcome_message",
       "label": "welcome_message",
       "kind": "function",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
+      "file": "mathsquiz/mathsquiz-step2.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -91,10 +91,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::ask_question",
+      "id": "mathsquiz/mathsquiz-step2.py::ask_question",
       "label": "ask_question",
       "kind": "function",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
+      "file": "mathsquiz/mathsquiz-step2.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,
@@ -103,10 +103,10 @@
       "docstring": ""
     },
     {
-      "id": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py::print_final_scores",
+      "id": "mathsquiz/mathsquiz-step2.py::print_final_scores",
       "label": "print_final_scores",
       "kind": "function",
-      "file": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python/mathsquiz/mathsquiz-step2.py",
+      "file": "mathsquiz/mathsquiz-step2.py",
       "betweenness": 0.0,
       "in_degree": 0,
       "out_degree": 0,

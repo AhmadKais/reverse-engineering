@@ -80,8 +80,11 @@ class ObsidianExporter:
         """Return relative paths of .py files that produced no graph nodes (parse failed)."""
         from pathlib import Path as _Path
         src = _Path(source_dir).resolve()
-        # Normalize to absolute paths for comparison (node file_path may be relative)
-        node_files = {_Path(n.file_path).resolve() for n in kg._nodes.values()}
+        # node file_path may be relative (to source_dir) or absolute — normalise both to absolute
+        node_files: set[_Path] = set()
+        for n in kg._nodes.values():
+            fp = _Path(n.file_path)
+            node_files.add((src / fp).resolve() if not fp.is_absolute() else fp.resolve())
         failed = []
         for py in sorted(src.rglob("*.py")):
             if py.resolve() not in node_files:
