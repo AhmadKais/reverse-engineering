@@ -211,6 +211,41 @@ Token Usage: 14,575 / 40,000 (36% of budget used)
 
 Full output: [`artifacts/Pipeline_output.txt`](artifacts/Pipeline_output.txt)
 
+### Navigate Path Demonstration (Dense Graph)
+
+The broken-python target always takes the **sparse path** because syntax errors block AST parsing. To demonstrate the **dense/navigate path**, a clean codebase (`data/demo-dense/`) was created: three modules (`shapes.py`, `calculator.py`, `reporter.py`) that produce **24 nodes, 24 edges** — well above the `SPARSE_EDGE_THRESHOLD = 5`.
+
+```bash
+# Run the navigate path (dense graph — NavigatorAgent activated)
+uv run python main.py --source data/demo-dense --vault obsidian_demo --budget 20000
+```
+
+**Graph metrics**: 24 nodes · 24 edges · 11 communities · 2 bridges → `is_sparse=False` → `navigate` node activated
+
+**NavigatorAgent output** (excerpt from [`artifacts/navigate_demo_output.txt`](artifacts/navigate_demo_output.txt)):
+
+```
+Graph  : 24 nodes, 24 edges
+Bridges: 2  |  Communities: 11
+
+Bugs Found: 5
+  [MAJOR] GodObject  →  reporter.py::collection_report
+         Fix: Extract aggregation into ShapeCollectionStats class
+  [MAJOR] MissingAbstraction  →  reporter.py::collection_report, shape_summary
+         Fix: Introduce shape-type registry (Counter over class names)
+  [MAJOR] HardcodedDispatch  →  reporter.py::collection_report
+         Fix: Replace per-type filters with generic group_by_type utility
+  [MINOR] MissingAbstraction  →  calculator.py (total_area, total_perimeter, largest_shape)
+         Fix: Wrap in ShapeCollection class exposing area/perimeter/largest as properties
+  [MINOR] SPOF  →  reporter.py::collection_report
+         Fix: Decompose into independently testable pipeline stages
+
+Fixes Proposed: 5 (Facade, Registry, Strategy, ValueObject, Pipeline patterns)
+Token Usage: 8,445 / 20,000 (42% of budget)
+```
+
+The NavigatorAgent read the Obsidian vault (`obsidian_demo/hot.md`, `index.md`) **first**, identified `collection_report` as the hub with the highest out-degree (6 calls), then produced the architectural overview. The full vault is in `obsidian_demo/`.
+
 ---
 
 ## 6. How Grphify and Obsidian Were Used

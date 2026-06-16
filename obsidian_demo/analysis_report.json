@@ -1,0 +1,206 @@
+{
+  "source_root": "data/demo-dense",
+  "vault_dir": "obsidian_demo",
+  "graph_summary": {
+    "node_count": 24,
+    "edge_count": 24,
+    "top_hubs": [
+      {
+        "id": "data/demo-dense/reporter.py::collection_report",
+        "name": "collection_report",
+        "kind": "function",
+        "betweenness": 0.0178,
+        "in_degree": 1,
+        "out_degree": 6
+      },
+      {
+        "id": "data/demo-dense/calculator.py::total_perimeter",
+        "name": "total_perimeter",
+        "kind": "function",
+        "betweenness": 0.0059,
+        "in_degree": 2,
+        "out_degree": 1
+      },
+      {
+        "id": "data/demo-dense/shapes.py::Shape.describe",
+        "name": "describe",
+        "kind": "method",
+        "betweenness": 0.004,
+        "in_degree": 1,
+        "out_degree": 2
+      },
+      {
+        "id": "data/demo-dense/reporter.py::shape_summary",
+        "name": "shape_summary",
+        "kind": "function",
+        "betweenness": 0.004,
+        "in_degree": 1,
+        "out_degree": 1
+      },
+      {
+        "id": "data/demo-dense/calculator.py::total_area",
+        "name": "total_area",
+        "kind": "function",
+        "betweenness": 0.003,
+        "in_degree": 2,
+        "out_degree": 1
+      },
+      {
+        "id": "data/demo-dense/calculator.py::largest_shape",
+        "name": "largest_shape",
+        "kind": "function",
+        "betweenness": 0.003,
+        "in_degree": 2,
+        "out_degree": 1
+      },
+      {
+        "id": "data/demo-dense/shapes.py::__module__",
+        "name": "shapes",
+        "kind": "module",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "data/demo-dense/shapes.py::Shape",
+        "name": "Shape",
+        "kind": "class",
+        "betweenness": 0.0,
+        "in_degree": 4,
+        "out_degree": 0
+      },
+      {
+        "id": "data/demo-dense/shapes.py::Shape.area",
+        "name": "area",
+        "kind": "method",
+        "betweenness": 0.0,
+        "in_degree": 3,
+        "out_degree": 0
+      },
+      {
+        "id": "data/demo-dense/shapes.py::Shape.perimeter",
+        "name": "perimeter",
+        "kind": "method",
+        "betweenness": 0.0,
+        "in_degree": 2,
+        "out_degree": 0
+      }
+    ],
+    "community_count": 11,
+    "bridge_count": 2
+  },
+  "raw_files": {},
+  "navigation": "## Architectural Overview\nThis is a small, three-module Python codebase organized around a classic layered shape-geometry system: `shapes.py` defines the domain model, `calculator.py` performs aggregate computations over collections of shapes, and `reporter.py` formats and presents results. The graph is shallow (24 nodes, 24 edges \u2014 a 1:1 ratio) indicating a sparse, mostly linear call chain with very little cross-cutting. Only two bridge edges connect the major communities, making the architecture fragile at those seams.\n\n---\n\n## Hubs (High Centrality Nodes)\n\n- **`collection_report` (reporter.py)** \u2014 Highest betweenness (0.0178) and highest out-degree (6); this is the primary orchestrator and entry point for the reporting pipeline. It fans out to nearly all other meaningful nodes, making it the single biggest change-risk surface in the system.\n- **`total_perimeter` (calculator.py)** \u2014 Second-highest betweenness; sits on critical paths between the shape model and the reporter, acting as a key bridge between the computation and presentation layers.\n- **`Shape.describe` (shapes.py)** \u2014 Bridges the domain model upward into the reporting layer; despite living in the base model, it is called across module boundaries, giving it disproportionate cross-layer influence.\n- **`shape_summary` (reporter.py)** \u2014 A secondary reporting hub; participates in the perimeter/describe sub-path, forming part of the reporting community's internal relay chain.\n- **`total_area` / `largest_shape` (calculator.py)** \u2014 Symmetric aggregation functions with identical centrality scores; both are called by the same upstream callers (in-degree 2) and feed into the same downstream consumer, suggesting they are co-dependent and should be maintained together.\n\n---\n\n## Communities\n\n- **Community 1 (size 8) \u2014 Orchestration & Aggregation Core:** `collection_report`, `largest_shape`, `total_area`, `filter_circles`, and related functions. Represents the combined reporting/calculation pipeline \u2014 the \"what does the collection look like\" logic.\n- **Community 2 (size 4) \u2014 Domain Model + Module Boundary:** `Shape`, `Circle`, `Rectangle`, and the `calculator` module node. Suggests the calculator module is structurally grouped with the shape classes, likely because it directly imports and references them.\n- **Community 3 (size 4) \u2014 Perimeter & Description Sub-pipeline:** `perimeter`, `shape_summary`, `describe`, `total_perimeter`. A secondary flow path focused on perimeter-based reporting, loosely coupled from the area pipeline.\n- **Community 4 (size 1) \u2014 Isolated Module Node:** `shapes` module-level node. Zero in- and out-degree; the module node itself is disconnected from the call graph, likely a parse artifact.\n- **Community 5 (size 1) \u2014 Orphaned Initializer:** A lone `__init__` method node. Isolated from the rest of the graph \u2014 no callers detected, no outbound calls captured.\n\n---\n\n## Data Flow Summary\n\nControl enters through **`collection_report`** in `reporter.py`, which fans out to calculator functions (`total_area`, `total_perimeter`, `largest_shape`, `filter_circles`, `filter_rectangles`) and directly invokes `shape_summary`. The calculator layer calls into the shape domain model (`Shape.area`, `Shape.perimeter`) via polymorphic dispatch through `Circle` and `Rectangle` subclasses. `Shape.describe` provides a secondary upward path from the domain model directly into the reporter layer, bypassing the calculator \u2014 this is one of the two bridge edges. The data flow is predominantly **top-down** (reporter \u2192 calculator \u2192 shapes), with shape objects acting as passive data carriers consumed by aggregation functions.\n\n---\n\n## Initial Risk Signals\n\n- **`collection_report` is a God Orchestrator:** Out-degree of 6 in a 24-node graph means ~25% of all edges emanate from one function. Any change to the reporting contract or shape collection API likely breaks here first.\n- **Only 2 bridge edges across communities:** The entire inter-module communication relies on just two structural bridges. Severing either (e.g., refactoring `Shape.describe` or `total_perimeter`) could disconnect major portions of the graph.\n- **Sparse graph (edge:node ratio = 1.0):** A ratio this low indicates very thin connectivity \u2014 there is almost no redundancy in the call paths. This means limited reuse and high brittleness to single-function changes.\n- **`Shape` class has in-degree 4 but out-degree 0:** It is a pure data sink in the call graph \u2014 no outbound calls detected. This may indicate missing edges (e.g., `__init__` calls not captured) or that subclass constructors are not being linked to the base class.\n- **Orphaned nodes (`shapes` module, `__init__`):** Two fully isolated nodes suggest incomplete graph extraction. If `__init__` methods wire up dependencies at construction time, those flows are invisible to the current analysis.\n- **11 communities in a 24-node graph:** A community-to-node ratio this high (~1:2) suggests the graph is over-fragmented \u2014 likely an artifact of sparse edges causing the community detection algorithm to split what are logically cohesive modules into many small clusters.",
+  "bug_report": {
+    "bugs": [
+      {
+        "type": "GodObject",
+        "severity": "major",
+        "affected_nodes": [
+          "data/demo-dense/reporter.py::collection_report"
+        ],
+        "evidence": "collection_report has out_degree 6, directly orchestrating filter_circles, filter_rectangles, largest_shape, total_area, total_perimeter, and shape_summary in a single function. It combines filtering, aggregation, and formatting responsibilities, violating single-responsibility principle.",
+        "fix_hint": "Extract aggregation logic into a dedicated aggregator layer (e.g., ShapeCollectionStats class) so collection_report only coordinates pre-built sub-components."
+      },
+      {
+        "type": "MissingAbstraction",
+        "severity": "major",
+        "affected_nodes": [
+          "data/demo-dense/reporter.py::collection_report",
+          "data/demo-dense/reporter.py::shape_summary"
+        ],
+        "evidence": "shape_summary is a trivial pass-through (it only calls shape.describe()), and collection_report hard-codes type-specific counts (circles, rectangles). There is no polymorphic shape-type registry or strategy; adding a new shape type requires modifying collection_report directly.",
+        "fix_hint": "Introduce a shape-type registry or use a Counter over shape class names so collection_report is open for extension without modification."
+      },
+      {
+        "type": "HardcodedDispatch",
+        "severity": "major",
+        "affected_nodes": [
+          "data/demo-dense/reporter.py::collection_report"
+        ],
+        "evidence": "collection_report explicitly calls filter_circles and filter_rectangles as separate, named functions, meaning every new shape subclass requires a new filter function and a new key hard-coded inside collection_report.",
+        "fix_hint": "Replace per-type filter functions with a generic group_by_type utility that returns a dict keyed by class name, eliminating all hard-coded dispatch."
+      },
+      {
+        "type": "MissingAbstraction",
+        "severity": "minor",
+        "affected_nodes": [
+          "data/demo-dense/calculator.py::total_area",
+          "data/demo-dense/calculator.py::total_perimeter",
+          "data/demo-dense/calculator.py::largest_shape"
+        ],
+        "evidence": "total_area, total_perimeter, and largest_shape are standalone functions accepting untyped list; there is no collection-level abstraction (e.g., ShapeCollection class) to encapsulate these operations, leading to repeated iteration over the same list in collection_report.",
+        "fix_hint": "Wrap these functions in a ShapeCollection class that iterates the list once and exposes area, perimeter, and largest as properties."
+      },
+      {
+        "type": "SPOF",
+        "severity": "minor",
+        "affected_nodes": [
+          "data/demo-dense/reporter.py::collection_report"
+        ],
+        "evidence": "With bridge_count of only 2 in a 24-node graph and collection_report holding the highest betweenness centrality, all reporting paths flow through this single function; any change or failure in it breaks the entire reporting pipeline.",
+        "fix_hint": "Decompose collection_report into independently testable pipeline stages so each stage can be replaced or mocked without affecting others."
+      }
+    ],
+    "summary": "The codebase's primary architectural flaw is that collection_report acts as a God Object and hard-coded dispatcher, accumulating filtering, aggregation, and formatting concerns while requiring modification for every new shape type. A missing ShapeCollection abstraction causes repeated list traversal and tight coupling between the reporter and specific concrete shape types."
+  },
+  "fix_report": {
+    "fixes": [
+      {
+        "bug_type": "GodObject",
+        "file_path": "data/demo-dense/reporter.py",
+        "target_symbol": "collection_report",
+        "description": "Extract all aggregation and filtering responsibilities from collection_report into a new ShapeCollectionStats class, leaving collection_report to only coordinate pre-built sub-components.",
+        "architectural_pattern": "Facade",
+        "new_class_or_method": "ShapeCollectionStats",
+        "explanation": "By moving filtering, aggregation, and per-type counting into ShapeCollectionStats, collection_report is reduced to a thin coordinator that delegates to a single stats object, restoring single-responsibility and lowering its out-degree from 6 to 1."
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "data/demo-dense/reporter.py",
+        "target_symbol": "collection_report",
+        "description": "Replace hard-coded circle and rectangle type counts with a polymorphic shape-type registry built on a Counter over shape class names, and remove the trivial shape_summary pass-through by inlining describe calls through the registry.",
+        "architectural_pattern": "Registry",
+        "new_class_or_method": "ShapeTypeRegistry",
+        "explanation": "A registry keyed by class name means collection_report never needs to be modified when new shape subclasses are added, satisfying the open-closed principle and eliminating the need for the trivial shape_summary wrapper."
+      },
+      {
+        "bug_type": "HardcodedDispatch",
+        "file_path": "data/demo-dense/reporter.py",
+        "target_symbol": "collection_report",
+        "description": "Replace the explicit filter_circles and filter_rectangles calls with a single generic group_by_type utility function that returns a dict keyed by class name, removing all hard-coded per-type dispatch.",
+        "architectural_pattern": "Strategy",
+        "new_class_or_method": "group_by_type",
+        "explanation": "A generic grouping utility decouples collection_report from any knowledge of concrete shape subclasses; new shape types automatically appear as new keys in the returned dict without requiring any change to collection_report or new filter functions."
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "data/demo-dense/calculator.py",
+        "target_symbol": "total_area",
+        "description": "Wrap total_area, total_perimeter, and largest_shape into a ShapeCollection class that stores the list once and exposes area, perimeter, and largest as lazy-evaluated properties to eliminate repeated iteration.",
+        "architectural_pattern": "ValueObject",
+        "new_class_or_method": "ShapeCollection",
+        "explanation": "Encapsulating the shape list and its derived statistics inside ShapeCollection ensures the list is iterated once per reporting cycle, removes the untyped list parameter from three separate function signatures, and provides a coherent collection-level abstraction that callers can depend on."
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "data/demo-dense/reporter.py",
+        "target_symbol": "collection_report",
+        "description": "Decompose collection_report into independently testable pipeline stages \u2014 a grouping stage, an aggregation stage, and a formatting stage \u2014 each exposed as a separate callable so any stage can be replaced or mocked without affecting others.",
+        "architectural_pattern": "Pipeline",
+        "new_class_or_method": "ReportingPipeline",
+        "explanation": "A pipeline architecture eliminates collection_report as a single point of failure by ensuring that a change or failure in formatting does not break aggregation, and vice versa; each stage can be unit-tested in isolation, reducing the betweenness centrality of any one node in the reporting call graph."
+      }
+    ],
+    "overall_impact": "These fixes collectively transform a monolithic reporting function with six direct dependencies into a layered architecture composed of a generic grouping utility, a ShapeCollection value object, a ShapeCollectionStats aggregator, and a ReportingPipeline coordinator, each with a single well-defined responsibility. The result is a system that is open for extension to new shape types without modification, resilient to isolated stage failures, and straightforwardly unit-testable at every layer."
+  },
+  "token_usage": {
+    "used_input": 5273,
+    "used_output": 3172,
+    "total_used": 8445,
+    "remaining": 11555,
+    "budget": 20000
+  },
+  "is_sparse": false,
+  "error": null
+}

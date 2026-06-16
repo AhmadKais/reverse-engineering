@@ -1,0 +1,33 @@
+[LangGraph] Starting workflow on: data/demo-dense
+[LangGraph] Vault: obsidian_demo  |  Budget: 20,000 tokens
+[LangGraph] Nodes: build_graph → navigate → analyze → fix
+
+[LangGraph] Report saved: obsidian_demo/analysis_report.json
+
+============================================================
+LANGGRAPH WORKFLOW — FINAL REPORT
+============================================================
+Graph  : 24 nodes, 24 edges
+Bridges: 2  |  Communities: 11
+
+Bugs Found: 5
+  [MAJOR] GodObject  →  data/demo-dense/reporter.py::collection_report
+         Fix: Extract aggregation logic into a dedicated aggregator layer (e.g., ShapeCollectionStats class) so collection_report only coordinates pre-built sub-components.
+  [MAJOR] MissingAbstraction  →  data/demo-dense/reporter.py::collection_report, data/demo-dense/reporter.py::shape_summary
+         Fix: Introduce a shape-type registry or use a Counter over shape class names so collection_report is open for extension without modification.
+  [MAJOR] HardcodedDispatch  →  data/demo-dense/reporter.py::collection_report
+         Fix: Replace per-type filter functions with a generic group_by_type utility that returns a dict keyed by class name, eliminating all hard-coded dispatch.
+  [MINOR] MissingAbstraction  →  data/demo-dense/calculator.py::total_area, data/demo-dense/calculator.py::total_perimeter, data/demo-dense/calculator.py::largest_shape
+         Fix: Wrap these functions in a ShapeCollection class that iterates the list once and exposes area, perimeter, and largest as properties.
+  [MINOR] SPOF  →  data/demo-dense/reporter.py::collection_report
+         Fix: Decompose collection_report into independently testable pipeline stages so each stage can be replaced or mocked without affecting others.
+
+Fixes Proposed: 5
+  data/demo-dense/reporter.py | collection_report | Facade | Extract all aggregation and filtering responsibilities from collection_report into a new ShapeCollectionStats class, leaving collection_report to only coordinate pre-built sub-components.
+  data/demo-dense/reporter.py | collection_report | Registry | Replace hard-coded circle and rectangle type counts with a polymorphic shape-type registry built on a Counter over shape class names, and remove the trivial shape_summary pass-through by inlining describe calls through the registry.
+  data/demo-dense/reporter.py | collection_report | Strategy | Replace the explicit filter_circles and filter_rectangles calls with a single generic group_by_type utility function that returns a dict keyed by class name, removing all hard-coded per-type dispatch.
+  data/demo-dense/calculator.py | total_area | ValueObject | Wrap total_area, total_perimeter, and largest_shape into a ShapeCollection class that stores the list once and exposes area, perimeter, and largest as lazy-evaluated properties to eliminate repeated iteration.
+  data/demo-dense/reporter.py | collection_report | Pipeline | Decompose collection_report into independently testable pipeline stages — a grouping stage, an aggregation stage, and a formatting stage — each exposed as a separate callable so any stage can be replaced or mocked without affecting others.
+
+Token Usage: 8,445 / 20,000 (42% of budget)
+============================================================
