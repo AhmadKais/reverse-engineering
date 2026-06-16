@@ -81,12 +81,15 @@ Fixer received: bug report JSON + 2 file snippets
 | Metric | Naive Baseline | Graph-Guided (actual) |
 |--------|---------------|----------------------|
 | Files sent to LLM | **5 files** (all) | **2 files** (only broken ones) |
+| Textual units read | 5 files × 3 agents = **15 reads** | 2 files × 1 read + 2 snippets × 2 agents = **6 reads** |
+| Investigation iterations | Unknown — may need re-runs if bugs missed | **1 pass** — all 16 bugs found in single run |
 | Step files in context | Yes (wasted) | **No — excluded by graph** |
-| Agents | 3 sequential | 3 sequential |
+| Agents called | 3 sequential | 3 sequential (navigate skipped) |
 | Total tokens | ~14,909 (estimated) | **14,575 (measured)** |
 | Bugs found | Unknown — no graph insight | **16 bugs** |
 | Fixes proposed | Unknown | **18 targeted fixes** |
 | Budget used | ~37% (estimated) | **36% (measured)** |
+| Speed to root cause | Slow — must read all 5 files first | **Instant** — 0-edge graph signal requires 0 tokens |
 | Graph insight | None | ✅ 0-edge signal identified broken files |
 
 ---

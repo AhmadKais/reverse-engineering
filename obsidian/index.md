@@ -59,10 +59,13 @@ These files parsed cleanly and appear in the graph. They contain the *intended* 
 
 ---
 
+## Schemas (In this vault)
+
+- [[OOP_SCHEMA]] — Polygon class hierarchy + Mermaid diagram
+- [[BLOCK_SCHEMA]] — Architectural block + data flow diagrams
+
 ## Reports (External)
 
 - `reports/BUG_REPORT.md` — 12 documented bugs with root cause + fix
-- `reports/OOP_SCHEMA.md` — Polygon class hierarchy Mermaid diagram
-- `reports/BLOCK_SCHEMA.md` — Architectural block + data flow diagrams
 - `reports/TOKEN_COMPARISON.md` — Baseline vs graph-guided token usage
 - `reports/GRAPH_REPORT.md` — Graph metrics + architectural insight

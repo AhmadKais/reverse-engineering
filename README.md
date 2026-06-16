@@ -95,7 +95,51 @@ mathsquiz-step1/2/3.py             ← intended refactoring: split into function
 
 **Key insight from the step files**: `mathsquiz-step2.py` and `mathsquiz-step3.py` show what the God Script *should* look like after proper decomposition. The graph builder parsed these correctly (valid Python 3 syntax), while the main files failed entirely.
 
-Full Mermaid diagrams: [`reports/OOP_SCHEMA.md`](reports/OOP_SCHEMA.md), [`reports/BLOCK_SCHEMA.md`](reports/BLOCK_SCHEMA.md)
+### OOP Schema
+
+```mermaid
+classDiagram
+    class Polygon {
+        +int sides
+        +float internal_angles_sum
+        +float internal_angle
+        +__init__(sides, internal_angles_sum, internal_angle)
+    }
+    class calc_polygon_details {
+        <<function>>
+        +sides: int
+        +returns: Polygon
+    }
+    class draw_polygon {
+        <<function>>
+        +polygon_details: Polygon
+    }
+    calc_polygon_details --> Polygon : instantiates
+    draw_polygon ..> Polygon : uses
+```
+
+`mathsquiz.py` has **no classes** — it is a flat procedural God Script. Full details: [`reports/OOP_SCHEMA.md`](reports/OOP_SCHEMA.md)
+
+### Block Schema
+
+```mermaid
+flowchart TD
+    A[User Input: sides] --> B[calc_polygon_details]
+    B -->|triangle| C[sum=180, angle=60]
+    B -->|square| D[sum=360, angle=90]
+    B -->|other| E["sum=(sides-2)×180\nangle=sum/sides"]
+    C --> F[Polygon object]
+    D --> F
+    E --> F
+    F --> G[draw_polygon]
+    G --> H[Terminal Output]
+
+    I[mathsquiz.py God Script] --> J[6 inline questions]
+    J --> K[score tracking]
+    K --> L[final score print]
+```
+
+Full details: [`reports/BLOCK_SCHEMA.md`](reports/BLOCK_SCHEMA.md)
 
 ---
 
@@ -306,15 +350,31 @@ Full breakdown: [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)
 
 ## 11. Extensions and Original Contributions
 
-1. **Full Grphify equivalent in pure Python** — `src/graph_builder/` implements AST parsing, networkx graph construction, centrality metrics, community detection, bridge detection, and Obsidian export.
+The assignment requires at least one original extension per task section. Here is the mapping:
 
-2. **Adaptive sparse-graph fallback** — when syntax errors block AST parsing, the LangGraph workflow automatically switches to a `raw_reader` node that reads raw file text instead.
+### Task 5.1 — Grphify + Obsidian
 
-3. **Graph improvement loop** — `sdk.py` implements `improve()`: analyze → fix → rebuild graph → compare metrics across iterations. Run with `--improve --iterations 2`.
+**Interactive HTML graph** (`obsidian/graph.html`) — beyond the static Obsidian export, the pipeline generates a fully interactive vis-network graph viewable in any browser, with edge confidence scores and source-file metadata on each node. Run with `--graph-only` and open `obsidian/graph.html`. See `src/graph_builder/graph_html_writer.py`.
 
-4. **100 unit tests** — covering AST parsing, graph building, agent parsing logic, LangGraph workflow nodes, routing logic, ObsidianExporter, data types, and graph.html generation.
+### Task 5.2 — Reverse Engineering
 
-5. **Token budget guardrail** — `AgentBudget` class in `src/agents/base_agent.py` enforces a hard token ceiling shared across all three agents.
+**Architecture comparison before/after via graph metrics** — after fixing the code, the graph is rebuilt on the fixed files and the node/edge count difference is computed and displayed (`obsidian/BEFORE_AFTER.md`, `obsidian_after/`). This concretely proves that the OOP structure hidden by syntax errors becomes visible after the fix: 0 edges → 8+ edges, `Polygon` class invisible → fully connected.
+
+### Task 5.3 — AI Agent
+
+**Adaptive sparse-graph fallback** — when syntax errors block AST parsing (`edge_count < SPARSE_EDGE_THRESHOLD`), the LangGraph workflow automatically reroutes from `navigate` to `raw_reader`. This is not a static configuration — it's a conditional edge that dynamically chooses the path based on the graph state at runtime. See `src/workflow_state.py:route_from_build_graph()`.
+
+### Task 5.4 — Fix
+
+**Graph improvement loop** — `sdk.py` implements `improve()`: analyze → fix → rebuild graph → compare edge/node counts across N iterations. Concrete metric improvement is measured after each fix pass, not just assumed. Run with `--improve --iterations 2 --budget 80000`.
+
+### Task 5.5 — Token Efficiency
+
+**Token budget guardrail** — `AgentBudget` class in `src/agents/base_agent.py` enforces a hard shared token ceiling across all three agents. A single counter is passed by reference through the `WorkflowState`, so spending in one agent directly reduces the budget available to the next. This prevents runaway multi-agent loops from exceeding the budget limit.
+
+---
+
+**Additional**: 100 unit tests covering AST parsing, graph building, agent parsing logic, LangGraph nodes, routing, ObsidianExporter, and data types — all with mocked API calls so no real tokens are spent running the test suite.
 
 ---
 
