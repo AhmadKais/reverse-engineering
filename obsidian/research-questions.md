@@ -125,7 +125,7 @@ The graph acts as a **zero-cost pre-filter**: it determined in 0 tokens which 2 
 
 4. **Token budget guardrail** (`AgentBudget`): shared across all 3 agents, raises `TokenBudgetExceededError` if exceeded. Prevents runaway iterations.
 
-**Result**: 14,575 / 40,000 tokens used (36% of budget). 16 bugs found in 1 pass.
+**Result**: 15,805 / 40,000 tokens used (39% of budget). 16 bugs found in 1 pass.
 
 ---
 

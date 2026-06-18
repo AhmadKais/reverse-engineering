@@ -143,7 +143,7 @@ Graph rebuilt on fixed files → 8 nodes, 9 edges (see [[BEFORE_AFTER]]).
 | raw_reader | ~2,800 | Only 2 buggy files read |
 | analyze | ~3,100 | Focused on 2 files |
 | fix | ~2,929 | Targeted proposals |
-| **Total** | **14,575 / 40,000** | 36% of budget used |
+| **Total** | **15,805 / 40,000** | 39% of budget used |
 
 The 3 step-files (3,005 + 1,660 + 1,822 = 6,487 bytes ≈ 1,622 tokens) **never entered the LLM context** — excluded by the graph signal alone.
 
