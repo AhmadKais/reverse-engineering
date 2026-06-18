@@ -63,7 +63,7 @@ A: The `Polygon` class in `polygons.py` shows the intended OOP design (see [`rep
 A: The sparse graph (0 edges) immediately signalled broken code. The `raw_reader` LangGraph node read the raw file text and identified syntax errors — without reading the files manually. The Analyzer then confirmed 16 bugs.
 
 **Q: What was the advantage of graph-guided reading vs linear reading?**  
-A: Measured comparison (see [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)): naive baseline found only **6 of 16 bugs** using 10,709 tokens; graph-guided found **all 16 bugs** using 14,575 tokens — 167% more bugs per run. The graph excluded 3 irrelevant step files before any LLM call.
+A: Measured comparison (see [`reports/TOKEN_COMPARISON.md`](reports/TOKEN_COMPARISON.md)): naive baseline found only **8 of 16 bugs** using 11,301 tokens; graph-guided found **all 16 bugs** using 15,805 tokens — 100% more bugs per run. The graph excluded 3 irrelevant step files before any LLM call.
 
 **Q: How did agents help navigate/fix?**  
 A: `raw_reader` described structure. `analyze` found 16 bugs with evidence. `fix` produced concrete corrected code patterns. The fixed files were written to `artifacts/` based on the agent's proposals.
@@ -208,9 +208,9 @@ Step 4 — analyze (AnalyzerAgent)
 
 Step 5 — fix (FixerAgent)
   Input: bug report JSON + 2 file snippets
-  Output: 18 targeted fix proposals
+  Output: 17 targeted fix proposals
 
-Token Usage: 14,575 / 40,000 (36% of budget used)
+Token Usage: 15,805 / 40,000 (39% of budget used)
 ```
 
 Full output: [`artifacts/Pipeline_output.txt`](artifacts/Pipeline_output.txt)
@@ -376,14 +376,14 @@ if int(answer) == 56:   # equality check; cast input; correct answer
 
 **The "Lost in the Middle" problem**: LLM performance degrades when relevant information is buried in the middle of a long context window. If you dump five files into a single prompt, the bugs in files 2–4 receive less attention than those at position 1 or 5. The graph-guided approach prevents this by selecting only the relevant files before any LLM call — so the context window starts and ends with the important material.
 
-**Both approaches were actually run** (`uv run python main.py --naive --budget 60000` vs `uv run python main.py --budget 40000`):
+**Both approaches were actually run** (`uv run python main.py --naive --budget 80000` vs `uv run python main.py --budget 40000`):
 
 | Approach | Files Sent to LLM | Total Tokens | Bugs Found | Tokens per Bug |
 |---|---|---|---|---|
-| Naive (`--naive`): all 5 files, no graph | 5 (3 irrelevant step files included) | **10,709 (measured)** | **6 bugs** | 1,782 |
-| Graph-guided: sparse fallback (actual) | **2** (only broken files) | **14,575 (measured)** | **16 bugs** | **911** |
+| Naive (`--naive`): all 5 files, no graph | 5 (3 irrelevant step files included) | **11,301 (measured)** | **8 bugs** | 1,413 |
+| Graph-guided: sparse fallback (actual) | **2** (only broken files) | **15,805 (measured)** | **16 bugs** | **988** |
 
-The naive mode used *fewer* total tokens but found only 6 of 16 bugs — the step files diluted the LLM's attention. The graph-guided pipeline used slightly more tokens because it runs three focused agents with structured intermediate state, but found **167% more bugs** per run (1,782 → 911 tokens per bug found).
+The naive mode used fewer total tokens but found only 8 of 16 bugs — the step files diluted the LLM's attention. The graph-guided pipeline used slightly more tokens because it runs three focused agents with structured intermediate state, but found **100% more bugs** per run (1,413 → 988 tokens per bug found).
 
 The **graph was the pre-filter**: 0 edges told us in 0 API tokens which 2 files to target. The 3 step files (5,487 bytes) never entered the LLM context at all. For the broken-python codebase, the sparse detection *is* the graph-guided navigation — the 0-edge signal is the finding.
 
@@ -414,7 +414,7 @@ The assignment requires at least one original extension per task section. Here i
 
 ### Task 5.5 — Token Efficiency
 
-**Measured naive baseline** (`--naive` flag) — `AnalyzerAgent.analyze_raw()` and `FixerAgent.propose_fixes_raw()` implement a true naive mode: all source files concatenated and sent to agents without any graph routing, Obsidian, or targeted selection. Running `uv run python main.py --naive --budget 60000` produces a real token count that can be directly compared against the graph-guided run. This makes the token comparison scientifically reproducible, not estimated. Output: [`artifacts/naive_baseline_output.txt`](artifacts/naive_baseline_output.txt)
+**Measured naive baseline** (`--naive` flag) — `AnalyzerAgent.analyze_raw()` and `FixerAgent.propose_fixes_raw()` implement a true naive mode: all source files concatenated and sent to agents without any graph routing, Obsidian, or targeted selection. Running `uv run python main.py --naive --budget 80000` produces a real token count that can be directly compared against the graph-guided run. This makes the token comparison scientifically reproducible, not estimated. Output: [`artifacts/naive_baseline_output.txt`](artifacts/naive_baseline_output.txt)
 
 **Token budget guardrail** — `AgentBudget` class in `src/agents/base_agent.py` enforces a hard shared token ceiling across all three agents. A single counter is passed by reference through the `WorkflowState`, so spending in one agent directly reduces the budget available to the next. This prevents runaway multi-agent loops from exceeding the budget limit.
 
@@ -463,7 +463,7 @@ The assignment requires at least one original extension per task section. Here i
 | 8 | `artifacts/screenshots/pipeline_output1.png` | Terminal: workflow start, sparse graph detection, routing to raw_reader |
 | 9 | `artifacts/screenshots/pipeline_output2.png` | Terminal: bug list — 16 bugs found across polygons.py and mathsquiz.py |
 | 10 | `artifacts/screenshots/pipeline_output3.png` | Terminal: fix proposals — 18 targeted fixes proposed by FixerAgent |
-| 11 | `artifacts/screenshots/pipeline_output4.png` | Terminal: token usage summary — 14,575 / 40,000 tokens (36% of budget) |
+| 11 | `artifacts/screenshots/pipeline_output4.png` | Terminal: token usage summary — 15,805 / 40,000 tokens (39% of budget) |
 
 ![Pipeline output 1](artifacts/screenshots/pipeline_output1.png)
 ![Pipeline output 2](artifacts/screenshots/pipeline_output2.png)
@@ -500,7 +500,7 @@ uv run python main.py --graph-only
 uv run python main.py --budget 40000
 
 # Naive baseline — all files to agents, no graph (token comparison experiment)
-uv run python main.py --naive --budget 60000
+uv run python main.py --naive --budget 80000
 
 # Navigate path demo — dense graph (24 nodes, 24 edges → NavigatorAgent activated)
 uv run python main.py --source data/demo-dense --vault obsidian_demo --budget 20000

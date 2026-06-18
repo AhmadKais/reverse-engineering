@@ -65,5 +65,5 @@ Fixes Proposed: 18
   polygons/polygons.py | calc_polygon_details | Complete code structure | Complete the truncated return dictionary by replacing the partial key value internal_a with the full variable name internal_angles_sum and adding the closing brace to finish the dictionary and function
   polygons/polygons.py | Polygon | Template Method | Add a __repr__ method to the Polygon class that returns a human-readable string showing the sides, internal angles sum, and internal angle values
 
-Token Usage: 14,575 / 40,000 (36% of budget)
+Token Usage: 15,805 / 40,000 (39% of budget)
 ============================================================
