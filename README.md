@@ -407,7 +407,7 @@ The assignment requires at least one original extension per task section. Here i
 
 ### Task 5.3 — AI Agent
 
-**Adaptive sparse-graph fallback** — when syntax errors block AST parsing (`edge_count < SPARSE_EDGE_THRESHOLD`), the LangGraph workflow automatically reroutes from `navigate` to `raw_reader`. This is not a static configuration — it's a conditional edge that dynamically chooses the path based on the graph state at runtime. See `src/workflow_state.py:route_from_build_graph()`.
+**Adaptive sparse-graph fallback** — when syntax errors block AST parsing (`edge_count < SPARSE_EDGE_THRESHOLD`), the LangGraph workflow automatically reroutes from `navigate` to `raw_reader`. This is not a static configuration — it's a conditional edge that dynamically chooses the path based on the graph state at runtime. See `src/workflow_state.py:_route_after_build()`.
 
 ### Task 5.4 — Fix
 

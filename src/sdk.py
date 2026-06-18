@@ -118,13 +118,15 @@ class ReverseEngineerSDK:
         print(f"[SDK] Vault exported to: {self.vault_dir}/")
 
     def _save_report(self, report: dict) -> None:
-        out = Path(self.vault_dir) / "analysis_report.json"
+        out = Path(self.vault_dir).parent / "artifacts" / "analysis_report.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
         serializable = self._make_serializable(report)
         out.write_text(json.dumps(serializable, indent=2), encoding="utf-8")
         print(f"[SDK] Report saved: {out}")
 
     def _save_improvement_history(self, results: list[dict]) -> None:
-        out = Path(self.vault_dir) / "improvement_history.json"
+        out = Path(self.vault_dir).parent / "artifacts" / "improvement_history.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
         serializable = [self._make_serializable(r) for r in results]
         out.write_text(json.dumps(serializable, indent=2), encoding="utf-8")
         print(f"[SDK] Improvement history saved: {out}")
