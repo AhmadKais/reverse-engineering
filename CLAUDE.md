@@ -107,7 +107,7 @@ On failure: `{"parse_error": True, "bugs": []}` or `{"parse_error": True, "fixes
 
 ## Tests
 
-104 tests total, all must pass before committing:
+130 tests total, all must pass before committing:
 
 | File | Count | Covers |
 |------|-------|--------|
@@ -124,6 +124,9 @@ On failure: `{"parse_error": True, "bugs": []}` or `{"parse_error": True, "fixes
 | `tests/test_navigator_agent.py` | 2 | NavigatorAgent |
 | `tests/test_data_types.py` | 17 | GraphNode, GraphEdge |
 | `tests/test_kg_extras.py` | 5 | KnowledgeGraph extras |
+| `tests/test_gatekeeper.py` | 7 | ApiGatekeeper, RateLimitConfig, AgentConfig |
+| `tests/test_coverage_extras.py` | 10 | graph/AST uncovered paths |
+| `tests/test_coverage_misc.py` | 6 | version, workflow, vault writers |
 
 All agent tests mock the Anthropic API — no real calls needed.
 
@@ -151,8 +154,9 @@ All agent tests mock the Anthropic API — no real calls needed.
 - [x] 12 documented bugs (`reports/BUG_REPORT.md`)
 - [x] Fixed files (`artifacts/fixed_polygons.py`, `fixed_mathsquiz.py`)
 - [x] Reports (OOP_SCHEMA, BLOCK_SCHEMA, GRAPH_REPORT, TOKEN_COMPARISON)
-- [x] 104 tests
-- [x] Screenshots — `artifacts/screenshots/` (12 screenshots)
+- [x] 130 tests (87% coverage)
+- [x] ApiGatekeeper — all API calls through gatekeeper, config-driven rate limits
+- [x] Screenshots — `artifacts/screenshots/` (16 screenshots)
 - [x] Naive baseline (`--naive` flag, real measured token comparison)
 - [x] Navigate path demo (`data/demo-dense/`, `obsidian_demo/`)
 

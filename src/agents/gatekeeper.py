@@ -30,7 +30,7 @@ class AgentConfig:
         agents = cfg["agents"]
         self.model: str = agents["model"]
         self.max_tokens_per_call: int = agents["max_tokens_per_call"]
-        self.temperature: int = agents.get("temperature", 0)
+        self.temperature: float = float(agents.get("temperature", 0))
         self.max_tokens: dict[str, int] = agents.get("max_tokens", {})
         self.iteration_sleep_seconds: int = agents.get("iteration_sleep_seconds", 1)
 

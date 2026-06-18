@@ -17,6 +17,7 @@ load_dotenv()
 
 _DEFAULT_MODEL = get_agent_config().model
 _DEFAULT_MAX_TOKENS = get_agent_config().max_tokens_per_call
+_DEFAULT_TEMPERATURE = get_agent_config().temperature
 
 
 class TokenBudgetExceededError(Exception):
@@ -102,6 +103,7 @@ class BaseAgent:
             self._client.messages.create,
             model=self.model,
             max_tokens=self.max_tokens,
+            temperature=_DEFAULT_TEMPERATURE,
             system=self.system_prompt,
             messages=messages,
         )
