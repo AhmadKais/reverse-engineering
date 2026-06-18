@@ -1,0 +1,14 @@
+[
+  {
+    "iteration": 1,
+    "bugs": 15,
+    "fixes": 17,
+    "tokens": 15565
+  },
+  {
+    "iteration": 2,
+    "bugs": 15,
+    "fixes": 17,
+    "tokens": 15493
+  }
+]

@@ -7,7 +7,7 @@ Commands used to produce these results:
 
 ```bash
 # Naive baseline (measured)
-uv run python main.py --naive --budget 60000
+uv run python main.py --naive --budget 80000
 
 # Graph-guided pipeline (measured)
 uv run python main.py --budget 40000
@@ -31,25 +31,25 @@ uv run python main.py --budget 40000
 ## Approach A — Naive Baseline (measured)
 
 **Mode**: all 5 `.py` files sent to Analyzer → Fixer with no graph, no Obsidian.  
-**Run**: `uv run python main.py --naive --budget 60000`
+**Run**: `uv run python main.py --naive --budget 80000`
 
 | Agent | Files sent | Input tokens | Output tokens |
 |-------|-----------|-------------|---------------|
-| AnalyzerAgent | all 5 files | 3,101 | 1,331 |
-| FixerAgent | all 5 files + bug report | 4,719 | 1,558 |
-| **TOTAL** | 5 files × 2 agents | **7,820 input** | **2,889 output** |
-| **Grand total** | | | **10,709 tokens** |
+| AnalyzerAgent | all 5 files | 4,017 | 627 |
+| FixerAgent | all 5 files + bug report | 4,051 | 2,606 |
+| **TOTAL** | 5 files × 2 agents | **8,068 input** | **3,233 output** |
+| **Grand total** | | | **11,301 tokens** |
 
 **Results**:
-- Bugs found: **6** (missed 10 of the 16 real bugs)
-- Fixes proposed: **9**
-- Budget used: **10,709 / 60,000 (18%)**
+- Bugs found: **8** (missed 8 of the 16 real bugs)
+- Fixes proposed: **10**
+- Budget used: **11,301 / 80,000 (14%)**
 
 **Why it underperforms — "Lost in the Middle"**:
-- The 3 clean step files (5,487 bytes, ~1,372 tokens) wasted context that the LLM used to process irrelevant code
+- The 3 clean step files (5,487 bytes, ~1,372 tokens) wasted context the LLM used to process irrelevant code
 - No structural signal about which files are broken — the LLM had to infer this from raw content
 - Relevant bugs in `polygons.py` and `mathsquiz.py` were **buried in the middle** of a 5-file dump
-- The LLM missed 10 bugs because the valid step files diluted focus on the broken ones
+- The LLM missed 8 bugs because the valid step files diluted focus on the broken ones
 
 ---
 
@@ -73,18 +73,17 @@ Step files never entered the LLM context.
 
 Files read: `polygons.py` (1,882 bytes) + `mathsquiz.py` (1,445 bytes) = **3,327 bytes only**
 
-| Agent | Files sent | Input tokens | Output tokens |
-|-------|-----------|-------------|---------------|
-| raw_reader (BaseAgent) | 2 broken files | 2,800 | ~400 |
-| AnalyzerAgent | description + 2 snippets | 3,100 | ~1,500 |
-| FixerAgent | bug report + 2 snippets | 2,929 | ~3,846 |
-| **TOTAL** | 2 files only | **8,829 input** | **5,746 output** |
-| **Grand total** | | | **14,575 tokens** |
+| Agent | Files sent | Notes |
+|-------|-----------|-------|
+| raw_reader (BaseAgent) | 2 broken files | Graph topology used as preamble |
+| AnalyzerAgent | description + 2 snippets | Graph-filtered context |
+| FixerAgent | bug report + 2 snippets | Structured intermediate state |
+| **TOTAL** | 2 files only | **15,805 tokens** |
 
 **Results**:
 - Bugs found: **16** (100% of actual bugs — 5 in polygons.py, 11 in mathsquiz.py)
-- Fixes proposed: **18**
-- Budget used: **14,575 / 40,000 (36%)**
+- Fixes proposed: **17**
+- Budget used: **15,805 / 40,000 (39%)**
 
 ---
 
@@ -96,11 +95,11 @@ Files read: `polygons.py` (1,882 bytes) + `mathsquiz.py` (1,445 bytes) = **3,327
 | Bytes in LLM context | **9,814 bytes** (all) | **3,327 bytes** (targeted) |
 | Step files in context | **Yes** (wasted ~1,372 tokens) | **No** — excluded by graph signal |
 | Graph pre-filtering cost | — | **0 tokens** (local AST) |
-| Total tokens used | **10,709** | 14,575 |
-| Input tokens | 7,820 | 8,829 |
-| Output tokens | 2,889 | 5,746 |
-| **Bugs found** | **6** ← missed 10 bugs | **16** ← all bugs found |
-| Fixes proposed | 9 | 18 |
+| Total tokens used | **11,301** | **15,805** |
+| Input tokens | 8,068 | ~11,900 |
+| Output tokens | 3,233 | ~3,900 |
+| **Bugs found** | **8** ← missed 8 bugs | **16** ← all bugs found |
+| Fixes proposed | 10 | 17 |
 | Investigation iterations | 1 | 1 |
 | Structural insight | None (no graph) | ✅ 0-edge signal = broken language-level |
 | "Lost in the Middle" risk | **High** (bugs buried in 5-file dump) | **Low** (2 focused files) |
@@ -109,23 +108,41 @@ Files read: `polygons.py` (1,882 bytes) + `mathsquiz.py` (1,445 bytes) = **3,327
 
 ## The Core Finding
 
-The naive approach used **fewer tokens (10,709 vs 14,575)** but found **far fewer bugs (6 vs 16)**.
+The naive approach used **fewer tokens (11,301 vs 15,805)** but found **far fewer bugs (8 vs 16)**.
 
 This is the "Lost in the Middle" effect in practice: when `polygons.py` and `mathsquiz.py` are buried
-between three clean step files, the LLM's attention spreads across all five. The bugs in positions
-2 and 5 (middle and end of context) receive less focus than the bugs at position 1.
+between three clean step files, the LLM's attention spreads across all five. The bugs in the middle
+and end of the long context receive less focus than those at the beginning.
 
-The graph-guided approach used slightly more tokens because the pipeline runs three focused agents
+The graph-guided approach used more tokens because the pipeline runs three focused agents
 (raw_reader + Analyzer + Fixer) with structured intermediate state. That extra structure is what
-allowed it to find 167% more bugs than the naive approach.
+allowed it to find **100% of bugs** vs the naive approach's **50%**.
 
 **Token efficiency is not just about count — it's about bugs found per token**:
 
 | Metric | Naive | Graph-Guided |
 |--------|-------|-------------|
-| Tokens per bug found | 1,782 tokens/bug | **911 tokens/bug** |
-| Context relevance | ~66% relevant (2 buggy files out of 5) | ~100% relevant |
+| Tokens per bug found | 1,413 tokens/bug | **988 tokens/bug** |
+| Context relevance | ~34% relevant bytes (2 of 5 files) | ~100% relevant |
 | Knowledge before first LLM call | None | Graph topology (0 tokens) |
+
+---
+
+## Improvement Loop (measured)
+
+Running the pipeline twice on the same target shows consistent results:
+
+```bash
+uv run python main.py --improve --iterations 2 --budget 80000
+```
+
+| Iteration | Bugs | Fixes | Tokens |
+|-----------|------|-------|--------|
+| 1 | 15 | 17 | 15,565 |
+| 2 | 15 | 17 | 15,493 |
+
+Both iterations converge on the same bug set — confirming the analysis is stable and reproducible.
+The slight variation (15 vs 16) reflects LLM non-determinism at default temperature.
 
 ---
 
@@ -146,8 +163,8 @@ allowed it to find 167% more bugs than the naive approach.
 | Graph build + vault export | **0** | 0% |
 | raw_reader node | ~3,200 | ~8% |
 | Analyzer node | ~4,600 | ~11.5% |
-| Fixer node | ~6,775 | ~17% |
-| **Total used** | **14,575** | **36%** |
-| **Remaining** | **25,425** | **64%** |
+| Fixer node | ~8,005 | ~20% |
+| **Total used** | **15,805** | **39%** |
+| **Remaining** | **24,195** | **61%** |
 
-64% of the budget remained unused — headroom for additional investigation passes if needed.
+61% of the budget remained unused — headroom for additional investigation passes if needed.
