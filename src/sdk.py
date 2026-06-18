@@ -54,7 +54,7 @@ class ReverseEngineerSDK:
         kg = self._build_graph(source_root)
 
         print(f"[SDK] Graph: {kg.metrics.node_count} nodes, {kg.metrics.edge_count} edges")
-        self._export_vault(kg)
+        self._export_vault(kg, source_dir=source_root)
 
         print("[SDK] Navigator: mapping architecture...")
         navigation = self._navigator.navigate(kg)
@@ -112,9 +112,9 @@ class ReverseEngineerSDK:
         kg.compute_metrics()
         return kg
 
-    def _export_vault(self, kg: KnowledgeGraph) -> None:
+    def _export_vault(self, kg: KnowledgeGraph, source_dir: str = "") -> None:
         exporter = ObsidianExporter(self.vault_dir)
-        exporter.export(kg)
+        exporter.export(kg, source_dir=source_dir)
         print(f"[SDK] Vault exported to: {self.vault_dir}/")
 
     def _save_report(self, report: dict) -> None:

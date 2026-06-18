@@ -128,7 +128,7 @@ def analyze_node(state: WorkflowState, budget: AgentBudget) -> WorkflowState:
 
 
 def _analyze_raw(state: WorkflowState, budget: AgentBudget) -> dict:
-    """Sparse-mode analysis: send raw file text directly to AnalyzerAgent."""
+    """Sparse-mode analysis: raw_reader description + raw file text → AnalyzerAgent."""
     agent = AnalyzerAgent(budget)
     main_files = {
         k: v for k, v in state["raw_files"].items()
@@ -136,13 +136,21 @@ def _analyze_raw(state: WorkflowState, budget: AgentBudget) -> dict:
     } or state["raw_files"]
 
     files_text = "\n\n".join(
-        f"### {fname}\n```python\n{content[:1000]}\n```"
+        f"### {fname}\n```python\n{content}\n```"
         for fname, content in main_files.items()
     )
+    # Include the raw_reader's structural description as a first-pass context so
+    # the Analyzer starts from the reader's findings rather than re-reading cold.
+    reader_context = (
+        f"## Raw Reader Analysis\n\n{state['navigation']}\n\n"
+        if state.get("navigation") else ""
+    )
     prompt = (
-        "You are auditing Python code for bugs. List every bug — syntax errors, "
-        "logic errors, wrong values, OOP mistakes.\n\n"
-        f"Code to audit:\n{files_text}\n\n"
+        f"{reader_context}"
+        "You are auditing Python code for bugs. Using the reader analysis above "
+        "and the source files below, list EVERY bug — syntax errors, logic errors, "
+        "wrong values, OOP mistakes.\n\n"
+        f"Source files:\n{files_text}\n\n"
         "Respond with raw JSON only (no markdown fences):\n"
         '{"bugs":[{"type":"SyntaxError","severity":"critical",'
         '"affected_nodes":["file.py"],"evidence":"line or pattern","fix_hint":"fix"}],'
