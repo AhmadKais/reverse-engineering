@@ -114,7 +114,7 @@ On failure: `{"parse_error": True, "bugs": []}` or `{"parse_error": True, "fixes
 | `tests/test_graph_builder.py` | 17 | AST parser, KnowledgeGraph |
 | `tests/test_ast_parser.py` | 10 | parse_file / parse_directory |
 | `tests/test_agents.py` | 9 | AgentBudget, BaseAgent |
-| `tests/test_analyzer_fixer.py` | 9 | AnalyzerAgent, FixerAgent (incl. analyze_raw, propose_fixes_raw) |
+| `tests/test_analyzer_fixer.py` | 13 | AnalyzerAgent, FixerAgent (incl. analyze_raw, propose_fixes_raw, generate_corrected_files) |
 | `tests/test_agent_extras.py` | 5 | sparse mode + affected-code |
 | `tests/test_langgraph_workflow.py` | 9 | build_workflow, build_graph_node, error skip |
 | `tests/test_routing.py` | 13 | routing, raw_reader, sparse detection |
@@ -147,7 +147,7 @@ All agent tests mock the Anthropic API — no real calls needed.
 - [x] 12 documented bugs (`reports/BUG_REPORT.md`)
 - [x] Fixed files (`artifacts/fixed_polygons.py`, `fixed_mathsquiz.py`)
 - [x] Reports (OOP_SCHEMA, BLOCK_SCHEMA, GRAPH_REPORT, TOKEN_COMPARISON)
-- [x] 100 tests
+- [x] 104 tests
 - [x] Screenshots — `artifacts/screenshots/` (12 screenshots)
 - [x] Naive baseline (`--naive` flag, real measured token comparison)
 - [x] Navigate path demo (`data/demo-dense/`, `obsidian_demo/`)

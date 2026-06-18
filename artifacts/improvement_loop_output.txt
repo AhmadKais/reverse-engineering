@@ -1,14 +1,16 @@
-[LangGraph] Improvement loop: 2 iterations
+[improve] Starting improvement loop: 1 iteration(s)
 
-==================================================
-  Iteration 1/2
-==================================================
-  Bugs: 15 | Fixes: 17 | Tokens: 15,565
+=======================================================
+  Iteration 1/1
+=======================================================
+  [before] Graph : 9 nodes, 0 edges
+  [before] Bugs  : 4  |  Fixes: 7  |  Tokens: 14,710
+  [apply ] Generating corrected Python files via FixerAgent…
+  [apply ] Wrote 2 corrected file(s) to temp dir
+  [apply ] Improved vault → /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian_improved_iter1/
+  [after ] Graph : 6 nodes, 1 edges
+  [delta ] Nodes : -3  |  Edges: +1
+  [result] ✓ Graph connectivity IMPROVED — fix was effective
 
-==================================================
-  Iteration 2/2
-==================================================
-  Bugs: 15 | Fixes: 17 | Tokens: 15,493
-
-
-[LangGraph] History saved: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian/improvement_history.json
+[improve] History saved: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian/improvement_history.json
+[improve] Loop complete. Final delta: nodes -3, edges +1

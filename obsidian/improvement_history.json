@@ -1,14 +1,21 @@
 [
   {
     "iteration": 1,
-    "bugs": 15,
-    "fixes": 17,
-    "tokens": 15565
-  },
-  {
-    "iteration": 2,
-    "bugs": 15,
-    "fixes": 17,
-    "tokens": 15493
+    "bugs": 4,
+    "fixes": 7,
+    "tokens": 14710,
+    "corrected_files": 2,
+    "before": {
+      "nodes": 9,
+      "edges": 0
+    },
+    "after": {
+      "nodes": 6,
+      "edges": 1
+    },
+    "delta": {
+      "nodes": -3,
+      "edges": 1
+    }
   }
 ]

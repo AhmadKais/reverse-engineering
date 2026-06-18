@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "node_count": 6,
+    "edge_count": 1,
+    "community_count": 5,
+    "bridge_count": 1
+  },
+  "nodes": [
+    {
+      "id": "mathsquiz/mathsquiz.py::__module__",
+      "label": "mathsquiz",
+      "kind": "module",
+      "file": "mathsquiz/mathsquiz.py",
+      "betweenness": 0.0,
+      "in_degree": 0,
+      "out_degree": 0,
+      "line_start": 1,
+      "line_end": 91,
+      "docstring": ""
+    },
+    {
+      "id": "polygons/polygons.py::__module__",
+      "label": "polygons",
+      "kind": "module",
+      "file": "polygons/polygons.py",
+      "betweenness": 0.0,
+      "in_degree": 0,
+      "out_degree": 0,
+      "line_start": 1,
+      "line_end": 69,
+      "docstring": ""
+    },
+    {
+      "id": "polygons/polygons.py::Polygon",
+      "label": "Polygon",
+      "kind": "class",
+      "file": "polygons/polygons.py",
+      "betweenness": 0.0,
+      "in_degree": 1,
+      "out_degree": 0,
+      "line_start": 3,
+      "line_end": 8,
+      "docstring": ""
+    },
+    {
+      "id": "polygons/polygons.py::Polygon.__init__",
+      "label": "Polygon.__init__",
+      "kind": "method",
+      "file": "polygons/polygons.py",
+      "betweenness": 0.0,
+      "in_degree": 0,
+      "out_degree": 0,
+      "line_start": 5,
+      "line_end": 8,
+      "docstring": ""
+    },
+    {
+      "id": "polygons/polygons.py::calc_polygon_details",
+      "label": "calc_polygon_details",
+      "kind": "function",
+      "file": "polygons/polygons.py",
+      "betweenness": 0.0,
+      "in_degree": 0,
+      "out_degree": 1,
+      "line_start": 13,
+      "line_end": 36,
+      "docstring": ""
+    },
+    {
+      "id": "polygons/polygons.py::draw_polygon",
+      "label": "draw_polygon",
+      "kind": "function",
+      "file": "polygons/polygons.py",
+      "betweenness": 0.0,
+      "in_degree": 0,
+      "out_degree": 0,
+      "line_start": 41,
+      "line_end": 53,
+      "docstring": ""
+    }
+  ],
+  "edges": [
+    {
+      "source": "polygons/polygons.py::calc_polygon_details",
+      "target": "polygons/polygons.py::Polygon",
+      "kind": "Extracted",
+      "label": "calls",
+      "confidence": 1.0,
+      "source_file": "polygons/polygons.py"
+    }
+  ]
+}

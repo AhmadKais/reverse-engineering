@@ -12,6 +12,7 @@ that address the specific architectural issue without changing surrounding logic
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from src.agents.base_agent import AgentBudget, BaseAgent
@@ -89,6 +90,51 @@ class FixerAgent(BaseAgent):
         self.reset_history()
         raw = self.generate_response(prompt)
         return self._parse_fixes(raw)
+
+    def generate_corrected_files(self, bug_report: dict, raw_files: dict) -> dict[str, str]:
+        """Generate fully corrected Python source for each buggy file.
+
+        Used by the improvement loop: applies the fix proposals as actual code so
+        the graph can be rebuilt and metrics compared before vs after.
+        Returns {relative_path: corrected_source}.
+
+        Uses a FILE/---BEGIN---/---END--- delimiter format to avoid JSON escaping.
+        """
+        bugs = bug_report.get("bugs", [])
+        if not bugs:
+            return {}
+        main_files = {k: v for k, v in raw_files.items() if "step" not in k}
+        files_text = "\n\n".join(
+            f"FILE: {fname}\n---BEGIN---\n{content}\n---END---"
+            for fname, content in main_files.items()
+        )
+        prompt = (
+            "You are a Python bug fixer. Fix ALL bugs listed below in the source files.\n\n"
+            f"Bugs to fix:\n{json.dumps(bugs, indent=2)}\n\n"
+            f"Source files:\n{files_text}\n\n"
+            "Output the COMPLETE corrected Python source for each file using this exact format:\n"
+            "FILE: <same filename as above>\n"
+            "---BEGIN---\n"
+            "<complete corrected python source>\n"
+            "---END---\n\n"
+            "Include every line of the file. Do not truncate. No explanation outside the blocks."
+        )
+        self.reset_history()
+        raw = self.generate_response(prompt)
+        return self._parse_corrected_files(raw)
+
+    def _parse_corrected_files(self, raw: str) -> dict[str, str]:
+        """Parse FILE/---BEGIN---/---END--- blocks from generate_corrected_files output."""
+        files: dict[str, str] = {}
+        pattern = re.compile(
+            r"FILE:\s*(.+?)\s*\n---BEGIN---\n(.*?)\n---END---",
+            re.DOTALL,
+        )
+        for m in pattern.finditer(raw):
+            filename = m.group(1).strip()
+            code = m.group(2)
+            files[filename] = code
+        return files
 
     def apply_fixes(self, fix_report: dict, source_root: str, dry_run: bool = True) -> list[str]:
         """Report what changes would be made (dry_run=True) or log them (dry_run=False).

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Knowledge Graph</title>
+<script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<style>
+body{margin:0;font-family:monospace;background:#1a1a2e;color:#eee}
+#hdr{padding:8px 16px;background:#16213e;border-bottom:1px solid #0f3460;font-size:13px}
+#g{width:100%;height:calc(100vh - 38px)}
+.l{display:inline-block;margin:0 6px}.d{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:3px}
+</style></head>
+<body>
+<div id="hdr"><b>Knowledge Graph</b> &nbsp;6 nodes &middot; 1 edges &nbsp;&nbsp;<span class="l"><span class="d" style="background:#4e79a7"></span>Class</span><span class="l"><span class="d" style="background:#f28e2b"></span>Function</span><span class="l"><span class="d" style="background:#59a14f"></span>Method</span><span class="l"><span class="d" style="background:#76b7b2"></span>Module</span><span class="l"><span class="d" style="background:#edc948"></span>File</span></div>
+<div id="g"></div>
+<script>
+var N=new vis.DataSet([{"id": "mathsquiz/mathsquiz.py::__module__", "label": "mathsquiz", "title": "mathsquiz/mathsquiz.py::__module__<br>kind: module<br>betweenness: 0.0000", "color": "#999"}, {"id": "polygons/polygons.py::__module__", "label": "polygons", "title": "polygons/polygons.py::__module__<br>kind: module<br>betweenness: 0.0000", "color": "#999"}, {"id": "polygons/polygons.py::Polygon", "label": "Polygon", "title": "polygons/polygons.py::Polygon<br>kind: class<br>betweenness: 0.0000", "color": "#999"}, {"id": "polygons/polygons.py::Polygon.__init__", "label": "Polygon.__init__", "title": "polygons/polygons.py::Polygon.__init__<br>kind: method<br>betweenness: 0.0000", "color": "#999"}, {"id": "polygons/polygons.py::calc_polygon_details", "label": "calc_polygon_details", "title": "polygons/polygons.py::calc_polygon_details<br>kind: function<br>betweenness: 0.0000", "color": "#999"}, {"id": "polygons/polygons.py::draw_polygon", "label": "draw_polygon", "title": "polygons/polygons.py::draw_polygon<br>kind: function<br>betweenness: 0.0000", "color": "#999"}]);
+var E=new vis.DataSet([{"from": "polygons/polygons.py::calc_polygon_details", "to": "polygons/polygons.py::Polygon", "label": "calls", "title": "Extracted &middot; conf: 1.00<br>src: polygons/polygons.py", "dashes": false, "color": {"color": "#666"}, "arrows": "to"}]);
+new vis.Network(document.getElementById("g"),{nodes:N,edges:E},{
+  nodes:{shape:"dot",size:16,borderWidth:2,font:{color:"#eee"}},
+  edges:{smooth:{type:"dynamic"},width:2,font:{color:"#bbb",size:10}},
+  physics:{stabilization:{iterations:150},barnesHut:{gravitationalConstant:-3000}},
+  interaction:{hover:true,tooltipDelay:100}
+});
+</script></body></html>
