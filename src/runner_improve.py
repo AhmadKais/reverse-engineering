@@ -58,8 +58,12 @@ def _run_improvement_loop(source: str, vault_dir: str, budget: int, iterations: 
         else:
             tmp = tempfile.mkdtemp(prefix="ex04_improved_")
             try:
+                tmp_root = Path(tmp).resolve()
                 for rel_path, code in corrected.items():
-                    out_file = Path(tmp) / rel_path
+                    out_file = (tmp_root / rel_path).resolve()
+                    if not str(out_file).startswith(str(tmp_root)):
+                        print(f"  [WARN] Skipping unsafe path from LLM: {rel_path}")
+                        continue
                     out_file.parent.mkdir(parents=True, exist_ok=True)
                     out_file.write_text(code, encoding="utf-8")
                 print(f"  [apply ] Wrote {len(corrected)} corrected file(s) to temp dir")

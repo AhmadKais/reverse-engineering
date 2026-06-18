@@ -17,7 +17,7 @@ from src.agents.fixer_parsers import (
     parse_fixes,
     read_affected_code,
 )
-from src.agents.gatekeeper import AgentConfig
+from src.agents.gatekeeper import get_agent_config
 
 
 class FixerAgent(BaseAgent):
@@ -29,7 +29,7 @@ class FixerAgent(BaseAgent):
             name="Fixer",
             system_prompt=FIXER_SYSTEM_PROMPT,
             budget=budget,
-            max_tokens=AgentConfig().max_tokens_for("fixer"),
+            max_tokens=get_agent_config().max_tokens_for("fixer"),
         )
 
     def propose_fixes(self, bug_report: dict, source_root: str) -> dict:

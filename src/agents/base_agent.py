@@ -11,13 +11,12 @@ import os
 import anthropic
 from dotenv import load_dotenv
 
-from src.agents.gatekeeper import AgentConfig, ApiGatekeeper, RateLimitConfig
+from src.agents.gatekeeper import ApiGatekeeper, RateLimitConfig, get_agent_config
 
 load_dotenv()
 
-_cfg = AgentConfig()
-_DEFAULT_MODEL = _cfg.model
-_DEFAULT_MAX_TOKENS = _cfg.max_tokens_per_call
+_DEFAULT_MODEL = get_agent_config().model
+_DEFAULT_MAX_TOKENS = get_agent_config().max_tokens_per_call
 
 
 class TokenBudgetExceededError(Exception):

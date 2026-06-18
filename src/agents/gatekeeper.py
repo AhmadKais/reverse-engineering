@@ -7,6 +7,7 @@ Agent model and token settings are loaded from config/setup.json.
 
 from __future__ import annotations
 
+import functools
 import json
 import time
 from collections.abc import Callable
@@ -36,6 +37,12 @@ class AgentConfig:
     def max_tokens_for(self, agent_name: str) -> int:
         """Return per-agent max_tokens, falling back to the global max_tokens_per_call."""
         return self.max_tokens.get(agent_name.lower(), self.max_tokens_per_call)
+
+
+@functools.lru_cache(maxsize=1)
+def get_agent_config() -> AgentConfig:
+    """Return the shared AgentConfig singleton — reads disk only once."""
+    return AgentConfig()
 
 
 class RateLimitConfig:

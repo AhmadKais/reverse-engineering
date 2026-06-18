@@ -20,7 +20,7 @@ from pathlib import Path
 from src.agents.analyzer_agent import AnalyzerAgent
 from src.agents.base_agent import AgentBudget
 from src.agents.fixer_agent import FixerAgent
-from src.agents.gatekeeper import AgentConfig
+from src.agents.gatekeeper import get_agent_config
 from src.agents.navigator_agent import NavigatorAgent
 from src.graph_builder.ast_parser import parse_directory
 from src.graph_builder.graph_generator import KnowledgeGraph
@@ -99,7 +99,7 @@ class ReverseEngineerSDK:
             results.append(report)
 
             if iteration < self.improvement_iterations:
-                time.sleep(AgentConfig().iteration_sleep_seconds)
+                time.sleep(get_agent_config().iteration_sleep_seconds)
 
         self._save_improvement_history(results)
         return results
