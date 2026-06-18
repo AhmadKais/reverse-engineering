@@ -488,6 +488,22 @@ The assignment requires at least one original extension per task section. Here i
 
 ---
 
+### Obsidian Knowledge Pages Added During Investigation (Task 4)
+
+These pages were added to the Obsidian vault as part of the investigation — they capture the knowledge built up during the reverse-engineering process, per PDF §5.4.
+
+| # | File | What it shows |
+|---|---|---|
+| 13 | `artifacts/screenshots/investigation_md.png` | `investigation.md` — step-by-step reverse engineering trace rendered in Obsidian |
+| 14 | `artifacts/screenshots/before_after_md.png` | `BEFORE_AFTER.md` — before/after knowledge comparison: what changed in our understanding of the architecture |
+| 15 | `artifacts/screenshots/research_questions.png` | `research-questions.md` — all 8 PDF research questions answered, rendered in Obsidian |
+
+![investigation.md in Obsidian](artifacts/screenshots/investigation_md.png)
+![BEFORE_AFTER.md in Obsidian](artifacts/screenshots/before_after_md.png)
+![research-questions.md in Obsidian](artifacts/screenshots/research_questions.png)
+
+---
+
 ## 13. How to Run
 
 ```bash
