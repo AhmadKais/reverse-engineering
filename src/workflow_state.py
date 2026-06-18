@@ -4,9 +4,8 @@ from __future__ import annotations
 
 from typing import TypedDict
 
+from src.constants import SPARSE_EDGE_THRESHOLD  # noqa: F401  — re-exported for workflow_nodes
 from src.graph_builder.graph_generator import KnowledgeGraph
-
-SPARSE_EDGE_THRESHOLD = 5
 
 
 class WorkflowState(TypedDict):

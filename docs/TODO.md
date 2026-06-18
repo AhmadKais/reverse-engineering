@@ -10,10 +10,13 @@
 - [x] 12 documented bugs (reports/BUG_REPORT.md)
 - [x] Fixed files (artifacts/fixed_polygons.py, fixed_mathsquiz.py)
 - [x] Reports: OOP_SCHEMA, BLOCK_SCHEMA, GRAPH_REPORT, TOKEN_COMPARISON
-- [x] 101+ tests across 9 test files
+- [x] 104 tests across 13 test files (all mocked API, 82% coverage)
 - [x] All source files ≤ 150 code lines (Dr. Segal compliance)
-- [x] docs/ folder (PRD.md, PLAN.md, TODO.md)
-- [x] .env-example
+- [x] docs/ folder (PRD.md, PLAN.md, TODO.md, PROMPTS.md, PRD_graph_builder.md)
+- [x] .env-example + config/ (setup.json, rate_limits.json, logging_config.json)
+- [x] src/constants.py (SPARSE_EDGE_THRESHOLD), src/version.py (VERSION)
+- [x] 16 screenshots in artifacts/screenshots/
+- [x] Extension documentation in README §11
 
 ## Remaining
-- [ ] Add screenshots to artifacts/screenshots/ (manual step)
+- (none — all deliverables complete)

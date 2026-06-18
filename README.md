@@ -524,7 +524,27 @@ These pages were added to the Obsidian vault as part of the investigation — th
 
 ---
 
-## 13. How to Run
+## 13. Configuration Guide
+
+All runtime values live in `config/` — no hardcoded values in source code.
+
+| File | Purpose | Key parameters |
+|------|---------|----------------|
+| `config/setup.json` | Project settings | `default_budget`, `sparse_edge_threshold`, `agents.model` |
+| `config/rate_limits.json` | Anthropic API rate limits | `requests_per_minute`, `concurrent_max`, `max_retries` |
+| `config/logging_config.json` | Log levels and handlers | `level` (INFO/DEBUG), `handlers.file.enabled` |
+
+**Changing the model**: Edit `config/setup.json` → `agents.model` (e.g. `"claude-haiku-4-5-20251001"` → `"claude-sonnet-4-6"`).
+
+**Changing the budget**: Pass `--budget N` on the CLI, or edit `config/setup.json` → `project.default_budget`.
+
+**Enabling file logging**: Set `config/logging_config.json` → `handlers.file.enabled = true`. Logs will be written to `results/run.log`.
+
+**API key**: Copy `.env-example` to `.env` and set `ANTHROPIC_API_KEY=<your-key>`. Never commit `.env`.
+
+---
+
+## 14. How to Run
 
 ```bash
 # Install dependencies
@@ -642,3 +662,22 @@ HW4/
     │   └── reporter.py
     └── langgraph_workflow.mmd       ← Mermaid source of the LangGraph diagram
 ```
+
+---
+
+## 15. License & Credits
+
+**Author**: Ahmad Kais — AI Orchestration Course, Assignment 04  
+**Course**: AI Orchestration with LangGraph and Agentic AI — Dr. Yoram Segal  
+**Date**: June 2026
+
+**Target repository**: [`martinpeck/broken-python`](https://github.com/martinpeck/broken-python) — MIT License
+
+**Libraries used**:
+- [LangGraph](https://github.com/langchain-ai/langgraph) — StateGraph workflow orchestration
+- [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-python) — Claude claude-haiku-4-5-20251001 LLM
+- [networkx](https://networkx.org/) — knowledge graph + centrality algorithms
+- [Pydantic](https://docs.pydantic.dev/) — data model validation
+- [python-dotenv](https://github.com/theskumar/python-dotenv) — environment variable management
+- [Ruff](https://github.com/astral-sh/ruff) — linter
+- [uv](https://github.com/astral-sh/uv) — package manager

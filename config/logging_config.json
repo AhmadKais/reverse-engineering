@@ -1,0 +1,25 @@
+{
+  "version": "1.00",
+  "logging": {
+    "level": "INFO",
+    "format": "[%(levelname)s] %(message)s",
+    "handlers": {
+      "console": {
+        "enabled": true,
+        "level": "INFO"
+      },
+      "file": {
+        "enabled": false,
+        "level": "DEBUG",
+        "path": "results/run.log",
+        "max_bytes": 1048576,
+        "backup_count": 3
+      }
+    },
+    "loggers": {
+      "src.agents": "DEBUG",
+      "src.graph_builder": "INFO",
+      "src.langgraph_workflow": "INFO"
+    }
+  }
+}
