@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 
 from src.agents.base_agent import AgentBudget, BaseAgent
+from src.agents.gatekeeper import AgentConfig
 from src.graph_builder.graph_generator import KnowledgeGraph
 
 _SYSTEM_PROMPT = """\
@@ -46,7 +47,7 @@ class NavigatorAgent(BaseAgent):
             name="Navigator",
             system_prompt=_SYSTEM_PROMPT,
             budget=budget,
-            max_tokens=1500,
+            max_tokens=AgentConfig().max_tokens_for("navigator"),
         )
 
     def navigate(self, kg: KnowledgeGraph, vault_context: str = "") -> str:

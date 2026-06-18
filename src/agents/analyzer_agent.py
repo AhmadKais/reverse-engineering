@@ -20,6 +20,7 @@ import json
 from pathlib import Path
 
 from src.agents.base_agent import AgentBudget, BaseAgent
+from src.agents.gatekeeper import AgentConfig
 from src.graph_builder.graph_generator import KnowledgeGraph
 
 _SYSTEM_PROMPT = """\
@@ -54,7 +55,7 @@ class AnalyzerAgent(BaseAgent):
             name="Analyzer",
             system_prompt=_SYSTEM_PROMPT,
             budget=budget,
-            max_tokens=2000,
+            max_tokens=AgentConfig().max_tokens_for("analyzer"),
         )
 
     def analyze(self, kg: KnowledgeGraph, source_root: str) -> dict:

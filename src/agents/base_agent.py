@@ -11,12 +11,13 @@ import os
 import anthropic
 from dotenv import load_dotenv
 
-from src.agents.gatekeeper import ApiGatekeeper, RateLimitConfig
+from src.agents.gatekeeper import AgentConfig, ApiGatekeeper, RateLimitConfig
 
 load_dotenv()
 
-_DEFAULT_MODEL = "claude-sonnet-4-6"
-_DEFAULT_MAX_TOKENS = 1024
+_cfg = AgentConfig()
+_DEFAULT_MODEL = _cfg.model
+_DEFAULT_MAX_TOKENS = _cfg.max_tokens_per_call
 
 
 class TokenBudgetExceededError(Exception):

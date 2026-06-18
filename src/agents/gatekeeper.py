@@ -2,6 +2,7 @@
 
 All external API calls must go through ApiGatekeeper.execute().
 Rate limit values are loaded from config/rate_limits.json — never hardcoded.
+Agent model and token settings are loaded from config/setup.json.
 """
 
 from __future__ import annotations
@@ -14,18 +15,39 @@ from typing import Any
 
 import anthropic
 
-_DEFAULT_CONFIG = Path(__file__).parents[2] / "config" / "rate_limits.json"
+_RATE_CONFIG = Path(__file__).parents[2] / "config" / "rate_limits.json"
+_SETUP_CONFIG = Path(__file__).parents[2] / "config" / "setup.json"
+
+
+class AgentConfig:
+    """Agent model and token settings loaded from config/setup.json."""
+
+    def __init__(self, config_path: str | Path = _SETUP_CONFIG) -> None:
+        """Load agent parameters from the versioned setup config file."""
+        with Path(config_path).open() as fh:
+            cfg = json.load(fh)
+        agents = cfg["agents"]
+        self.model: str = agents["model"]
+        self.max_tokens_per_call: int = agents["max_tokens_per_call"]
+        self.temperature: int = agents.get("temperature", 0)
+        self.max_tokens: dict[str, int] = agents.get("max_tokens", {})
+        self.iteration_sleep_seconds: int = agents.get("iteration_sleep_seconds", 1)
+
+    def max_tokens_for(self, agent_name: str) -> int:
+        """Return per-agent max_tokens, falling back to the global max_tokens_per_call."""
+        return self.max_tokens.get(agent_name.lower(), self.max_tokens_per_call)
 
 
 class RateLimitConfig:
     """Rate-limit settings loaded from config/rate_limits.json."""
 
-    def __init__(self, config_path: str | Path = _DEFAULT_CONFIG) -> None:
+    def __init__(self, config_path: str | Path = _RATE_CONFIG) -> None:
         """Load rate limit parameters from the versioned config file."""
         with Path(config_path).open() as fh:
             cfg = json.load(fh)
-        svc = cfg["rate_limits"]["services"].get("anthropic",
-              cfg["rate_limits"]["services"]["default"])
+        svc = cfg["rate_limits"]["services"].get(
+            "anthropic", cfg["rate_limits"]["services"]["default"]
+        )
         self.requests_per_minute: int = svc["requests_per_minute"]
         self.retry_after_seconds: int = svc["retry_after_seconds"]
         self.max_retries: int = svc["max_retries"]
