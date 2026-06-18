@@ -170,13 +170,19 @@ graph TD
 
 **Why two paths?** `broken-python`'s main files have syntax errors — the AST cannot parse them, so the graph has 0 edges. The workflow detects this (`is_sparse=True`) and routes through `raw_reader` instead of `navigate`.
 
+**Obsidian-first (§5.3 requirement)**: Both paths read the Obsidian vault **before** touching source code:
+- `navigate` node → `NavigatorAgent.navigate()` receives `vault_context` (hot.md + index.md) as the first input, then graph topology
+- `raw_reader` node → calls `_read_vault_pages(vault_dir)` to load hot.md + index.md as a preamble, then reads raw source files
+
+This means the agent always sees the graph signal first (`src/workflow_helpers.py:_read_vault_pages`), then code — never the reverse. For the broken-python codebase, the hot.md preamble (all betweenness = 0, failed files listed as `⚠️ Primary Hotspots`) is the signal that tells the agent *which files to focus on* before a single line of source is read.
+
 **Important**: for a broken-python codebase, the sparse detection *is* graph-guided navigation — the 0-edge graph signal costs 0 API tokens and immediately tells the agents which 2 of 5 files are broken. The `navigate` path (NavigatorAgent reading Obsidian pages) applies to healthy codebases; `data/demo-dense/` (24 nodes, 24 edges) demonstrates it.
 
 **State**: typed `WorkflowState` `TypedDict` flows through the graph. If any node sets `error`, all downstream nodes skip gracefully.
 
 **Context compression mechanisms**:
 - `SPARSE_EDGE_THRESHOLD = 5`: if `edge_count < 5`, skip NavigatorAgent entirely (graph topology meaningless with no edges)
-- `raw_reader` sends only files that failed AST parsing to the LLM — step files excluded automatically
+- `raw_reader` reads hot.md + index.md from vault first, then only the files that failed AST parsing — step files excluded
 - Each node receives only what the previous node produced, not the full source tree
 - `AgentBudget` enforces a hard token ceiling shared across all agents
 
@@ -219,6 +225,10 @@ Full output: [`artifacts/Pipeline_output.txt`](artifacts/Pipeline_output.txt)
 ### Navigate Path Demonstration (Dense Graph)
 
 The broken-python target always takes the **sparse path** because syntax errors block AST parsing. To demonstrate the **dense/navigate path**, a clean codebase (`data/demo-dense/`) was created: three modules (`shapes.py`, `calculator.py`, `reporter.py`) that produce **24 nodes, 24 edges** — well above the `SPARSE_EDGE_THRESHOLD = 5`.
+
+The navigate path is where the NavigatorAgent reads the Obsidian vault (`obsidian_demo/hot.md`, `obsidian_demo/index.md`) **first**, uses graph topology (centrality, bridges, communities) to identify the most suspicious nodes, then produces an architectural overview — before any source code is requested. This is the full §5.3 graph-guided flow on a healthy codebase.
+
+Vault available at: `obsidian_demo/` (graph.json, hot.md, index.md, nodes/)
 
 ```bash
 # Run the navigate path (dense graph — NavigatorAgent activated)
