@@ -9,6 +9,7 @@ from src.graph_builder.graph_generator import KnowledgeGraph
 
 
 class WorkflowState(TypedDict):
+    """Full shared state passed between all LangGraph nodes."""
     source_root: str
     vault_dir: str
     knowledge_graph: KnowledgeGraph | None

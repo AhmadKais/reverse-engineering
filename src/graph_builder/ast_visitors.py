@@ -18,6 +18,7 @@ def _node_id(file_path: str, name: str, parent: str | None = None) -> str:
 
 
 def _module_id(file_path: str) -> str:
+    """Build the canonical module-level node ID for a given file path."""
     return file_path.replace(os.sep, "/") + "::__module__"
 
 
@@ -25,6 +26,7 @@ class _FileVisitor(ast.NodeVisitor):
     """Single-file AST visitor: extracts classes, methods, functions, and imports."""
 
     def __init__(self, file_path: str, source_lines: list[str]) -> None:
+        """Initialise visitor state for a single source file."""
         self.file_path = file_path
         self.source_lines = source_lines
         self.nodes: list[GraphNode] = []
@@ -33,12 +35,14 @@ class _FileVisitor(ast.NodeVisitor):
         self._imports: dict[str, str] = {}
 
     def visit_Import(self, node: ast.Import) -> None:
+        """Record `import X` and `import X as Y` statements in the import map."""
         for alias in node.names:
             key = alias.asname or alias.name.split(".")[0]
             self._imports[key] = alias.name
         self.generic_visit(node)
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+        """Record `from X import Y` statements in the import map."""
         module = node.module or ""
         for alias in node.names:
             key = alias.asname or alias.name
@@ -46,6 +50,7 @@ class _FileVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        """Extract class node and inheritance edges; descend into methods."""
         class_id = _node_id(self.file_path, node.name)
         base_names = [self._base_name(b) for b in node.bases]
         docstring = ast.get_docstring(node) or ""
@@ -79,6 +84,7 @@ class _FileVisitor(ast.NodeVisitor):
         self._current_class = None
 
     def _base_name(self, node: ast.expr) -> str:
+        """Resolve a base-class AST node to a dotted name string."""
         if isinstance(node, ast.Name):
             return self._imports.get(node.id, node.id)
         if isinstance(node, ast.Attribute):
@@ -86,6 +92,7 @@ class _FileVisitor(ast.NodeVisitor):
         return "object"
 
     def visit_FunctionDef(self, node: ast.FunctionDef | ast.AsyncFunctionDef) -> None:
+        """Extract a function or method node and its outgoing call edges."""
         kind = NodeKind.METHOD if self._current_class else NodeKind.FUNCTION
         fn_id = _node_id(self.file_path, node.name, self._current_class)
         docstring = ast.get_docstring(node) or ""

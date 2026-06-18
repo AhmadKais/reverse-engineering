@@ -18,6 +18,7 @@ class KnowledgeGraph:
     """Wraps a networkx DiGraph and provides domain-aware query methods."""
 
     def __init__(self) -> None:
+        """Initialise an empty directed graph with no nodes, edges, or metrics."""
         self.graph: nx.DiGraph = nx.DiGraph()
         self._nodes: dict[str, GraphNode] = {}
         self._metrics: GraphMetrics | None = None
@@ -53,6 +54,7 @@ class KnowledgeGraph:
         self._add_inferred_edges(name_index)
 
     def _build_name_index(self) -> dict[str, list[str]]:
+        """Map each node's short name to all node IDs that share that name."""
         index: dict[str, list[str]] = {}
         for node_id, node in self._nodes.items():
             index.setdefault(node.name, []).append(node_id)
@@ -61,6 +63,7 @@ class KnowledgeGraph:
     def _resolve_target(
         self, target: str, known_ids: set[str], name_index: dict[str, list[str]]
     ) -> str | None:
+        """Resolve a raw edge target to an existing node ID, or None if unresolvable."""
         if target in known_ids:
             return target
         short = target.split(".")[-1]
@@ -70,6 +73,7 @@ class KnowledgeGraph:
         return None
 
     def _add_inferred_edges(self, name_index: dict[str, list[str]]) -> None:
+        """Add composition edges inferred from constructor call patterns."""
         infer_composition_edges(self.graph, self._nodes, name_index)
 
     def compute_metrics(self) -> GraphMetrics:
@@ -104,14 +108,17 @@ class KnowledgeGraph:
 
     @property
     def metrics(self) -> GraphMetrics:
+        """Return cached metrics, computing them on first access."""
         if self._metrics is None:
             return self.compute_metrics()
         return self._metrics
 
     def get_node(self, node_id: str) -> GraphNode | None:
+        """Look up a GraphNode by its ID; return None if not found."""
         return self._nodes.get(node_id)
 
     def get_neighbors(self, node_id: str) -> list[str]:
+        """Return all successor and predecessor node IDs (combined adjacency)."""
         return list(self.graph.successors(node_id)) + list(self.graph.predecessors(node_id))
 
     def summary_dict(self) -> dict:

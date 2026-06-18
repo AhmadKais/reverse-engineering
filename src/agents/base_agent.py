@@ -26,19 +26,23 @@ class AgentBudget:
     """Shared token budget across all agents — prevents runaway API costs."""
 
     def __init__(self, max_tokens: int = 50_000) -> None:
+        """Initialise with a maximum token ceiling shared across all agents."""
         self.max_tokens = max_tokens
         self.used_input = 0
         self.used_output = 0
 
     @property
     def total_used(self) -> int:
+        """Sum of input and output tokens consumed so far."""
         return self.used_input + self.used_output
 
     @property
     def remaining(self) -> int:
+        """Tokens still available before the budget ceiling is hit."""
         return self.max_tokens - self.total_used
 
     def record(self, input_tokens: int, output_tokens: int) -> None:
+        """Accumulate token usage; raise TokenBudgetExceededError if ceiling passed."""
         self.used_input += input_tokens
         self.used_output += output_tokens
         if self.total_used > self.max_tokens:
@@ -47,6 +51,7 @@ class AgentBudget:
             )
 
     def status(self) -> dict:
+        """Return a snapshot dict of token usage and remaining budget."""
         return {
             "used_input": self.used_input,
             "used_output": self.used_output,
@@ -72,6 +77,7 @@ class BaseAgent:
         max_tokens: int = _DEFAULT_MAX_TOKENS,
         max_retries: int = 2,
     ) -> None:
+        """Wire up name, system prompt, budget ceiling, model, and Anthropic client."""
         self.name = name
         self.system_prompt = system_prompt
         self.budget = budget
@@ -83,6 +89,7 @@ class BaseAgent:
 
     @staticmethod
     def _load_api_key() -> str:
+        """Read ANTHROPIC_API_KEY from environment; raise OSError if absent."""
         key = os.getenv("ANTHROPIC_API_KEY")
         if not key:
             raise OSError("ANTHROPIC_API_KEY not set in environment or .env file")
@@ -114,6 +121,7 @@ class BaseAgent:
 
     @staticmethod
     def _extract_text(response: anthropic.types.Message) -> str:
+        """Extract the first text block from an Anthropic message response."""
         for block in response.content:
             if hasattr(block, "text"):
                 return block.text
@@ -127,4 +135,5 @@ class BaseAgent:
         return reply
 
     def reset_history(self) -> None:
+        """Clear conversation history to start a fresh multi-turn exchange."""
         self.history.clear()

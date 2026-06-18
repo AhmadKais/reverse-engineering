@@ -41,6 +41,7 @@ class NavigatorAgent(BaseAgent):
     """Maps the architectural landscape from the knowledge graph topology."""
 
     def __init__(self, budget: AgentBudget) -> None:
+        """Initialise with a shared budget; sets model max_tokens for architectural overview."""
         super().__init__(
             name="Navigator",
             system_prompt=_SYSTEM_PROMPT,

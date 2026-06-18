@@ -10,6 +10,7 @@ from src.graph_builder.graph_generator import KnowledgeGraph
 
 def write_hot(vault: Path, kg: KnowledgeGraph, top_n: int,
               failed_files: list[str] | None = None) -> None:
+    """Write hot.md — ranked hotspot table with betweenness centrality scores."""
     if failed_files is None:
         failed_files = []
     lines = ["# hot.md — Architectural Hotspots\n"]
@@ -57,6 +58,7 @@ def write_hot(vault: Path, kg: KnowledgeGraph, top_n: int,
 
 
 def write_index(vault: Path, kg: KnowledgeGraph, failed_files: list[str] | None = None) -> None:
+    """Write index.md — full entity index with wiki-links to every node note."""
     if failed_files is None:
         failed_files = []
     by_kind: dict[str, list[GraphNode]] = {}

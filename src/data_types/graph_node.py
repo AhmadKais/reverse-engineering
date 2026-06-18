@@ -8,6 +8,8 @@ from pydantic import BaseModel, Field
 
 
 class NodeKind(Enum):
+    """Taxonomy of Python code entities that can become graph nodes."""
+
     MODULE = "module"
     CLASS = "class"
     FUNCTION = "function"
@@ -31,6 +33,7 @@ class GraphNode(BaseModel):
     calls: list[str] = Field(default_factory=list)          # function/method ids this calls
 
     def to_dict(self) -> dict:
+        """Serialise to a plain dict (delegates to Pydantic model_dump)."""
         return self.model_dump()
 
     @property

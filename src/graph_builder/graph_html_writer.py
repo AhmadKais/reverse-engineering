@@ -58,6 +58,7 @@ def write_graph_html(vault_path: Path, data: dict) -> None:
 
 
 def _vis_nodes(nodes: list[dict]) -> list[dict]:
+    """Convert graph.json node dicts to vis-network node format."""
     return [
         {"id": n["id"],
          "label": n.get("label", n["id"]).split("::")[-1],
@@ -68,6 +69,7 @@ def _vis_nodes(nodes: list[dict]) -> list[dict]:
 
 
 def _vis_edges(edges: list[dict]) -> list[dict]:
+    """Convert graph.json edge dicts to vis-network edge format with dash/color styles."""
     return [
         {"from": e["source"],
          "to": e["target"],

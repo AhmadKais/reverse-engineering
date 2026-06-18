@@ -25,6 +25,7 @@ class ObsidianExporter:
     """Serializes a KnowledgeGraph into an Obsidian vault directory."""
 
     def __init__(self, vault_dir: str) -> None:
+        """Create the vault directory and nodes/ sub-directory if they do not exist."""
         self.vault = Path(vault_dir)
         self.nodes_dir = self.vault / "nodes"
         self.nodes_dir.mkdir(parents=True, exist_ok=True)
@@ -39,6 +40,7 @@ class ObsidianExporter:
         self._write_node_notes(kg, source_dir=source_dir)
 
     def _write_graph_json(self, kg: KnowledgeGraph) -> dict:
+        """Serialise all nodes and edges to graph.json; return the payload dict."""
         nodes_data = []
         for node_id, data in kg.graph.nodes(data=True):
             node_obj = kg.get_node(node_id)
@@ -89,6 +91,7 @@ class ObsidianExporter:
         return failed
 
     def _write_node_notes(self, kg: KnowledgeGraph, source_dir: str = "") -> None:
+        """Write one Obsidian markdown note per knowledge-graph node to nodes/."""
         for node_id, node in kg._nodes.items():
             note = render_node_note(node_id, node, kg, source_dir=source_dir)
             (self.nodes_dir / f"{node.obsidian_slug}.md").write_text(note, encoding="utf-8")

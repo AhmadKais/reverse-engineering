@@ -23,6 +23,7 @@ class FixerAgent(BaseAgent):
     """Generates and optionally applies architectural refactoring patches."""
 
     def __init__(self, budget: AgentBudget) -> None:
+        """Initialise with a shared budget; sets model max_tokens for fix generation."""
         super().__init__(
             name="Fixer",
             system_prompt=FIXER_SYSTEM_PROMPT,
@@ -113,14 +114,18 @@ class FixerAgent(BaseAgent):
         return results
 
     def _parse_fixes(self, raw: str) -> dict:
+        """Delegate JSON fix-report parsing to fixer_parsers."""
         return parse_fixes(raw)
 
     def _parse_corrected_files(self, raw: str) -> dict[str, str]:
+        """Delegate FILE/BEGIN/END block parsing to fixer_parsers."""
         return parse_corrected_files(raw)
 
     def _strip_fences(self, text: str) -> str:
+        """Remove markdown code fences from LLM output."""
         from src.agents.fixer_parsers import strip_fences
         return strip_fences(text)
 
     def _read_affected_code(self, bugs: list[dict], source_root: str) -> str:
+        """Collect source snippets for nodes affected by the given bug list."""
         return read_affected_code(bugs, source_root)

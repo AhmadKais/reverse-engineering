@@ -49,6 +49,7 @@ class AnalyzerAgent(BaseAgent):
     """Identifies architectural bugs by cross-referencing graph metrics with code."""
 
     def __init__(self, budget: AgentBudget) -> None:
+        """Initialise with a shared budget; sets model max_tokens for bug analysis."""
         super().__init__(
             name="Analyzer",
             system_prompt=_SYSTEM_PROMPT,
@@ -120,6 +121,7 @@ class AnalyzerAgent(BaseAgent):
 
     @staticmethod
     def _strip_fences(text: str) -> str:
+        """Remove markdown code fences (```…```) from LLM output."""
         t = text.strip()
         if t.startswith("```"):
             lines = t.split("\n")

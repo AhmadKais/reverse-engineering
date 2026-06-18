@@ -15,6 +15,8 @@ class EdgeKind(Enum):
 
 
 class EdgeLabel(Enum):
+    """Semantic label describing the nature of a relationship between two nodes."""
+
     IMPORTS = "imports"
     INHERITS = "inherits"
     CALLS = "calls"
@@ -35,4 +37,5 @@ class GraphEdge(BaseModel):
     source_file: str = ""      # file containing this relationship (for source validation)
 
     def to_dict(self) -> dict:
+        """Serialise to a plain dict (delegates to Pydantic model_dump)."""
         return self.model_dump()
