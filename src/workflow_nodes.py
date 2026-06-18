@@ -73,9 +73,13 @@ def raw_reader_node(state: WorkflowState, budget: AgentBudget) -> WorkflowState:
             "Format:\n## File: <name>\n**Intent**: ...\n**Structure**: ...\n**Visible bugs**: ..."
         )
         agent = BaseAgent(name="RawReader", system_prompt=system, budget=budget, max_tokens=1200)
+        target_files = {
+            k: v for k, v in state["raw_files"].items()
+            if "step" not in k and k.endswith(".py")
+        } or state["raw_files"]
         files_text = "\n\n".join(
             f"### {fname}\n```python\n{content[:1500]}\n```"
-            for fname, content in state["raw_files"].items()
+            for fname, content in target_files.items()
         )
         graph_preamble = (
             f"{vault_context}\n\n"

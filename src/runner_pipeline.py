@@ -13,7 +13,7 @@ def _run_langgraph(source: str, vault_dir: str, budget: int) -> None:
 
     print(f"[LangGraph] Starting workflow on: {source}")
     print(f"[LangGraph] Vault: {vault_dir}  |  Budget: {budget:,} tokens")
-    print("[LangGraph] Nodes: build_graph → navigate → analyze → fix\n")
+    print("[LangGraph] Nodes: build_graph → (navigate|raw_reader) → analyze → fix\n")
 
     state = run_workflow(source_root=source, vault_dir=vault_dir, token_budget=budget)
 
@@ -28,7 +28,7 @@ def _run_langgraph(source: str, vault_dir: str, budget: int) -> None:
 def _save_state(state: dict, vault_dir: str) -> None:
     """Persist the final workflow state (excluding the non-serialisable KG)."""
     serialisable = {k: v for k, v in state.items() if k != "knowledge_graph"}
-    out = Path(vault_dir) / "analysis_report.json"
+    out = Path(vault_dir).parent / "artifacts" / "analysis_report.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(serialisable, indent=2, default=str), encoding="utf-8")
     print(f"[LangGraph] Report saved: {out}")

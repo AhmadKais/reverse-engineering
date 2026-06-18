@@ -100,7 +100,8 @@ def _run_improvement_loop(source: str, vault_dir: str, budget: int, iterations: 
         })
         print()
 
-    out = Path(vault_dir) / "improvement_history.json"
+    out = Path(vault_dir).parent / "artifacts" / "improvement_history.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(history, indent=2), encoding="utf-8")
     print(f"[improve] History saved: {out}")
     print(f"[improve] Loop complete. Final delta: "

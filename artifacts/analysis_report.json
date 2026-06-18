@@ -1,0 +1,408 @@
+{
+  "source_root": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python",
+  "vault_dir": "/home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian",
+  "graph_summary": {
+    "node_count": 9,
+    "edge_count": 0,
+    "top_hubs": [
+      {
+        "id": "mathsquiz/mathsquiz-step1.py::__module__",
+        "name": "mathsquiz-step1",
+        "kind": "module",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step3.py::__module__",
+        "name": "mathsquiz-step3",
+        "kind": "module",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step3.py::welcome_message",
+        "name": "welcome_message",
+        "kind": "function",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step3.py::ask_question",
+        "name": "ask_question",
+        "kind": "function",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step3.py::print_final_scores",
+        "name": "print_final_scores",
+        "kind": "function",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step2.py::__module__",
+        "name": "mathsquiz-step2",
+        "kind": "module",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step2.py::welcome_message",
+        "name": "welcome_message",
+        "kind": "function",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step2.py::ask_question",
+        "name": "ask_question",
+        "kind": "function",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      },
+      {
+        "id": "mathsquiz/mathsquiz-step2.py::print_final_scores",
+        "name": "print_final_scores",
+        "kind": "function",
+        "betweenness": 0.0,
+        "in_degree": 0,
+        "out_degree": 0
+      }
+    ],
+    "community_count": 9,
+    "bridge_count": 0
+  },
+  "raw_files": {
+    "mathsquiz/mathsquiz-step1.py": "# welcome the player and explain stuff\n\n# fixed: python 3 requires brackets around print statements\nprint(\"Hello! I'm going to ask you 10 maths questions.\")\nprint(\"Let's see how many you can get right!\")\n\n# set the score to zero\nscore = 0\n\n# fixed: added additional questions so that there are 10 of them\n\n# question 1\n\n# fixed: need to use double equals for comparison operations\n# fixed: need to convert the user's answer to an integer for comparison\n# fixed: the answer to the question (they were all incorrect)\n# fixed: score variable is incremented by 1 if the answer is correct\n# fixed: every question printed \"Question 1\"\n\nprint(\"Question 1:\")\nprint(\"What is 8 x 7\")\nanswer = input(\"Answer: \")\nif int(answer) == 56:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n# question 2\n\nprint(\"Question 2:\")\nprint(\"What is 4 x 9\")\nanswer = input(\"Answer: \")\nif int(answer) == 36:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n\n# question 3\n\nprint(\"Question 3:\")\nprint(\"What is 12 x 6\")\nanswer = input(\"Answer: \")\nif int(answer) == 72:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n\n# question 4\n\nprint(\"Question 4:\")\nprint(\"What is 6 x 8\")\nanswer = input(\"Answer: \")\nif int(answer) == 48:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n\n# question 5\n\nprint(\"Question 5:\")\nprint(\"What is 7 x 7\")\nanswer = input(\"Answer: \")\nif int(answer) == 49:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n\n\n# question 6\n\nprint(\"Question 6:\")\nprint(\"What is 11 x 6\")\nanswer = input(\"Answer: \")\nif int(answer) == 66:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n\n# question 7\n\nprint(\"Question 7:\")\nprint(\"What is 9 x 2\")\nanswer = input(\"Answer: \")\nif int(answer) == 18:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n# question 8\n\nprint(\"Question 8:\")\nprint(\"What is 7 x 9\")\nanswer = input(\"Answer: \")\nif int(answer) == 63:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n# question 9\n\nprint(\"Question 9:\")\nprint(\"What is 6 x 6\")\nanswer = input(\"Answer: \")\nif int(answer) == 36:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n# question 10\n\nprint(\"Question 10:\")\nprint(\"What is 4 x 8\")\nanswer = input(\"Answer: \")\nif int(answer) == 32:\n    print(\"Correct!\")\n    score = score + 1\nelse:\n    print(\"Wrong!\")\n\n\n# print the final scores\n\n# fixed: 'else if' needs to be 'elif'\n# fixed: another comparison error from using = instead of ==\n# fixed: if the score was 8 or 9 then no message was printed\n\nprint(\"That's all the questions done. So...what was your score...?\")\nprint(\"You scored\", score, \"points out of a possible 10.\")\nif score < 5:\n    print(\"You need to practice your maths!\")\nelif score < 8:\n    print(\"That's pretty good!\")\nelif score < 10:\n    print(\"You did really well! Try and get 10 out of 10 next time!\")\nelif score == 10:\n    print(\"Wow! What a maths star you are!! I'm impressed!\")\n",
+    "mathsquiz/mathsquiz.py": "# welcome the player and explain stuff\n\nprint \"Hello! I'm going to ask you 10 maths questions.\"\nprint \"Let's see how many you can get right!\"\n\n# set the score to zero\nscore = 0\n\n# question 1\n\nprint(\"Question 1:\")\nprint(\"What is 8 x 7\")\nanswer = input(\"Answer: \")\nif answer = 55:\n    print(\"Correct!\")\nelse:\n    print(\"Wrong!\")\n\n\n# question 2\n\nprint(\"Question 1:\")\nprint(\"What is 4 x 9\")\nanswer = input(\"Answer: \")\nif answer = 49:\n    print(\"Correct!\")\nelse:\n    print(\"Wrong!\")\n\n\n# question 3\n\nprint(\"Question 1:\")\nprint(\"What is 12 x 6\")\nanswer = input(\"Answer: \")\nif answer = 126:\n    print(\"Correct!\")\nelse:\n    print(\"Wrong!\")\n\n\n# question 4\n\nprint(\"Question 1:\")\nprint(\"What is 6 x 8\")\nanswer = input(\"Answer: \")\nif answer = 668:\n    print(\"Correct!\")\nelse:\n    print(\"Wrong!\")\n\n\n# question 5\n\nprint(\"Question 1:\")\nprint(\"What is 7 x 7\")\nanswer = input(\"Answer: \")\nif answer = 77:\n    print(\"Correct!\")\nelse:\n    print(\"Wrong!\")\n\n\n\n# question 6\n\nprint(\"Question 1:\")\nprint(\"What is 11 x 6\")\nanswer = input(\"Answer: \")\nif answer = 60:\n    print(\"Correct!\")\nelse:\n    print(\"Wrong!\")\n\n\n\n\n\n\n\n\n\n\n\n# print the final scores\n\nprint(\"That's all the questions done. So...what was your score...?\")\nprint(\"You scored\", score, \"points out of a possible 10.\")\nif score < 5:\n    print(\"You need to practice your maths!\")\nelse if score < 8:\n    print(\"That's pretty good!\")\nelse if score = 10:\n    print(\"Wow! What a maths star you are!! I'm impressed!\")\n",
+    "mathsquiz/mathsquiz-step3.py": "import random\n\n# this function will print a welcome message to the user\ndef welcome_message():\n    print(\"Hello! I'm going to ask you 10 maths questions.\")\n    print(\"Let's see how many you can get right!\")\n\n# this function will ask a maths question and return the points awarded (1 or 0)\ndef ask_question(first_number, second_number):\n    print(\"What is\", first_number, \"x\", second_number)\n    answer = input(\"Answer: \")\n\n    correct_answer = first_number * second_number\n    \n    if int(answer) == correct_answer:\n        print(\"Correct!\")\n        points_awarded = 1\n    else:\n        print(\"Wrong! The correct answer was\", correct_answer)\n        points_awarded = 0\n\n    print(\"\")\n\n    return points_awarded\n\n# this function will look at the final scores and print the results\ndef print_final_scores(final_score, max_possible_score):\n\n    print(\"That's all the questions done. So...what was your score...?\")\n    print(\"You scored\", score, \"points out of a possible\", max_possible_score)\n\n    percentage = (score/max_possible_score)*100\n    \n    if percentage < 50:\n        print(\"You need to practice your maths!\")\n    elif percentage < 80:\n        print(\"That's pretty good!\")\n    elif percentage < 100:\n        print(\"You did really well! Try and get 10 out of 10 next time!\")\n    elif percentage == 100:\n        print(\"Wow! What a maths star you are!! I'm impressed!\")\n\n\n# display welcome message\nwelcome_message()\n\n\n# set the score to zero and the number of questions to 10\nscore = 0\nnumber_of_questions = 10\n\n\n# ask questions\nfor x in range(1,number_of_questions + 1):\n    print(\"Question\", x)\n    first_number = random.randint(2,12)\n    second_number = random.randint(2,12)\n    score = score + ask_question(first_number,second_number)\n    \n\n# print the final scores\nprint_final_scores(score, number_of_questions)\n",
+    "mathsquiz/mathsquiz-step2.py": "\n# this function will print a welcome message to the user\ndef welcome_message():\n    print(\"Hello! I'm going to ask you 10 maths questions.\")\n    print(\"Let's see how many you can get right!\")\n\n# this function will ask a maths question and return the points awarded (1 or 0)\ndef ask_question(first_number, second_number):\n    print(\"What is\", first_number, \"x\", second_number)\n    answer = input(\"Answer: \")\n    if int(answer) == first_number * second_number:\n        print(\"Correct!\")\n        points_awarded = 1\n    else:\n        print(\"Wrong!\")\n        points_awarded = 0\n\n    print(\"\")\n\n    return points_awarded\n\n# this function will look at the final scores and print the results\ndef print_final_scores(final_score):\n    print(\"That's all the questions done. So...what was your score...?\")\n    print(\"You scored\", score, \"points out of a possible 10.\")\n    if score < 5:\n        print(\"You need to practice your maths!\")\n    elif score < 8:\n        print(\"That's pretty good!\")\n    elif score < 10:\n        print(\"You did really well! Try and get 10 out of 10 next time!\")\n    elif score == 10:\n        print(\"Wow! What a maths star you are!! I'm impressed!\")\n\n\n\n\n# display welcome message\nwelcome_message()\n\n# set the score to zero\nscore = 0\n\n# ask questions\nscore = score + ask_question(8,7)\nscore = score + ask_question(4,9)\nscore = score + ask_question(12,6)\nscore = score + ask_question(6,8)\nscore = score + ask_question(7,7)\nscore = score + ask_question(11,6)\nscore = score + ask_question(11,2)\nscore = score + ask_question(7,9)\nscore = score + ask_question(6,6)\nscore = score + ask_question(4,8)\n\n# print the final scores\nprint_final_scores(score)\n",
+    "polygons/polygons.py": "import turtle\n\nclass Polygon(Object):\n\n    def __init__(self, sides, internal_angles_sum, internal_angle):\n        self.sides = sides\n        self.internal_angles_sum = internal_angles_sum\n        self.internal_angle = internal_angle\n        \n\n# calculate the total internal angles, and the angles within\n# a regular version of the polygon\ndef calc_polygon_details(sides):\n\n    internal_angles_sum = 0\n    internal_angles = 0\n\n    # TODO: find a better way to work this stuff out\n    if sides == 3:\n        internal_angles_sum = 180\n        internal_angles = 60\n    elif sides == 4:\n        internal_angles_sum = 360\n        internal_angles = 90\n    else:\n        internal_angles_sum = 1000\n        internal_angles = 200\n\n    poly = new Polygon(sides, internal_angles_sum, internal_angles)\n    print(poly)\n\n    # return a dictionary containing info about the polygon\n    # TODO: perhaps I should use the class Polygon instead!\n    return {\"sides\": sides,\n            \"internal_angles_sum\": internal_angles_sum,\n            \"internal_angles\": internal_angles}\n\n\n\n# draws a polygon using the turtle\ndef draw_polygon(polygon_details):\n\n    # set up the screen and turtle\n    scr = turtle.Screen()\n    t = turtle.Turtle()\n    t.pen(pencolor=\"red\", pensize=2, fillcolor=\"green\")\n\n    length_of_edge = 50\n    \n    # TODO: make this work for any type of polygon\n    for i in range(0, 6):\n        t.forward(length_of_edge)\n        t.right(60)\n\n\n\n\nsides = int(input(\"How many sides does your polygon have?: \"))\n\npolygon_details = calc_polygon_details(sides)\n\nprint(\"    Sides:\", polygon_details[\"sides\"])\nprint(\"    Internal angles sum:\", polygon_details[\"internal_angles_sum\"])\nprint(\"    Internal angles:\", polygon_details[\"internal_angles\"])\n\ndraw = input(\"Would you like me to draw it? (Y/n): \")\n\nif draw == \"\" or draw.lower() == \"y\":\n    draw_polygon(polygon_details)\n        \n\n\n\n\n    \n"
+  },
+  "navigation": "## File: `mathsquiz/mathsquiz-step1.py`\n\n**Intent**: A beginner's math quiz game that asks the player 10 multiplication questions one by one, tracks their score, and prints results at the end. This is an intermediate \"fixed\" step showing corrections from the original buggy file.\n\n**Structure**:\n- Flat script (no functions)\n- Prints welcome message\n- Initializes `score = 0`\n- Questions 1\u20135 are present (questions 6\u201310 appear to be cut off or missing)\n- Each question: prints question text, takes `input()`, converts to `int`, compares with `==`, increments score if correct\n- Comments document fixes made from the original (Python 3 print syntax, `==` vs `=`, `int()` conversion, correct answers, question numbering)\n\n**Visible bugs**:\n- **Truncated file**: Question 5's `else` branch ends with `pri` \u2014 an incomplete `print(\"Wrong!\")` statement, which is a `SyntaxError` / `NameError`\n- **Incomplete quiz**: Only 5 questions are present; the file claims 10 questions but the rest are missing (cut off)\n- No final score printout is present\n\n---\n\n## File: `mathsquiz/mathsquiz.py`\n\n**Intent**: The original buggy version of the math quiz \u2014 a flat script asking 6 multiplication questions, tracking a score, and printing a final result with a rating message. This is the \"before fixes\" version that step1, step2, step3 are derived from.\n\n**Structure**:\n- Flat script, no functions\n- Welcome message\n- 6 questions (though only 6 are written despite claiming 10)\n- Final score printout with conditional rating messages\n\n**Visible bugs**:\n- **Python 2 `print` statements** (`print \"Hello!...\"`) \u2014 `SyntaxError` in Python 3; this alone blocks AST parsing\n- **Assignment `=` used instead of comparison `==`** in every `if` condition (`if answer = 55:`) \u2014 `SyntaxError`\n- **No `int()` conversion** on `answer` \u2014 `input()` in Python 3 returns a string, so comparisons with integers would always fail\n- **Wrong answers**: `8x7` marked correct at `55` (should be `56`), `4x9` at `49` (should be `36`), `12x6` at `126` (should be `72`), `6x8` at `668` (should be `48`), `7x7` at `77` (should be `49`), `11x6` at `60` (should be `66`)\n- **All questions labeled \"Question 1\"** \u2014 the question number label never increments\n- **Score never incremented** \u2014 no `score = score + 1` in any branch, so the score stays 0 throughout\n- **Only 6 questions** despite claiming 10\n- **`else if` instead of `elif`** in the final scoring block \u2014 `SyntaxError` in Python\n- **Final `elif score = 10:`** uses assignment `=` instead of `==` \u2014 another `SyntaxError`\n\n---\n\n## File: `mathsquiz/mathsquiz-step3.py`\n\n**Intent**: A refactored version of the quiz using functions and `random` to generate questions dynamically. Introduces `welcome_message()`, `ask_question()`, and `print_final_scores()` as reusable components, and uses a loop with random number pairs to ask 10 questions.\n\n**Structure**:\n- `welcome_message()`: prints intro text\n- `ask_question(first_number, second_number)`: prints question, takes input, checks answer, returns 1 or 0\n- `print_final_scores(final_score, max_possible_score)`: prints score summary and a rating based on percentage\n- Main script: calls `welcome_message()`, initializes `score = 0`, then sets up loop (incomplete)\n\n**Visible bugs**:\n- **`print_final_scores` uses `score` instead of `final_score`** (the parameter name) \u2014 `NameError` at runtime since `score` is not in scope inside the function; same issue with `percentage` calculation using `score` instead of `final_score`\n- **Truncated file**: ends mid-statement with `number_of` \u2014 incomplete variable assignment (`number_of_questions = 10`?), causing a `SyntaxError`; the question loop is entirely missing\n\n---\n\n## File: `mathsquiz/mathsquiz-step2.py`\n\n**Intent**: An intermediate refactored version introducing the three functions (`welcome_message`, `ask_question`, `print_final_scores`) but without randomization. Questions are called explicitly with hardcoded number pairs, and score is accumulated via return values.\n\n**Structure**:\n- `welcome_message()`: prints intro\n- `ask_question(first_number, second_number)`: prompts, checks, returns 0 or 1\n- `print_final_scores(final_score)",
+  "bug_report": {
+    "bugs": [
+      {
+        "type": "SyntaxError",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Lines 3-4: `print \"Hello! ...\"` and `print \"Let's see ...\"` use Python 2 print statement syntax, which is invalid in Python 3.",
+        "fix_hint": "Change to `print(\"Hello! ...\")` and `print(\"Let's see ...!\")` with parentheses."
+      },
+      {
+        "type": "SyntaxError",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Lines 13, 23, 33, 43, 53: `if answer = 55:` uses assignment `=` instead of comparison `==` in all if-conditions.",
+        "fix_hint": "Replace `=` with `==` in every if-condition (e.g., `if answer == 55:`)."
+      },
+      {
+        "type": "LogicError",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "`input()` in Python 3 returns a string, but answers are compared to integers (55, 49, 126, etc.), so the comparison will always be False.",
+        "fix_hint": "Wrap input with `int()`: `answer = int(input(\"Answer: \"))`."
+      },
+      {
+        "type": "WrongValue",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Line 14: `if answer = 55` \u2014 8 x 7 = 56, not 55.",
+        "fix_hint": "Change the expected answer from 55 to 56."
+      },
+      {
+        "type": "WrongValue",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Line 24: `if answer = 49` \u2014 4 x 9 = 36, not 49.",
+        "fix_hint": "Change the expected answer from 49 to 36."
+      },
+      {
+        "type": "WrongValue",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Line 34: `if answer = 126` \u2014 12 x 6 = 72, not 126.",
+        "fix_hint": "Change the expected answer from 126 to 72."
+      },
+      {
+        "type": "WrongValue",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Line 44: `if answer = 668` \u2014 6 x 8 = 48, not 668.",
+        "fix_hint": "Change the expected answer from 668 to 48."
+      },
+      {
+        "type": "WrongValue",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Line 54: `if answer = 77` \u2014 7 x 7 = 49, not 77.",
+        "fix_hint": "Change the expected answer from 77 to 49."
+      },
+      {
+        "type": "LogicError",
+        "severity": "major",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Questions 2 through 6 all print 'Question 1:' instead of their correct question numbers (2, 3, 4, 5, 6).",
+        "fix_hint": "Update each print statement to show the correct question number."
+      },
+      {
+        "type": "LogicError",
+        "severity": "major",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "`score` is initialized to 0 but is never incremented when the player answers correctly.",
+        "fix_hint": "Add `score += 1` inside each `print('Correct!')` block."
+      },
+      {
+        "type": "SyntaxError",
+        "severity": "critical",
+        "affected_nodes": [
+          "mathsquiz/mathsquiz.py"
+        ],
+        "evidence": "Last visible line: `answ` \u2014 the file is truncated mid-variable name and is incomplete/unparseable.",
+        "fix_hint": "Complete question 6 with a full `answer = input(...)` line and corresponding if/else block."
+      },
+      {
+        "type": "OOPError",
+        "severity": "critical",
+        "affected_nodes": [
+          "polygons/polygons.py"
+        ],
+        "evidence": "`class Polygon(Object):` \u2014 `Object` is not defined in Python 3; the built-in base class is `object` (lowercase) or simply omitted.",
+        "fix_hint": "Change to `class Polygon(object):` or `class Polygon:`."
+      },
+      {
+        "type": "SyntaxError",
+        "severity": "critical",
+        "affected_nodes": [
+          "polygons/polygons.py"
+        ],
+        "evidence": "`poly = new Polygon(...)` \u2014 `new` is not a keyword in Python; this is a JavaScript/Java construct.",
+        "fix_hint": "Change to `poly = Polygon(sides, internal_angles_sum, internal_angles)`."
+      },
+      {
+        "type": "SyntaxError",
+        "severity": "critical",
+        "affected_nodes": [
+          "polygons/polygons.py"
+        ],
+        "evidence": "Last line: `\"internal_angles_sum\": internal_a` \u2014 the file is truncated mid-expression, causing a SyntaxError.",
+        "fix_hint": "Complete the dictionary literal: `\"internal_angles_sum\": internal_angles_sum, \"internal_angle\": internal_angles}`."
+      },
+      {
+        "type": "WrongValue",
+        "severity": "major",
+        "affected_nodes": [
+          "polygons/polygons.py"
+        ],
+        "evidence": "The `else` branch sets `internal_angles_sum = 1000` and `internal_angles = 200`, which are clearly placeholder/incorrect values for any polygon with sides != 3 or 4.",
+        "fix_hint": "Use the correct formula: `internal_angles_sum = (sides - 2) * 180` and `internal_angles = internal_angles_sum / sides`."
+      },
+      {
+        "type": "LogicError",
+        "severity": "minor",
+        "affected_nodes": [
+          "polygons/polygons.py"
+        ],
+        "evidence": "`print(poly)` will output the default object representation, not meaningful polygon data, since no `__str__` or `__repr__` method is defined on `Polygon`.",
+        "fix_hint": "Add a `__repr__` or `__str__` method to the `Polygon` class to return a readable string."
+      }
+    ],
+    "summary": "Both files contain critical syntax errors (Python 2 print statements, assignment instead of comparison, use of `new` keyword, incomplete/truncated code) that prevent execution entirely; additionally, multiple wrong answer values, a missing score increment, and an incorrect base class reference compound the logical and OOP errors throughout."
+  },
+  "fix_report": {
+    "fixes": [
+      {
+        "bug_type": "SPOF",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Replace Python 2 print statement syntax with Python 3 print function calls by adding parentheses around all print arguments",
+        "architectural_pattern": "Strangler Fig migration from Python 2 to Python 3",
+        "new_class_or_method": "",
+        "explanation": "Python 3 treats print as a built-in function, so the bare print statement syntax causes a SyntaxError that prevents the entire file from being parsed"
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Replace assignment operator with equality operator in all six if-conditions that check the answer variable",
+        "architectural_pattern": "Defensive Programming",
+        "new_class_or_method": "",
+        "explanation": "Using a single equals sign inside an if-condition is a SyntaxError in Python 3 and would never correctly compare the answer to the expected value"
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Wrap each input call with int() so the string returned by input is converted to an integer before comparison with numeric expected answers",
+        "architectural_pattern": "Defensive Programming",
+        "new_class_or_method": "",
+        "explanation": "In Python 3 input always returns a string, so comparing it directly to an integer literal always evaluates to False and no answer is ever marked correct"
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Correct the expected answer for question 1 from 55 to 56 because 8 multiplied by 7 equals 56",
+        "architectural_pattern": "Data Integrity",
+        "new_class_or_method": "",
+        "explanation": "The hardcoded expected value was arithmetically wrong, meaning a correct player answer would always be marked wrong"
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Correct the expected answer for question 2 from 49 to 36 because 4 multiplied by 9 equals 36",
+        "architectural_pattern": "Data Integrity",
+        "new_class_or_method": "",
+        "explanation": "The hardcoded expected value was arithmetically wrong, causing correct answers to be rejected"
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Correct the expected answer for question 3 from 126 to 72 because 12 multiplied by 6 equals 72",
+        "architectural_pattern": "Data Integrity",
+        "new_class_or_method": "",
+        "explanation": "The hardcoded expected value was arithmetically wrong, causing correct answers to be rejected"
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Correct the expected answer for question 4 from 668 to 48 because 6 multiplied by 8 equals 48",
+        "architectural_pattern": "Data Integrity",
+        "new_class_or_method": "",
+        "explanation": "The hardcoded expected value was arithmetically wrong, causing correct answers to be rejected"
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Correct the expected answer for question 5 from 77 to 49 because 7 multiplied by 7 equals 49",
+        "architectural_pattern": "Data Integrity",
+        "new_class_or_method": "",
+        "explanation": "The hardcoded expected value was arithmetically wrong, causing correct answers to be rejected"
+      },
+      {
+        "bug_type": "MissingAbstraction",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Correct the expected answer for question 6 from 60 to 66 because 11 multiplied by 6 equals 66",
+        "architectural_pattern": "Data Integrity",
+        "new_class_or_method": "",
+        "explanation": "The hardcoded expected value was arithmetically wrong, causing correct answers to be rejected"
+      },
+      {
+        "bug_type": "HardcodedDispatch",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Fix each question-number print statement so that questions 2 through 6 display their correct ordinal number instead of all printing Question 1",
+        "architectural_pattern": "Data Integrity",
+        "new_class_or_method": "",
+        "explanation": "All six blocks copied the same label, making it impossible for the player to track their progress through the quiz"
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Add score += 1 inside each correct-answer branch so that the score variable is actually incremented when a player answers correctly",
+        "architectural_pattern": "Defensive Programming",
+        "new_class_or_method": "",
+        "explanation": "Without incrementing score the variable stays at zero regardless of performance, making the final score always wrong"
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "mathsquiz/mathsquiz.py",
+        "target_symbol": "module-level script",
+        "description": "Fix the final scoring block by replacing else if with elif and replacing the assignment operator with equality operator in the final condition",
+        "architectural_pattern": "Defensive Programming",
+        "new_class_or_method": "",
+        "explanation": "Python has no else if keyword so the block is a SyntaxError, and the assignment inside the last condition would also prevent correct evaluation"
+      },
+      {
+        "bug_type": "OOPError",
+        "file_path": "polygons/polygons.py",
+        "target_symbol": "Polygon",
+        "description": "Change the base class from the undefined name Object to the lowercase built-in object so the class definition is valid Python 3",
+        "architectural_pattern": "Template Method",
+        "new_class_or_method": "",
+        "explanation": "Python 3 does not have a built-in called Object with a capital O, so the class statement raises a NameError immediately"
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "polygons/polygons.py",
+        "target_symbol": "Polygon",
+        "description": "Add a __repr__ method to the Polygon class that returns a readable string showing the sides, internal_angles_sum, and internal_angle attributes",
+        "architectural_pattern": "Template Method",
+        "new_class_or_method": "__repr__",
+        "explanation": "Without __repr__ the print call on a Polygon instance emits a useless memory-address string, making the diagnostic output meaningless"
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "polygons/polygons.py",
+        "target_symbol": "calc_polygon_details",
+        "description": "Replace the new Polygon instantiation syntax with standard Python constructor call syntax by removing the new keyword",
+        "architectural_pattern": "Factory",
+        "new_class_or_method": "",
+        "explanation": "Python has no new keyword; using it causes a SyntaxError that prevents the module from loading"
+      },
+      {
+        "bug_type": "HardcodedDispatch",
+        "file_path": "polygons/polygons.py",
+        "target_symbol": "calc_polygon_details",
+        "description": "Replace the hardcoded placeholder values in the else branch with the general formula where internal_angles_sum equals sides minus 2 multiplied by 180 and internal_angles equals internal_angles_sum divided by sides",
+        "architectural_pattern": "Strategy",
+        "new_class_or_method": "",
+        "explanation": "The placeholder values of 1000 and 200 are mathematically wrong for any polygon other than triangles and quadrilaterals, and the general formula works universally including for triangles and squares"
+      },
+      {
+        "bug_type": "SPOF",
+        "file_path": "polygons/polygons.py",
+        "target_symbol": "draw_polygon",
+        "description": "Replace the hardcoded loop range of 6 and turn angle of 60 with values derived from the polygon_details dictionary so any polygon is drawn correctly",
+        "architectural_pattern": "Strategy",
+        "new_class_or_method": "",
+        "explanation": "The loop was hardcoded to always draw a hexagon regardless of the number of sides passed in, so no other polygon shape would render correctly"
+      }
+    ],
+    "overall_impact": "Fixing mathsquiz.py eliminates all Python 2 syntax remnants, arithmetic mistakes, and missing score accumulation so the quiz runs correctly end-to-end in Python 3. Fixing polygons.py removes invalid OOP and keyword syntax and replaces magic hardcoded values with the correct general formula, making the polygon calculator correct for any number of sides and its output human-readable."
+  },
+  "token_usage": {
+    "used_input": 10225,
+    "used_output": 5580,
+    "total_used": 15805,
+    "remaining": 24195,
+    "budget": 40000
+  },
+  "is_sparse": true,
+  "error": null
+}

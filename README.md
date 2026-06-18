@@ -187,7 +187,8 @@ See `data/langgraph_workflow.mmd` for the full Mermaid source, and `src/langgrap
 ```
 [LangGraph] Starting workflow on: data/broken-python
 [LangGraph] Vault: obsidian/  |  Budget: 40,000 tokens
-[LangGraph] Nodes: build_graph → navigate → analyze → fix
+[LangGraph] Nodes: build_graph → raw_reader → analyze → fix
+  (sparse graph detected — navigate node skipped)
 
 Step 1 — build_graph
   AST parse: 9 nodes, 0 edges
