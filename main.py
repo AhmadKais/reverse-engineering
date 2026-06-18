@@ -14,11 +14,43 @@ Modes:
 from __future__ import annotations
 
 import argparse
+import json
+import logging
+import logging.config
 import os
 import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
+
+_LOG_CONFIG = Path(__file__).parent / "config" / "logging_config.json"
+
+
+def _configure_logging() -> None:
+    """Load logging settings from config/logging_config.json and apply via dictConfig."""
+    if not _LOG_CONFIG.exists():
+        return
+    with _LOG_CONFIG.open() as fh:
+        cfg = json.load(fh)
+    log_cfg = cfg.get("logging", {})
+    level = getattr(logging, log_cfg.get("level", "INFO"), logging.INFO)
+    fmt = log_cfg.get("format", "[%(levelname)s] %(message)s")
+    handlers_cfg = log_cfg.get("handlers", {})
+    handlers: list[logging.Handler] = []
+    if handlers_cfg.get("console", {}).get("enabled", True):
+        ch = logging.StreamHandler()
+        ch.setLevel(level)
+        ch.setFormatter(logging.Formatter(fmt))
+        handlers.append(ch)
+    file_cfg = handlers_cfg.get("file", {})
+    if file_cfg.get("enabled", False):
+        log_path = Path(file_cfg.get("path", "results/run.log"))
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        fh2 = logging.FileHandler(log_path)
+        fh2.setLevel(getattr(logging, file_cfg.get("level", "DEBUG"), logging.DEBUG))
+        fh2.setFormatter(logging.Formatter(fmt))
+        handlers.append(fh2)
+    logging.basicConfig(level=level, handlers=handlers, format=fmt)
 
 TARGET_DEFAULT = str(Path(__file__).parent / "data" / "broken-python")
 OBSIDIAN_DEFAULT = str(Path(__file__).parent / "obsidian")
@@ -44,6 +76,7 @@ def main() -> None:
                         help="Run naive baseline: send ALL files to agents (no graph, no Obsidian)")
     args = parser.parse_args()
     load_dotenv()
+    _configure_logging()
 
     from src.runner_graph import _run_graph_only, _run_naive
     from src.runner_improve import _run_improvement_loop
