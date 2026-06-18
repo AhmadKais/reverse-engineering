@@ -633,6 +633,8 @@ HW4/
 │   ├── investigation.md             ← step-by-step reverse engineering trace
 │   ├── research-questions.md        ← all 8 PDF research questions answered
 │   ├── BEFORE_AFTER.md              ← graph metrics comparison before/after fix
+│   ├── OOP_SCHEMA.md                ← Polygon class OOP schema (Mermaid diagram)
+│   ├── BLOCK_SCHEMA.md              ← block architecture + data flow diagrams
 │   └── nodes/                       ← 9 node notes (one per code entity)
 ├── obsidian_after/                  ← vault rebuilt on fixed files (before/after proof)
 ├── obsidian_demo/                   ← dense-graph vault (data/demo-dense, navigate path)
