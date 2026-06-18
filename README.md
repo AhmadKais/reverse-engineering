@@ -508,6 +508,16 @@ These pages were added to the Obsidian vault as part of the investigation — th
 | 14 | `artifacts/screenshots/before_after_md.png` | `BEFORE_AFTER.md` — before/after knowledge comparison: what changed in our understanding of the architecture |
 | 15 | `artifacts/screenshots/research_questions.png` | `research-questions.md` — all 8 PDF research questions answered, rendered in Obsidian |
 
+### Interactive HTML Graph (Task 5.1 Extension)
+
+| # | File | What it shows |
+|---|---|---|
+| 16 | `artifacts/screenshots/graph_html.png` | `graph.html` — interactive vis-network graph viewable in any browser, with edge confidence scores and node metadata |
+
+![Interactive graph.html](artifacts/screenshots/graph_html.png)
+
+---
+
 ![investigation.md in Obsidian](artifacts/screenshots/investigation_md.png)
 ![BEFORE_AFTER.md in Obsidian](artifacts/screenshots/before_after_md.png)
 ![research-questions.md in Obsidian](artifacts/screenshots/research_questions.png)
@@ -623,7 +633,7 @@ HW4/
 │   ├── Pipeline_output.txt          ← full graph-guided pipeline run output
 │   ├── naive_baseline_output.txt    ← full --naive run output (token comparison)
 │   ├── navigate_demo_output.txt     ← full dense-graph pipeline output (navigate path)
-│   └── screenshots/                 ← 15 screenshots (Obsidian + terminal + before/after + knowledge pages)
+│   └── screenshots/                 ← 16 screenshots (Obsidian + terminal + before/after + knowledge pages + graph.html)
 └── data/
     ├── broken-python/               ← target codebase (martinpeck/broken-python)
     ├── demo-dense/                  ← clean codebase for navigate path demo
