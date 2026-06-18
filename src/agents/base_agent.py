@@ -1,16 +1,17 @@
 """Base agent — shared LLM call logic using the Anthropic SDK.
 
 All three specialized agents (Navigator, Analyzer, Fixer) extend this class.
-Every API call is routed through a single budget-aware gateway method.
+Every API call is routed through ApiGatekeeper — never called directly.
 """
 
 from __future__ import annotations
 
 import os
-import time
 
 import anthropic
 from dotenv import load_dotenv
+
+from src.agents.gatekeeper import ApiGatekeeper, RateLimitConfig
 
 load_dotenv()
 
@@ -75,16 +76,16 @@ class BaseAgent:
         budget: AgentBudget,
         model: str = _DEFAULT_MODEL,
         max_tokens: int = _DEFAULT_MAX_TOKENS,
-        max_retries: int = 2,
+        gatekeeper: ApiGatekeeper | None = None,
     ) -> None:
-        """Wire up name, system prompt, budget ceiling, model, and Anthropic client."""
+        """Wire up name, system prompt, budget, model, Anthropic client, and gatekeeper."""
         self.name = name
         self.system_prompt = system_prompt
         self.budget = budget
         self.model = model
         self.max_tokens = max_tokens
-        self.max_retries = max_retries
         self._client = anthropic.Anthropic(api_key=self._load_api_key())
+        self._gatekeeper = gatekeeper or ApiGatekeeper(RateLimitConfig())
         self.history: list[dict] = []
 
     @staticmethod
@@ -96,28 +97,18 @@ class BaseAgent:
         return key
 
     def _call_llm(self, messages: list[dict]) -> str:
-        """Route one request through the budget gateway with retry on transient errors."""
-        for attempt in range(1, self.max_retries + 1):
-            try:
-                response = self._client.messages.create(
-                    model=self.model,
-                    max_tokens=self.max_tokens,
-                    system=self.system_prompt,
-                    messages=messages,
-                )
-                self.budget.record(response.usage.input_tokens, response.usage.output_tokens)
-                return self._extract_text(response)
-            except anthropic.RateLimitError:
-                if attempt < self.max_retries:
-                    time.sleep(15 * attempt)
-            except anthropic.APIStatusError as exc:
-                if attempt == self.max_retries:
-                    raise
-                time.sleep(5 * attempt)
-                if exc.status_code >= 500:
-                    continue
-                raise
-        return ""
+        """Route one request through ApiGatekeeper with budget accounting."""
+        response = self._gatekeeper.execute(
+            self._client.messages.create,
+            model=self.model,
+            max_tokens=self.max_tokens,
+            system=self.system_prompt,
+            messages=messages,
+        )
+        if response is None:
+            return ""
+        self.budget.record(response.usage.input_tokens, response.usage.output_tokens)
+        return self._extract_text(response)
 
     @staticmethod
     def _extract_text(response: anthropic.types.Message) -> str:
