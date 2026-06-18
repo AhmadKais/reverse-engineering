@@ -50,8 +50,8 @@ All centrality = 0 because the graph has no edges. This is itself diagnostic inf
 | Metric | Before fix (buggy files) | After fix (corrected files) |
 |---|---|---|
 | Parseable files | 3/5 | 5/5 |
-| Nodes | 9 | 17 |
-| Edges | 0 | 9 |
+| Nodes | 9 | 6 |
+| Edges | 0 | 1 |
 | Polygon class visible | No | Yes |
 | `calc_polygon_details` visible | No | Yes |
 

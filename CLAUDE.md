@@ -107,19 +107,23 @@ On failure: `{"parse_error": True, "bugs": []}` or `{"parse_error": True, "fixes
 
 ## Tests
 
-100 tests total, all must pass before committing:
+104 tests total, all must pass before committing:
 
 | File | Count | Covers |
 |------|-------|--------|
-| `tests/test_graph_builder.py` | 17 | AST parser, KnowledgeGraph |
+| `tests/test_graph_builder.py` | 7 | KnowledgeGraph |
 | `tests/test_ast_parser.py` | 10 | parse_file / parse_directory |
 | `tests/test_agents.py` | 9 | AgentBudget, BaseAgent |
-| `tests/test_analyzer_fixer.py` | 13 | AnalyzerAgent, FixerAgent (incl. analyze_raw, propose_fixes_raw, generate_corrected_files) |
+| `tests/test_analyzer_fixer.py` | 4 | AnalyzerAgent |
+| `tests/test_fixer_agent.py` | 9 | FixerAgent (incl. generate_corrected_files) |
 | `tests/test_agent_extras.py` | 5 | sparse mode + affected-code |
-| `tests/test_langgraph_workflow.py` | 9 | build_workflow, build_graph_node, error skip |
-| `tests/test_routing.py` | 13 | routing, raw_reader, sparse detection |
+| `tests/test_langgraph_workflow.py` | 9 | build_workflow, node wiring, error skip |
+| `tests/test_routing.py` | 10 | routing, fallback bug report |
+| `tests/test_build_graph_node.py` | 5 | sparse detection, raw_reader |
 | `tests/test_obsidian.py` | 12 | ObsidianExporter, graph.html |
-| `tests/test_data_types.py` | 26 | GraphNode, GraphEdge, KG extras |
+| `tests/test_navigator_agent.py` | 2 | NavigatorAgent |
+| `tests/test_data_types.py` | 17 | GraphNode, GraphEdge |
+| `tests/test_kg_extras.py` | 5 | KnowledgeGraph extras |
 
 All agent tests mock the Anthropic API — no real calls needed.
 

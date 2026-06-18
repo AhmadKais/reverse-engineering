@@ -122,7 +122,7 @@ Fixed files written to `artifacts/`:
 - `artifacts/fixed_polygons.py` — parses under Python 3.12 ✅
 - `artifacts/fixed_mathsquiz.py` — parses under Python 3.12 ✅
 
-Graph rebuilt on fixed files → 8 nodes, 9 edges (see [[BEFORE_AFTER]]).
+Graph rebuilt on fixed files → 6 nodes, 1 edge (see [[BEFORE_AFTER]]).
 
 ---
 

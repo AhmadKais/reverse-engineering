@@ -23,7 +23,7 @@ This note documents what we understood **before** running the pipeline, what the
 
 | Before (broken files) | After (fixed files) |
 |---|---|
-| 9 nodes, **0 edges** | 8 nodes, **connected graph** |
+| 9 nodes, **0 edges** | 6 nodes, **1 edge** |
 | `Polygon` class invisible | `Polygon`, `__init__`, `calc_polygon_details`, `draw_polygon` all visible |
 | All betweenness = 0.0 | Actual relationships traceable |
 
@@ -118,8 +118,8 @@ build_graph (9 nodes, 0 edges)
 |--------|--------|-------|
 | Files visible in graph | 3/5 (step files only) | Would be 5/5 with fixed files |
 | Polygon class | Invisible (parse error) | `class Polygon(object)` with `__init__` |
-| Nodes | 9 | 17+ (class + methods + functions now visible) |
-| Edges | 0 | 9+ (imports, calls, inheritance now traceable) |
+| Nodes | 9 | 6 (Polygon class + methods + modules now visible) |
+| Edges | 0 | 1 (call relationship now traceable) |
 | Architecture pattern | Unknown — God Script appearance | `Polygon` OOP + factory function + renderer |
 
 ### Before / After code

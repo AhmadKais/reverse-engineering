@@ -1,9 +1,10 @@
 ahmadk@ahmadk-Ins5599:~/Desktop/AI_Orchestration_Course/HW4$ cd ~/Desktop/AI_Orchestration_Course/HW4 && uv run python main.py --budget 40000
 [LangGraph] Starting workflow on: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/data/broken-python
 [LangGraph] Vault: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian  |  Budget: 40,000 tokens
-[LangGraph] Nodes: build_graph → navigate → analyze → fix
+[LangGraph] Nodes: build_graph → (navigate|raw_reader) → analyze → fix
+  (sparse graph detected — navigate node skipped, raw_reader activated)
 
-[LangGraph] Report saved: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/obsidian/analysis_report.json
+[LangGraph] Report saved: /home/ahmadk/Desktop/AI_Orchestration_Course/HW4/artifacts/analysis_report.json
 
 ============================================================
 LANGGRAPH WORKFLOW — FINAL REPORT

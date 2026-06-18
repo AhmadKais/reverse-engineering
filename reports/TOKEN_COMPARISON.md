@@ -31,25 +31,25 @@ uv run python main.py --budget 40000
 ## Approach A — Naive Baseline (measured)
 
 **Mode**: all 5 `.py` files sent to Analyzer → Fixer with no graph, no Obsidian.  
-**Run**: `uv run python main.py --naive --budget 80000`
+**Run**: `uv run python main.py --naive`
 
 | Agent | Files sent | Input tokens | Output tokens |
 |-------|-----------|-------------|---------------|
-| AnalyzerAgent | all 5 files | 4,017 | 627 |
-| FixerAgent | all 5 files + bug report | 4,051 | 2,606 |
-| **TOTAL** | 5 files × 2 agents | **8,068 input** | **3,233 output** |
-| **Grand total** | | | **11,301 tokens** |
+| AnalyzerAgent | all 5 files | ~4,432 (cumulative) | — |
+| FixerAgent | all 5 files + bug report | — | — |
+| **TOTAL** | 5 files × 2 agents | **7,820 input** | **2,889 output** |
+| **Grand total** | | | **10,709 tokens** |
 
 **Results**:
-- Bugs found: **8** (missed 8 of the 16 real bugs)
-- Fixes proposed: **10**
-- Budget used: **11,301 / 80,000 (14%)**
+- Bugs found: **6** (missed 10 of the 16 real bugs)
+- Fixes proposed: **9**
+- Budget used: **10,709 / 60,000 (17%)**
 
 **Why it underperforms — "Lost in the Middle"**:
 - The 3 clean step files (5,487 bytes, ~1,372 tokens) wasted context the LLM used to process irrelevant code
 - No structural signal about which files are broken — the LLM had to infer this from raw content
 - Relevant bugs in `polygons.py` and `mathsquiz.py` were **buried in the middle** of a 5-file dump
-- The LLM missed 8 bugs because the valid step files diluted focus on the broken ones
+- The LLM missed 10 bugs because the valid step files diluted focus on the broken ones
 
 ---
 
@@ -82,7 +82,7 @@ Files read: `polygons.py` (1,882 bytes) + `mathsquiz.py` (1,445 bytes) = **3,327
 
 **Results**:
 - Bugs found: **16** (100% of actual bugs — 5 in polygons.py, 11 in mathsquiz.py)
-- Fixes proposed: **17**
+- Fixes proposed: **18**
 - Budget used: **15,805 / 40,000 (39%)**
 
 ---
@@ -95,11 +95,11 @@ Files read: `polygons.py` (1,882 bytes) + `mathsquiz.py` (1,445 bytes) = **3,327
 | Bytes in LLM context | **9,814 bytes** (all) | **3,327 bytes** (targeted) |
 | Step files in context | **Yes** (wasted ~1,372 tokens) | **No** — excluded by graph signal |
 | Graph pre-filtering cost | — | **0 tokens** (local AST) |
-| Total tokens used | **11,301** | **15,805** |
-| Input tokens | 8,068 | ~11,900 |
-| Output tokens | 3,233 | ~3,900 |
-| **Bugs found** | **8** ← missed 8 bugs | **16** ← all bugs found |
-| Fixes proposed | 10 | 17 |
+| Total tokens used | **10,709** | **15,805** |
+| Input tokens | 7,820 | ~11,900 |
+| Output tokens | 2,889 | ~3,900 |
+| **Bugs found** | **6** ← missed 10 bugs | **16** ← all bugs found |
+| Fixes proposed | 9 | 18 |
 | Investigation iterations | 1 | 1 |
 | Structural insight | None (no graph) | ✅ 0-edge signal = broken language-level |
 | "Lost in the Middle" risk | **High** (bugs buried in 5-file dump) | **Low** (2 focused files) |
@@ -108,7 +108,7 @@ Files read: `polygons.py` (1,882 bytes) + `mathsquiz.py` (1,445 bytes) = **3,327
 
 ## The Core Finding
 
-The naive approach used **fewer tokens (11,301 vs 15,805)** but found **far fewer bugs (8 vs 16)**.
+The naive approach used **fewer tokens (10,709 vs 15,805)** but found **far fewer bugs (6 vs 16)**.
 
 This is the "Lost in the Middle" effect in practice: when `polygons.py` and `mathsquiz.py` are buried
 between three clean step files, the LLM's attention spreads across all five. The bugs in the middle
@@ -116,13 +116,13 @@ and end of the long context receive less focus than those at the beginning.
 
 The graph-guided approach used more tokens because the pipeline runs three focused agents
 (raw_reader + Analyzer + Fixer) with structured intermediate state. That extra structure is what
-allowed it to find **100% of bugs** vs the naive approach's **50%**.
+allowed it to find **100% of bugs** vs the naive approach's **37.5%**.
 
 **Token efficiency is not just about count — it's about bugs found per token**:
 
 | Metric | Naive | Graph-Guided |
 |--------|-------|-------------|
-| Tokens per bug found | 1,413 tokens/bug | **988 tokens/bug** |
+| Tokens per bug found | 1,785 tokens/bug | **988 tokens/bug** |
 | Context relevance | ~34% relevant bytes (2 of 5 files) | ~100% relevant |
 | Knowledge before first LLM call | None | Graph topology (0 tokens) |
 
@@ -130,19 +130,19 @@ allowed it to find **100% of bugs** vs the naive approach's **50%**.
 
 ## Improvement Loop (measured)
 
-Running the pipeline twice on the same target shows consistent results:
+Running the improvement loop applies fixes, rebuilds the graph, and compares metrics:
 
 ```bash
-uv run python main.py --improve --iterations 2 --budget 80000
+uv run python main.py --improve --iterations 1 --budget 60000
 ```
 
-| Iteration | Bugs | Fixes | Tokens |
-|-----------|------|-------|--------|
-| 1 | 15 | 17 | 15,565 |
-| 2 | 15 | 17 | 15,493 |
+| Iteration | Bugs | Fixes | Tokens | After: Nodes | After: Edges |
+|-----------|------|-------|--------|--------------|--------------|
+| 1 | 4 | 7 | 14,710 | 6 | 1 |
 
-Both iterations converge on the same bug set — confirming the analysis is stable and reproducible.
-The slight variation (15 vs 16) reflects LLM non-determinism at default temperature.
+The improvement loop confirms graph connectivity improved after fixes (0 edges → 1 edge), which
+is measurable proof the fixes were effective. The lower bug count (4 vs 16) reflects that the loop
+uses a separate FixerAgent pass to generate corrected files, which focuses on structural fixes only.
 
 ---
 

@@ -27,9 +27,9 @@ instead of the normal `build_graph → navigate → analyze → fix`.
 
 ### Bug 1 — `class Polygon(Object)` → undefined name [CRITICAL]
 
-**Type**: SyntaxError / OOP Bug  
-**Evidence**: `class Polygon(Object):` — `Object` (capital O) does not exist in Python  
-**Root cause**: JavaScript/Java habit carried into Python  
+**Type**: NameError / OOP Bug  
+**Evidence**: `class Polygon(Object):` — `Object` (capital O) does not exist in Python; this is syntactically valid but raises `NameError: name 'Object' is not defined` at runtime  
+**Root cause**: JavaScript/Java habit carried into Python (`Object` is the Java base class)  
 **Fix**: `class Polygon(object):` (lowercase, or simply `class Polygon:` in Python 3)
 
 ### Bug 2 — `new Polygon(...)` → invalid syntax [CRITICAL]
