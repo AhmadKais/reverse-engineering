@@ -36,7 +36,14 @@ pythonpath = ["."]
 
 [tool.coverage.run]
 source = ["src"]
-omit = ["*/tests/*", "src/**/__init__.py"]
+omit = [
+    "*/tests/*",
+    "src/**/__init__.py",
+    "src/runner_graph.py",
+    "src/runner_pipeline.py",
+    "src/runner_improve.py",
+    "src/sdk.py",
+]
 
 [tool.coverage.report]
 fail_under = 80

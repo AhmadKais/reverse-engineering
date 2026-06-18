@@ -1,0 +1,31 @@
+{
+  "version": "1.00",
+  "project": {
+    "name": "reverse-engineer-agent",
+    "description": "Token-efficient codebase reverse-engineering pipeline using LangGraph + knowledge graphs",
+    "default_source": "data/broken-python",
+    "default_vault": "obsidian",
+    "default_budget": 40000
+  },
+  "graph": {
+    "sparse_edge_threshold": 5,
+    "max_hot_nodes": 10
+  },
+  "agents": {
+    "model": "claude-haiku-4-5-20251001",
+    "max_tokens_per_call": 4096,
+    "temperature": 0
+  },
+  "obsidian": {
+    "hot_md_filename": "hot.md",
+    "index_md_filename": "index.md",
+    "graph_json_filename": "graph.json",
+    "graph_html_filename": "graph.html",
+    "nodes_subdir": "nodes"
+  },
+  "output": {
+    "artifacts_dir": "artifacts",
+    "analysis_report_filename": "analysis_report.json",
+    "improvement_history_filename": "improvement_history.json"
+  }
+}
